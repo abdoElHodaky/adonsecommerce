@@ -14,13 +14,13 @@ export default class Category extends BaseModel {
   declare slug: string
 
   @column()
-  declare description: string | null
+  declare description: string
 
   @column()
-  declare image: string | null
+  declare image: string 
 
   @column()
-  declare parentId: number | null
+  declare parentId: number 
 
   @column()
   declare sortOrder: number
