@@ -33,9 +33,9 @@ COPY --from=build /adonsapp/. .
 #COPY --from=build /adonsapp/node_modules ./node_modules
 
 # Set environment variables
-ENV NODE_ENV=development
-ENV PORT=3333
-ENV HOST=0.0.0.0
+#ENV NODE_ENV=development
+#ENV PORT=3333
+#ENV HOST=0.0.0.0
 
 # Expose the port the app runs on
 EXPOSE 3333
