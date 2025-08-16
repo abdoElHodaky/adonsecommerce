@@ -68,12 +68,16 @@ export default class User extends withAuthFinder(BaseModel, {
   @hasMany(() => Cart)
   declare carts: HasMany<typeof Cart>
   
-  super.boot()
+  //super.boot()
   @beforeSave()
   static async hashPassword(user: User) {
     if (user.$dirty.password) {
       user.password = await hash.make(user.password)
     }
+  }
+  public static boot(){
+    if(this.booted){return)
+      super.boot();
   }
 }
 
