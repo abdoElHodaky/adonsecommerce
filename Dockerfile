@@ -29,6 +29,7 @@ WORKDIR /adonsapp
 
 # Copy built assets from the build stage
 COPY --from=build /adonsapp/. .
+COPY --from=build /adonsapp/.env .
 #COPY --from=build /adonsapp/node_modules ./node_modules
 
 # Set environment variables
