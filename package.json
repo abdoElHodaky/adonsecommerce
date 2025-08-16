@@ -35,7 +35,7 @@
     "@adonisjs/lucid": "^20.1.0",
     "@adonisjs/session": "^7.1.0",
     "@adonisjs/shield": "^8.1.0",
-    "@adonisjs/static": "^5.0.1",
+    "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^2.0.0",
     "@vinejs/vine": "^1.7.0",
     "edge.js": "^6.0.1",
