@@ -1,59 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maintenance Mode - MultiMarket</title>
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    body {
-      background-color: #f9fafb;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-  </style>
-</head>
-<body class="min-h-screen flex items-center justify-center">
-  <div class="max-w-md mx-auto p-8 text-center">
-    <div class="mb-8">
-      <div class="text-indigo-600 text-5xl font-bold">
-        <span class="text-gray-800">Multi</span>Market
+@layout('layouts/main')
+
+@set('title', 'Maintenance Mode - MultiMarket')
+
+@section('content')
+<div class="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="p-6 bg-blue-50 border-b border-blue-100">
+      <div class="flex items-center justify-center">
+        <div class="bg-blue-100 rounded-full p-3">
+          <svg class="h-12 w-12 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
       </div>
-    </div>
-    
-    <div class="bg-white rounded-lg shadow-lg p-8">
-      <div class="bg-yellow-100 text-yellow-700 p-4 rounded-full inline-flex items-center justify-center mb-6">
-        <i class="fas fa-tools text-4xl"></i>
-      </div>
-      
-      <h1 class="text-2xl font-bold text-gray-800 mb-4">We're Down for Maintenance</h1>
-      
-      <p class="text-gray-600 mb-6">
-        We're currently performing scheduled maintenance on our website. We'll be back online shortly. Thank you for your patience!
+      <h2 class="mt-4 text-center text-3xl font-extrabold text-gray-900">
+        We're Down for Maintenance
+      </h2>
+      <p class="mt-2 text-center text-md text-gray-600">
+        We're making some improvements to our site.
       </p>
-      
-      <div class="flex justify-center space-x-4 text-gray-500">
-        <a href="https://twitter.com/multimarket" class="hover:text-indigo-600">
-          <i class="fab fa-twitter text-xl"></i>
-        </a>
-        <a href="https://facebook.com/multimarket" class="hover:text-indigo-600">
-          <i class="fab fa-facebook text-xl"></i>
-        </a>
-        <a href="https://instagram.com/multimarket" class="hover:text-indigo-600">
-          <i class="fab fa-instagram text-xl"></i>
-        </a>
-      </div>
     </div>
     
-    <p class="mt-8 text-sm text-gray-500">
-      Expected downtime: {{ downtime || '30 minutes' }}
-    </p>
+    <div class="p-6">
+      <div class="space-y-4">
+        <div class="bg-gray-50 p-4 rounded-md">
+          <p class="text-gray-700">
+            We're currently performing scheduled maintenance to improve your shopping experience. We'll be back online shortly.
+          </p>
+          <p class="mt-2 text-gray-700">
+            <span class="font-semibold">Estimated downtime:</span> {{ downtime || '30 minutes' }}
+          </p>
+        </div>
+        
+        <p class="text-gray-700">
+          We apologize for any inconvenience this may cause. Thank you for your patience!
+        </p>
+        
+        <div class="pt-4">
+          <a 
+            href="mailto:support@multimarket.com" 
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Contact Support
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-</body>
-</html>
+</div>
+@endsection
 

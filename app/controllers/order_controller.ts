@@ -1,241 +1,331 @@
 import { HttpContext } from '@adonisjs/core/http'
-import Order, { OrderStatus } from '#models/Order'
-import OrderItem from '#models/OrderItem'
-import Cart from '#models/Cart'
-import CartItem from '#models/CartItem'
-import Product from '#models/Product'
-import Merchant from '#models/Merchant'
-import vine from '@vinejs/vine'
-import { string } from '@vinejs/vine/rules'
+import BaseController from './base_controller.js'
+import Order from '#models/order'
+import OrderItem from '#models/order_item'
+import Product from '#models/product'
+import Cart from '#models/cart'
+import { schema, validator } from '@adonisjs/core/validator'
+import notificationService from '#services/notification_service'
 
-export default class OrderController {
+export default class OrderController extends BaseController {
   /**
-   * Display a listing of customer orders
+   * Display a listing of the customer's orders
    */
-  async index({ view, auth, request }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = 10
-    const status = request.input('status', 'all')
+  public async index({ view, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, auth },
+      async () => {
+        if (!auth.user) {
+          return this.unauthorized({ view, auth })
+        }
 
-    const user = auth.user!
+        const orders = await Order.query()
+          .where('userId', auth.user.id)
+          .preload('items', (query) => {
+            query.preload('product')
+          })
+          .orderBy('createdAt', 'desc')
+          .paginate(1, 10)
 
-    // Build query
-    const ordersQuery = Order.query()
-      .where('userId', user.id)
-      .preload('merchant')
-
-    // Apply status filter
-    if (status !== 'all') {
-      ordersQuery.where('status', status)
-    }
-
-    // Get paginated results
-    const orders = await ordersQuery.orderBy('createdAt', 'desc').paginate(page, limit)
-
-    return view.render('pages/customer/orders/index', {
-      orders,
-      status,
-    })
+        return view.render('customer/orders/index', { orders })
+      },
+      'Failed to load orders'
+    )
   }
 
   /**
    * Display the specified order
    */
-  async show({ view, params, auth, response }: HttpContext) {
-    try {
-      const user = auth.user!
+  public async show({ params, view, auth }: HttpContext) {
+    return this.tryOrError(
+      { params, view, auth },
+      async () => {
+        if (!auth.user) {
+          return this.unauthorized({ params, view, auth })
+        }
 
-      const order = await Order.query()
-        .where('id', params.id)
-        .where('userId', user.id)
-        .preload('merchant')
-        .preload('items', (query) => query.preload('product'))
-        .firstOrFail()
+        const order = await Order.query()
+          .where('id', params.id)
+          .where('userId', auth.user.id)
+          .preload('items', (query) => {
+            query.preload('product', (productQuery) => {
+              productQuery.preload('merchant')
+            })
+          })
+          .firstOrFail()
 
-      return view.render('pages/customer/orders/show', {
-        order,
-      })
-    } catch (error) {
-      return response.status(404).redirect('/customer/orders')
-    }
+        return view.render('customer/orders/show', { order })
+      },
+      'Failed to load order details'
+    )
   }
 
   /**
-   * Show the checkout page
+   * Create a new order from the cart
    */
-  async checkout({ view, auth, response, session }: HttpContext) {
-    try {
-      const user = auth.user!
-
-      // Get user's cart
-      const cart = await Cart.query()
-        .where('userId', user.id)
-        .preload('items', (query) => {
-          query.preload('product')
-          query.preload('productVariant')
-          query.preload('merchant')
-        })
-        .firstOrFail()
-
-      // Check if cart is empty
-      if (cart.items.length === 0) {
-        session.flash('error', 'Your cart is empty')
-        return response.redirect('/store/cart')
-      }
-
-      return view.render('pages/store/checkout', {
-        cart,
-        user,
-      })
-    } catch (error) {
-      session.flash('error', 'Your cart is empty')
-      return response.redirect('/store/cart')
-    }
-  }
-
-  /**
-   * Process the order
-   */
-  async processOrder({ request, response, auth, session }: HttpContext) {
-    const user = auth.user!
-
-    // Validate input
-    const checkoutSchema = vine.object({
-      shipping_address: vine.string().trim(),
-      billing_address: vine.string().trim(),
-      payment_method: vine.string().in(['credit_card', 'paypal']),
-      // Add more fields as needed for payment processing
-    })
-
-    try {
-      const payload = await vine.validate({
-        schema: checkoutSchema,
-        data: request.all(),
-      })
-
-      // Get user's cart
-      const cart = await Cart.query()
-        .where('userId', user.id)
-        .preload('items', (query) => {
-          query.preload('product')
-          query.preload('productVariant')
-          query.preload('merchant')
-        })
-        .firstOrFail()
-
-      // Check if cart is empty
-      if (cart.items.length === 0) {
-        session.flash('error', 'Your cart is empty')
-        return response.redirect('/store/cart')
-      }
-
-      // Group cart items by merchant
-      const merchantItems = {}
-      for (const item of cart.items) {
-        if (!merchantItems[item.merchantId]) {
-          merchantItems[item.merchantId] = []
-        }
-        merchantItems[item.merchantId].push(item)
-      }
-
-      // Create an order for each merchant
-      const orders = []
-      for (const merchantId in merchantItems) {
-        const items = merchantItems[merchantId]
-        const merchant = items[0].merchant
-
-        // Calculate order totals
-        let subtotal = 0
-        for (const item of items) {
-          subtotal += item.subtotal
+  public async store({ request, response, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, session, auth },
+      async () => {
+        if (!auth.user) {
+          return this.unauthorized({ request, response, session, auth })
         }
 
-        const tax = subtotal * 0.1 // 10% tax (simplified)
-        const shipping = 10 // Flat shipping rate (simplified)
-        const total = subtotal + tax + shipping
+        // Get the user's cart
+        const cart = await Cart.query()
+          .where('userId', auth.user.id)
+          .preload('items', (query) => {
+            query.preload('product')
+          })
+          .firstOrFail()
 
-        // Create order
-        const order = new Order()
-        order.userId = user.id
-        order.merchantId = parseInt(merchantId)
-        order.orderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`
-        order.status = OrderStatus.PENDING
-        order.subtotal = subtotal
-        order.tax = tax
-        order.shipping = shipping
-        order.discount = 0
-        order.total = total
-        order.shippingAddress = payload.shipping_address
-        order.billingAddress = payload.billing_address
-        order.paymentMethod = payload.payment_method
-        order.paymentStatus = 'pending'
+        // Check if the cart is empty
+        if (cart.items.length === 0) {
+          session.flash('error', 'Your cart is empty')
+          return response.redirect().toRoute('store.cart')
+        }
 
-        await order.save()
-        orders.push(order)
+        // Validate the request
+        const orderSchema = schema.create({
+          shippingAddress: schema.string(),
+          shippingCity: schema.string(),
+          shippingState: schema.string(),
+          shippingZip: schema.string(),
+          shippingCountry: schema.string(),
+          paymentMethod: schema.string(),
+        })
+
+        const data = await validator.validate({
+          schema: orderSchema,
+          data: request.only([
+            'shippingAddress',
+            'shippingCity',
+            'shippingState',
+            'shippingZip',
+            'shippingCountry',
+            'paymentMethod',
+          ]),
+        })
+
+        // Calculate the order total
+        let total = 0
+        for (const item of cart.items) {
+          total += item.product.price * item.quantity
+        }
+
+        // Create the order
+        const order = await Order.create({
+          userId: auth.user.id,
+          total,
+          status: 'pending',
+          paymentStatus: 'pending',
+          ...data,
+          orderNumber: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        })
 
         // Create order items
-        for (const item of items) {
-          const orderItem = new OrderItem()
-          orderItem.orderId = order.id
-          orderItem.productId = item.productId
-          orderItem.productVariantId = item.productVariantId
-          orderItem.name = item.product.name
-          orderItem.sku = item.product.sku
-          orderItem.price = item.price
-          orderItem.quantity = item.quantity
-          orderItem.subtotal = item.subtotal
-          orderItem.options = item.options
+        for (const item of cart.items) {
+          await OrderItem.create({
+            orderId: order.id,
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.product.price,
+            total: item.product.price * item.quantity,
+          })
 
-          await orderItem.save()
+          // Update product stock
+          const product = await Product.findOrFail(item.productId)
+          product.stock -= item.quantity
+          product.soldCount = (product.soldCount || 0) + item.quantity
+          await product.save()
 
-          // Update product quantity
-          const product = await Product.find(item.productId)
-          if (product && product.isManageStock) {
-            product.quantity -= item.quantity
-            await product.save()
+          // Send notification to merchant
+          if (product.merchantId) {
+            notificationService.sendNewOrderNotification(
+              product.merchantId,
+              order.id,
+              order.orderNumber,
+              order.total
+            )
           }
         }
-      }
 
-      // Clear the cart
-      await cart.delete()
+        // Clear the cart
+        await cart.related('items').query().delete()
 
-      // In a real app, you would process payment here
-      // For now, we'll just redirect to the order confirmation page
+        // Send notification to customer
+        notificationService.sendOrderStatusUpdate(
+          auth.user.id,
+          order.id,
+          order.orderNumber,
+          'pending'
+        )
 
-      session.flash('success', 'Order placed successfully')
-      return response.redirect(`/customer/orders/${orders[0].id}`)
-    } catch (error) {
-      session.flash('errors', error.messages || { error: 'Failed to process order' })
-      return response.redirect().back()
-    }
+        session.flash('success', 'Order placed successfully')
+        return response.redirect().toRoute('payment.process', { order_id: order.id })
+      },
+      'Failed to create order'
+    )
   }
 
   /**
-   * Cancel an order
+   * Cancel the specified order
    */
-  async cancelOrder({ response, params, auth, session }: HttpContext) {
-    try {
-      const user = auth.user!
+  public async cancel({ params, response, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { params, response, session, auth },
+      async () => {
+        if (!auth.user) {
+          return this.unauthorized({ params, response, session, auth })
+        }
 
-      const order = await Order.query()
-        .where('id', params.id)
-        .where('userId', user.id)
-        .where('status', 'pending')
-        .firstOrFail()
+        const order = await Order.query()
+          .where('id', params.id)
+          .where('userId', auth.user.id)
+          .firstOrFail()
 
-      // Update order status
-      order.status = OrderStatus.CANCELLED
-      await order.save()
+        // Check if the order can be cancelled
+        if (!['pending', 'processing'].includes(order.status)) {
+          session.flash('error', 'This order cannot be cancelled')
+          return response.redirect().back()
+        }
 
-      // In a real app, you would handle refunds here if payment was already processed
+        // Update the order status
+        order.status = 'cancelled'
+        await order.save()
 
-      session.flash('success', 'Order cancelled successfully')
-      return response.redirect(`/customer/orders/${order.id}`)
-    } catch (error) {
-      session.flash('error', 'Failed to cancel order')
-      return response.redirect().back()
-    }
+        // Send notification to customer
+        notificationService.sendOrderStatusUpdate(
+          auth.user.id,
+          order.id,
+          order.orderNumber,
+          'cancelled'
+        )
+
+        session.flash('success', 'Order cancelled successfully')
+        return response.redirect().back()
+      },
+      'Failed to cancel order'
+    )
+  }
+
+  /**
+   * Display a listing of the merchant's orders
+   */
+  public async merchantOrders({ view, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== 'merchant') {
+          return this.forbidden({ view, auth }, 'Only merchants can access this page')
+        }
+
+        const orders = await Order.query()
+          .whereHas('items', (query) => {
+            query.whereHas('product', (productQuery) => {
+              productQuery.where('merchantId', auth.user.merchant.id)
+            })
+          })
+          .preload('user')
+          .preload('items', (query) => {
+            query.preload('product', (productQuery) => {
+              productQuery.where('merchantId', auth.user.merchant.id)
+            })
+          })
+          .orderBy('createdAt', 'desc')
+          .paginate(1, 10)
+
+        return view.render('merchant/orders/index', { orders })
+      },
+      'Failed to load merchant orders'
+    )
+  }
+
+  /**
+   * Display the specified merchant order
+   */
+  public async merchantOrderShow({ params, view, auth }: HttpContext) {
+    return this.tryOrError(
+      { params, view, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== 'merchant') {
+          return this.forbidden({ params, view, auth }, 'Only merchants can access this page')
+        }
+
+        const order = await Order.query()
+          .where('id', params.id)
+          .preload('user')
+          .preload('items', (query) => {
+            query.preload('product', (productQuery) => {
+              productQuery.where('merchantId', auth.user.merchant.id)
+            })
+          })
+          .firstOrFail()
+
+        // Check if the order contains products from this merchant
+        if (order.items.length === 0) {
+          return this.notFound({ params, view, auth }, 'Order not found')
+        }
+
+        return view.render('merchant/orders/show', { order })
+      },
+      'Failed to load merchant order details'
+    )
+  }
+
+  /**
+   * Update the status of a merchant order
+   */
+  public async updateStatus({ params, request, response, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { params, request, response, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== 'merchant') {
+          return this.forbidden({ params, request, response, session, auth }, 'Only merchants can update order status')
+        }
+
+        const order = await Order.query()
+          .where('id', params.id)
+          .preload('user')
+          .preload('items', (query) => {
+            query.preload('product', (productQuery) => {
+              productQuery.where('merchantId', auth.user.merchant.id)
+            })
+          })
+          .firstOrFail()
+
+        // Check if the order contains products from this merchant
+        if (order.items.length === 0) {
+          return this.notFound({ params, request, response, session, auth }, 'Order not found')
+        }
+
+        // Validate the request
+        const statusSchema = schema.create({
+          status: schema.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+        })
+
+        const data = await validator.validate({
+          schema: statusSchema,
+          data: request.only(['status']),
+        })
+
+        // Update the order status
+        order.status = data.status
+        await order.save()
+
+        // Send notification to customer
+        notificationService.sendOrderStatusUpdate(
+          order.userId,
+          order.id,
+          order.orderNumber,
+          data.status
+        )
+
+        session.flash('success', 'Order status updated successfully')
+        return response.redirect().back()
+      },
+      'Failed to update order status'
+    )
   }
 }
 
