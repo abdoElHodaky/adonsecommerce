@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, hasMany, hasOne ,beforeSave} from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import type { HasOne } from '@adonisjs/lucid/types/relations'
-
+import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import hash from '@adonisjs/core/services/hash'
 import Merchant from './Merchant.js'
@@ -16,14 +16,18 @@ export const UserType = {
   CUSTOMER: 'customer',
 } as const
 
-export type UserTypeValues = typeof UserType[keyof typeof UserType]
-
-export default class User extends withAuthFinder(BaseModel, {
+const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'pass_word',
-}) {
+})
+
+
+export type UserTypeValues = typeof UserType[keyof typeof UserType]
+
+export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: number
+
 
   @column()
   declare firstName: string
