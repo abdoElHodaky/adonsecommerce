@@ -22,22 +22,22 @@ export default class Product extends BaseModel {
   declare slug: string
 
   @column()
-  declare description: string | null
+  declare description: string 
 
   @column()
-  declare shortDescription: string | null
+  declare shortDescription: string 
 
   @column()
-  declare sku: string | null
+  declare sku: string 
 
   @column()
   declare price: number
 
   @column()
-  declare compareAtPrice: number | null
+  declare compareAtPrice: number 
 
   @column()
-  declare costPrice: number | null
+  declare costPrice: number 
 
   @column()
   declare quantity: number
@@ -46,16 +46,16 @@ export default class Product extends BaseModel {
   declare isManageStock: boolean
 
   @column()
-  declare lowStockThreshold: number | null
+  declare lowStockThreshold: number 
 
   @column()
-  declare weight: number | null
+  declare weight: number 
 
   @column()
-  declare weightUnit: string | null
+  declare weightUnit: string 
 
   @column()
-  declare dimensions: string | null
+  declare dimensions: string 
 
   @column()
   declare hasVariants: boolean
