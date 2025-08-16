@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany, hasOne ,beforeSave} from '@adonisjs/lucid/orm'
 import type { HasOne,HasMany,BelongsTo } from '@adonisjs/lucid/types/relations'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import hash from '@adonisjs/core/services/hash'
@@ -32,7 +32,7 @@ export default class User extends withAuthFinder(BaseModel, {
   @column()
   declare email: string
 
-  @column()
+  @column({serializeAs:null})
   declare password: string
 
   @column()
@@ -68,6 +68,7 @@ export default class User extends withAuthFinder(BaseModel, {
   @hasMany(() => Cart)
   declare carts: HasMany<typeof Cart>
 
+  @beforeSave()
   static async hashPassword(user: User) {
     if (user.$dirty.password) {
       user.password = await hash.make(user.password)
