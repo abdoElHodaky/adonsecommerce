@@ -15,25 +15,25 @@ export default class ProductVariant extends BaseModel {
   declare name: string
 
   @column()
-  declare sku: string | null
+  declare sku: string 
 
   @column()
   declare price: number
 
   @column()
-  declare compareAtPrice: number | null
+  declare compareAtPrice: number 
 
   @column()
-  declare costPrice: number | null
+  declare costPrice: number 
 
   @column()
   declare quantity: number
 
   @column()
-  declare options: any | null
+  declare options: any 
 
   @column()
-  declare image: string | null
+  declare image: string 
 
   @column()
   declare isActive: boolean
