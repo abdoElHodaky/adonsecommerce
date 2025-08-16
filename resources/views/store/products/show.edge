@@ -1,0 +1,415 @@
+@layout('layouts/main')
+
+@set('title', `${product.name} - MultiMarket`)
+
+@section('content')
+  <!-- Breadcrumbs -->
+  <nav class="text-sm mb-6">
+    <ol class="list-none p-0 inline-flex">
+      <li class="flex items-center">
+        <a href="/" class="text-gray-500 hover:text-indigo-600">Home</a>
+        <svg class="w-3 h-3 mx-2 fill-current text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+          <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path>
+        </svg>
+      </li>
+      <li class="flex items-center">
+        <a href="{{ route('store.products') }}" class="text-gray-500 hover:text-indigo-600">Products</a>
+        <svg class="w-3 h-3 mx-2 fill-current text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+          <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path>
+        </svg>
+      </li>
+      <li class="text-gray-700">{{ product.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
+      <!-- Product Images -->
+      <div x-data="{ activeImage: 0 }">
+        <!-- Main Image -->
+        <div class="bg-gray-100 rounded-lg overflow-hidden mb-4 h-80">
+          @if(product.images && product.images.length > 0)
+            <template x-for="(image, index) in {{ JSON.stringify(product.images) }}" :key="index">
+              <img 
+                :src="image.path" 
+                :alt="image.alt || '{{ product.name }}'" 
+                class="h-full w-full object-contain"
+                x-show="activeImage === index"
+              >
+            </template>
+          @else
+            <div class="h-full w-full flex items-center justify-center">
+              <i class="fas fa-image text-6xl text-gray-400"></i>
+            </div>
+          @endif
+        </div>
+        
+        <!-- Thumbnail Images -->
+        @if(product.images && product.images.length > 1)
+          <div class="grid grid-cols-5 gap-2">
+            <template x-for="(image, index) in {{ JSON.stringify(product.images) }}" :key="index">
+              <button 
+                @click="activeImage = index" 
+                class="bg-gray-100 rounded-lg overflow-hidden h-20 w-full"
+                :class="{ 'ring-2 ring-indigo-500': activeImage === index }"
+              >
+                <img 
+                  :src="image.path" 
+                  :alt="image.alt || '{{ product.name }}'" 
+                  class="h-full w-full object-cover"
+                >
+              </button>
+            </template>
+          </div>
+        @endif
+      </div>
+      
+      <!-- Product Details -->
+      <div>
+        <div class="mb-4">
+          <a href="{{ route('store.merchantDetail', { slug: product.merchant.slug }) }}" class="text-sm text-indigo-600 hover:text-indigo-800">
+            {{ product.merchant.storeName }}
+          </a>
+          <h1 class="text-2xl font-bold mt-1">{{ product.name }}</h1>
+          
+          <!-- Ratings -->
+          <div class="flex items-center mt-2">
+            <div class="flex items-center">
+              @for(let i = 1; i <= 5; i++)
+                @if(i <= Math.round(product.averageRating || 0))
+                  <i class="fas fa-star text-yellow-400"></i>
+                @else
+                  <i class="far fa-star text-yellow-400"></i>
+                @endif
+              @endfor
+            </div>
+            <span class="ml-2 text-sm text-gray-600">
+              {{ product.reviewsCount || 0 }} {{ product.reviewsCount === 1 ? 'review' : 'reviews' }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Price -->
+        <div class="mb-6">
+          <div class="flex items-center">
+            <span class="text-2xl font-bold text-gray-900">${{ product.price.toFixed(2) }}</span>
+            @if(product.compareAtPrice)
+              <span class="ml-3 text-gray-500 line-through">${{ product.compareAtPrice.toFixed(2) }}</span>
+              <span class="ml-2 bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                {{ Math.round((1 - product.price / product.compareAtPrice) * 100) }}% OFF
+              </span>
+            @endif
+          </div>
+          
+          <!-- Stock Status -->
+          @if(product.quantity > 0)
+            <p class="text-green-600 text-sm mt-2">
+              <i class="fas fa-check-circle mr-1"></i> In Stock
+              @if(product.quantity < 10)
+                <span class="text-orange-500 ml-2">Only {{ product.quantity }} left!</span>
+              @endif
+            </p>
+          @else
+            <p class="text-red-600 text-sm mt-2">
+              <i class="fas fa-times-circle mr-1"></i> Out of Stock
+            </p>
+          @endif
+        </div>
+        
+        <!-- Short Description -->
+        @if(product.shortDescription)
+          <div class="mb-6">
+            <p class="text-gray-700">{{ product.shortDescription }}</p>
+          </div>
+        @endif
+        
+        <!-- Variants (if any) -->
+        @if(product.hasVariants && product.variants && product.variants.length > 0)
+          <div class="mb-6" x-data="{ selectedVariant: null }">
+            <h3 class="text-sm font-medium text-gray-700 mb-2">Options</h3>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <template x-for="variant in {{ JSON.stringify(product.variants) }}" :key="variant.id">
+                <button 
+                  @click="selectedVariant = variant.id" 
+                  class="border rounded-md py-2 px-3 flex items-center justify-between"
+                  :class="selectedVariant === variant.id ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-gray-300'"
+                >
+                  <span x-text="variant.name"></span>
+                  <span class="text-gray-900 font-medium" x-text="'$' + variant.price.toFixed(2)"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+        @endif
+        
+        <!-- Add to Cart Form -->
+        <form action="{{ route('cart.add') }}" method="POST" class="mb-6">
+          {{ csrfField() }}
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          
+          @if(product.hasVariants)
+            <input type="hidden" name="variant_id" x-model="selectedVariant">
+          @endif
+          
+          <div class="flex items-center mb-4">
+            <label for="quantity" class="mr-4 text-sm font-medium text-gray-700">Quantity:</label>
+            <div class="custom-number-input h-10 w-32">
+              <div class="flex flex-row h-10 w-full rounded-lg relative bg-transparent">
+                <button type="button" data-action="decrement" class="bg-gray-200 text-gray-600 hover:text-gray-700 hover:bg-gray-300 h-full w-10 rounded-l cursor-pointer outline-none">
+                  <span class="m-auto text-xl font-thin">−</span>
+                </button>
+                <input 
+                  type="number" 
+                  id="quantity" 
+                  name="quantity" 
+                  class="outline-none focus:outline-none text-center w-full bg-gray-100 font-semibold text-md hover:text-black focus:text-black md:text-base cursor-default flex items-center text-gray-700" 
+                  min="1" 
+                  max="{{ product.quantity }}" 
+                  value="1"
+                >
+                <button type="button" data-action="increment" class="bg-gray-200 text-gray-600 hover:text-gray-700 hover:bg-gray-300 h-full w-10 rounded-r cursor-pointer">
+                  <span class="m-auto text-xl font-thin">+</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex space-x-4">
+            <button 
+              type="submit" 
+              class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-semibold"
+              {{ product.quantity === 0 ? 'disabled' : '' }}
+            >
+              <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+            </button>
+            
+            <button 
+              type="button" 
+              class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 px-4 rounded-lg"
+            >
+              <i class="far fa-heart"></i>
+            </button>
+          </div>
+        </form>
+        
+        <!-- Additional Info -->
+        <div class="border-t border-gray-200 pt-4">
+          <div class="flex items-center text-sm text-gray-600 mb-2">
+            <i class="fas fa-truck mr-2"></i>
+            <span>Free shipping on orders over $50</span>
+          </div>
+          
+          <div class="flex items-center text-sm text-gray-600 mb-2">
+            <i class="fas fa-undo mr-2"></i>
+            <span>30-day return policy</span>
+          </div>
+          
+          <div class="flex items-center text-sm text-gray-600">
+            <i class="fas fa-shield-alt mr-2"></i>
+            <span>Secure payment</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Product Tabs -->
+    <div class="border-t border-gray-200" x-data="{ activeTab: 'description' }">
+      <!-- Tab Navigation -->
+      <div class="flex border-b border-gray-200">
+        <button 
+          @click="activeTab = 'description'" 
+          :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'description', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'description' }"
+          class="py-4 px-6 border-b-2 font-medium text-sm"
+        >
+          Description
+        </button>
+        
+        <button 
+          @click="activeTab = 'reviews'" 
+          :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'reviews', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'reviews' }"
+          class="py-4 px-6 border-b-2 font-medium text-sm"
+        >
+          Reviews ({{ product.reviewsCount || 0 }})
+        </button>
+        
+        <button 
+          @click="activeTab = 'shipping'" 
+          :class="{ 'border-indigo-600 text-indigo-600': activeTab === 'shipping', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'shipping' }"
+          class="py-4 px-6 border-b-2 font-medium text-sm"
+        >
+          Shipping & Returns
+        </button>
+      </div>
+      
+      <!-- Tab Content -->
+      <div class="p-6">
+        <!-- Description Tab -->
+        <div x-show="activeTab === 'description'">
+          @if(product.description)
+            <div class="prose max-w-none">
+              {{ product.description }}
+            </div>
+          @else
+            <p class="text-gray-500">No description available for this product.</p>
+          @endif
+        </div>
+        
+        <!-- Reviews Tab -->
+        <div x-show="activeTab === 'reviews'">
+          @if(product.reviews && product.reviews.length > 0)
+            <div class="space-y-6">
+              @each(review in product.reviews)
+                <div class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                      <div class="mr-3">
+                        <i class="fas fa-user-circle text-3xl text-gray-400"></i>
+                      </div>
+                      <div>
+                        <h4 class="font-medium">{{ review.user.firstName }} {{ review.user.lastName }}</h4>
+                        <div class="flex items-center text-yellow-400">
+                          @for(let i = 1; i <= 5; i++)
+                            @if(i <= review.rating)
+                              <i class="fas fa-star"></i>
+                            @else
+                              <i class="far fa-star"></i>
+                            @endif
+                          @endfor
+                        </div>
+                      </div>
+                    </div>
+                    <span class="text-sm text-gray-500">
+                      {{ new Date(review.createdAt).toLocaleDateString() }}
+                    </span>
+                  </div>
+                  
+                  <h5 class="font-semibold mb-2">{{ review.title }}</h5>
+                  <p class="text-gray-700">{{ review.comment }}</p>
+                </div>
+              @endeach
+            </div>
+          @else
+            <div class="text-center py-8">
+              <p class="text-gray-500 mb-4">This product has no reviews yet.</p>
+              @if(auth.isAuthenticated)
+                <a href="{{ route('store.productReview', { id: product.id }) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
+                  Write a Review
+                </a>
+              @else
+                <a href="{{ route('auth.loginForm') }}?redirect={{ route('store.productReview', { id: product.id }) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
+                  Login to Write a Review
+                </a>
+              @endif
+            </div>
+          @endif
+        </div>
+        
+        <!-- Shipping Tab -->
+        <div x-show="activeTab === 'shipping'">
+          <div class="prose max-w-none">
+            <h3>Shipping Information</h3>
+            <p>We offer the following shipping options:</p>
+            <ul>
+              <li>Standard Shipping (3-5 business days): $5.99</li>
+              <li>Express Shipping (1-2 business days): $12.99</li>
+              <li>Free Standard Shipping on orders over $50</li>
+            </ul>
+            
+            <h3 class="mt-6">Return Policy</h3>
+            <p>We accept returns within 30 days of delivery under the following conditions:</p>
+            <ul>
+              <li>Items must be unused and in original packaging</li>
+              <li>Return shipping costs are the responsibility of the customer</li>
+              <li>Refunds will be processed within 5-7 business days after receiving the returned item</li>
+            </ul>
+            
+            <p>For more information, please see our <a href="/terms" class="text-indigo-600 hover:text-indigo-800">Terms and Conditions</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Related Products -->
+  @if(relatedProducts && relatedProducts.length > 0)
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold mb-6">You May Also Like</h2>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        @each(relatedProduct in relatedProducts)
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <a href="{{ route('store.productDetail', { slug: relatedProduct.slug }) }}">
+              <div class="h-48 bg-gray-200">
+                @if(relatedProduct.images && relatedProduct.images.length > 0)
+                  <img src="{{ relatedProduct.images[0].path }}" alt="{{ relatedProduct.name }}" class="h-full w-full object-cover">
+                @else
+                  <div class="h-full w-full flex items-center justify-center">
+                    <i class="fas fa-image text-4xl text-gray-400"></i>
+                  </div>
+                @endif
+              </div>
+            </a>
+            
+            <div class="p-4">
+              <a href="{{ route('store.merchantDetail', { slug: relatedProduct.merchant.slug }) }}" class="text-sm text-indigo-600 hover:text-indigo-800">
+                {{ relatedProduct.merchant.storeName }}
+              </a>
+              
+              <a href="{{ route('store.productDetail', { slug: relatedProduct.slug }) }}" class="block mt-2 text-lg font-semibold hover:text-indigo-600">
+                {{ relatedProduct.name }}
+              </a>
+              
+              <div class="mt-2 flex items-center">
+                <span class="text-gray-900 font-bold">${{ relatedProduct.price.toFixed(2) }}</span>
+                @if(relatedProduct.compareAtPrice)
+                  <span class="ml-2 text-gray-500 line-through text-sm">${{ relatedProduct.compareAtPrice.toFixed(2) }}</span>
+                @endif
+              </div>
+            </div>
+          </div>
+        @endeach
+      </div>
+    </section>
+  @endif
+@endsection
+
+@section('scripts')
+<script>
+  // Quantity increment/decrement
+  document.addEventListener('DOMContentLoaded', function() {
+    function decrement(e) {
+      const btn = e.target.parentNode.querySelector('button[data-action="decrement"]');
+      const target = btn.nextElementSibling;
+      let value = Number(target.value);
+      if (value > 1) {
+        value--;
+        target.value = value;
+      }
+    }
+
+    function increment(e) {
+      const btn = e.target.parentNode.querySelector('button[data-action="increment"]');
+      const target = btn.previousElementSibling;
+      let value = Number(target.value);
+      const max = Number(target.getAttribute('max'));
+      if (value < max) {
+        value++;
+        target.value = value;
+      }
+    }
+
+    const decrementButtons = document.querySelectorAll(`button[data-action="decrement"]`);
+    const incrementButtons = document.querySelectorAll(`button[data-action="increment"]`);
+
+    decrementButtons.forEach(btn => {
+      btn.addEventListener("click", decrement);
+    });
+
+    incrementButtons.forEach(btn => {
+      btn.addEventListener("click", increment);
+    });
+  });
+</script>
+@endsection
+

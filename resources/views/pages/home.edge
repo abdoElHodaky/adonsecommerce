@@ -1,68 +1,202 @@
 @layout('layouts/main')
 
+@set('title', 'MultiMarket - Multi-Merchant E-commerce Platform')
+
 @section('content')
-  <div class="container mx-auto px-4 py-8">
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold mb-4">Welcome to Multi-Merchant Marketplace</h1>
-      <p class="text-xl text-gray-600">Find products from multiple vendors in one place</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-4">Shop Products</h2>
-        <p class="mb-4">Browse thousands of products from our verified merchants.</p>
-        <a href="/store" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Shop Now</a>
-      </div>
-
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-4">Become a Merchant</h2>
-        <p class="mb-4">Start selling your products on our platform today.</p>
-        <a href="/auth/register" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Register</a>
-      </div>
-
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-4">Customer Support</h2>
-        <p class="mb-4">Need help? Our support team is ready to assist you.</p>
-        <a href="/contact" class="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Contact Us</a>
+  <!-- Hero Section -->
+  <section class="bg-indigo-600 text-white rounded-lg overflow-hidden mb-12">
+    <div class="container mx-auto px-4 py-16">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-8 md:mb-0">
+          <h1 class="text-4xl md:text-5xl font-bold mb-4">Shop from Multiple Stores in One Place</h1>
+          <p class="text-lg mb-6">Discover thousands of products from various merchants all in one marketplace.</p>
+          <div class="flex space-x-4">
+            <a href="/store" class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold">
+              Shop Now
+            </a>
+            <a href="/auth/register?user_type=merchant" class="bg-transparent border-2 border-white hover:bg-white hover:text-indigo-600 px-6 py-3 rounded-lg font-semibold">
+              Become a Seller
+            </a>
+          </div>
+        </div>
+        <div class="md:w-1/2">
+          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Shopping" class="rounded-lg shadow-lg">
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="mb-12">
-      <h2 class="text-2xl font-bold mb-6 text-center">Featured Products</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <!-- Featured products will be dynamically loaded here -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="h-48 bg-gray-200"></div>
+  <!-- Featured Categories -->
+  <section class="mb-12">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold">Popular Categories</h2>
+      <a href="/store/categories" class="text-indigo-600 hover:text-indigo-800">View All</a>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      @each(category in popularCategories)
+        <a href="/store/category/{{ category.slug }}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="h-32 bg-gray-200 flex items-center justify-center">
+            @if(category.image)
+              <img src="{{ category.image }}" alt="{{ category.name }}" class="h-full w-full object-cover">
+            @else
+              <i class="fas fa-folder text-4xl text-gray-400"></i>
+            @endif
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-semibold">{{ category.name }}</h3>
+          </div>
+        </a>
+      @else
+        <div class="col-span-full text-center py-8">
+          <p class="text-gray-500">No categories found</p>
+        </div>
+      @endeach
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="mb-12">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold">Featured Products</h2>
+      <a href="/store" class="text-indigo-600 hover:text-indigo-800">View All</a>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      @each(product in featuredProducts)
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <a href="/store/product/{{ product.slug }}">
+            <div class="h-48 bg-gray-200">
+              @if(product.images && product.images.length > 0)
+                <img src="{{ product.images[0].path }}" alt="{{ product.name }}" class="h-full w-full object-cover">
+              @else
+                <div class="h-full w-full flex items-center justify-center">
+                  <i class="fas fa-image text-4xl text-gray-400"></i>
+                </div>
+              @endif
+            </div>
+          </a>
+          
           <div class="p-4">
-            <h3 class="font-semibold">Product Name</h3>
-            <p class="text-gray-600 text-sm">Merchant Name</p>
-            <div class="mt-2 flex justify-between items-center">
-              <span class="font-bold">$99.99</span>
-              <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm">Add to Cart</button>
+            <a href="/store/merchant/{{ product.merchant.slug }}" class="text-sm text-indigo-600 hover:text-indigo-800">
+              {{ product.merchant.storeName }}
+            </a>
+            
+            <a href="/store/product/{{ product.slug }}" class="block mt-2 text-lg font-semibold hover:text-indigo-600">
+              {{ product.name }}
+            </a>
+            
+            <div class="mt-2 flex items-center">
+              <span class="text-gray-900 font-bold">${{ product.price.toFixed(2) }}</span>
+              @if(product.compareAtPrice)
+                <span class="ml-2 text-gray-500 line-through text-sm">${{ product.compareAtPrice.toFixed(2) }}</span>
+                <span class="ml-2 text-green-600 text-sm">
+                  {{ Math.round((1 - product.price / product.compareAtPrice) * 100) }}% off
+                </span>
+              @endif
+            </div>
+            
+            <div class="mt-4 flex justify-between items-center">
+              <form action="/store/cart/add" method="POST">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
+                  Add to Cart
+                </button>
+              </form>
+              
+              <button class="text-gray-500 hover:text-red-500">
+                <i class="far fa-heart"></i>
+              </button>
             </div>
           </div>
         </div>
-        <!-- Repeat for other featured products -->
-      </div>
+      @else
+        <div class="col-span-full text-center py-8">
+          <p class="text-gray-500">No featured products found</p>
+        </div>
+      @endeach
     </div>
+  </section>
 
-    <div class="mb-12">
-      <h2 class="text-2xl font-bold mb-6 text-center">Featured Merchants</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <!-- Featured merchants will be dynamically loaded here -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="h-32 bg-gray-200"></div>
-          <div class="p-4">
-            <h3 class="font-semibold">Merchant Name</h3>
-            <p class="text-gray-600 text-sm">Product Category</p>
-            <div class="mt-2">
-              <a href="/store/merchant/merchant-slug" class="text-blue-600 text-sm">Visit Store</a>
+  <!-- Featured Merchants -->
+  <section class="mb-12">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold">Featured Stores</h2>
+      <a href="/store/merchants" class="text-indigo-600 hover:text-indigo-800">View All</a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      @each(merchant in featuredMerchants)
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="h-32 bg-gray-200 relative">
+            @if(merchant.bannerImage)
+              <img src="{{ merchant.bannerImage }}" alt="{{ merchant.storeName }}" class="h-full w-full object-cover">
+            @else
+              <div class="h-full w-full bg-indigo-100"></div>
+            @endif
+            
+            <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent">
+              <h3 class="text-white font-bold text-xl">{{ merchant.storeName }}</h3>
             </div>
           </div>
+          
+          <div class="p-4">
+            <p class="text-gray-600 text-sm mb-4">
+              {{ merchant.description ? merchant.description.substring(0, 100) + '...' : 'No description available' }}
+            </p>
+            
+            <a href="/store/merchant/{{ merchant.slug }}" class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
+              Visit Store
+            </a>
+          </div>
         </div>
-        <!-- Repeat for other featured merchants -->
+      @else
+        <div class="col-span-full text-center py-8">
+          <p class="text-gray-500">No featured stores found</p>
+        </div>
+      @endeach
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="mb-12 bg-gray-100 rounded-lg p-8">
+    <h2 class="text-2xl font-bold mb-8 text-center">Why Choose MultiMarket</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center">
+        <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-store text-indigo-600 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Multiple Stores</h3>
+        <p class="text-gray-600">Shop from various merchants in one place without having to visit multiple websites.</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-truck text-indigo-600 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Fast Delivery</h3>
+        <p class="text-gray-600">Get your orders delivered quickly and efficiently to your doorstep.</p>
+      </div>
+      
+      <div class="text-center">
+        <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-shield-alt text-indigo-600 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">Secure Payments</h3>
+        <p class="text-gray-600">Shop with confidence knowing your payment information is secure.</p>
       </div>
     </div>
-  </div>
-@end
+  </section>
+
+  <!-- Call to Action -->
+  <section class="bg-indigo-600 text-white rounded-lg p-8 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold mb-4">Ready to Start Selling?</h2>
+    <p class="text-lg mb-6 max-w-2xl mx-auto">Join thousands of merchants who are already selling their products on MultiMarket.</p>
+    <a href="/auth/register?user_type=merchant" class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold inline-block">
+      Become a Seller
+    </a>
+  </section>
+@endsection
 

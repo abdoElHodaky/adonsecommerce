@@ -1,0 +1,532 @@
+@layout('layouts/main')
+
+@set('title', 'Checkout - MultiMarket')
+
+@section('content')
+  <h1 class="text-2xl font-bold mb-6">Checkout</h1>
+  
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Checkout Form -->
+    <div class="lg:w-2/3">
+      <form action="{{ route('checkout.process') }}" method="POST">
+        {{ csrfField() }}
+        
+        <!-- Shipping Information -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+          <div class="p-6">
+            <h2 class="text-lg font-semibold mb-4">Shipping Information</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <input 
+                  type="text" 
+                  id="firstName" 
+                  name="shipping[firstName]" 
+                  value="{{ flashMessages.get('shipping.firstName') || auth.user?.firstName || '' }}"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                @if(flashMessages.has('errors.shipping.firstName'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.firstName') }}</p>
+                @endif
+              </div>
+              
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <input 
+                  type="text" 
+                  id="lastName" 
+                  name="shipping[lastName]" 
+                  value="{{ flashMessages.get('shipping.lastName') || auth.user?.lastName || '' }}"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                @if(flashMessages.has('errors.shipping.lastName'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.lastName') }}</p>
+                @endif
+              </div>
+              
+              <div class="md:col-span-2">
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <input 
+                  type="text" 
+                  id="address" 
+                  name="shipping[address]" 
+                  value="{{ flashMessages.get('shipping.address') || '' }}"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                @if(flashMessages.has('errors.shipping.address'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.address') }}</p>
+                @endif
+              </div>
+              
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                <input 
+                  type="text" 
+                  id="city" 
+                  name="shipping[city]" 
+                  value="{{ flashMessages.get('shipping.city') || '' }}"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                @if(flashMessages.has('errors.shipping.city'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.city') }}</p>
+                @endif
+              </div>
+              
+              <div>
+                <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
+                <input 
+                  type="text" 
+                  id="state" 
+                  name="shipping[state]" 
+                  value="{{ flashMessages.get('shipping.state') || '' }}"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                @if(flashMessages.has('errors.shipping.state'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.state') }}</p>
+                @endif
+              </div>
+              
+              <div>
+                <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                <input 
+                  type="text" 
+                  id="postalCode" 
+                  name="shipping[postalCode]" 
+                  value="{{ flashMessages.get('shipping.postalCode') || '' }}"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                @if(flashMessages.has('errors.shipping.postalCode'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.postalCode') }}</p>
+                @endif
+              </div>
+              
+              <div>
+                <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                <select 
+                  id="country" 
+                  name="shipping[country]" 
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                  <option value="">Select Country</option>
+                  <option value="US" {{ flashMessages.get('shipping.country') === 'US' ? 'selected' : '' }}>United States</option>
+                  <option value="CA" {{ flashMessages.get('shipping.country') === 'CA' ? 'selected' : '' }}>Canada</option>
+                  <option value="GB" {{ flashMessages.get('shipping.country') === 'GB' ? 'selected' : '' }}>United Kingdom</option>
+                  <option value="AU" {{ flashMessages.get('shipping.country') === 'AU' ? 'selected' : '' }}>Australia</option>
+                  <!-- Add more countries as needed -->
+                </select>
+                @if(flashMessages.has('errors.shipping.country'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.country') }}</p>
+                @endif
+              </div>
+              
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <input 
+                  type="tel" 
+                  id="phone" 
+                  name="shipping[phone]" 
+                  value="{{ flashMessages.get('shipping.phone') || '' }}"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                >
+                @if(flashMessages.has('errors.shipping.phone'))
+                  <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.phone') }}</p>
+                @endif
+              </div>
+            </div>
+            
+            <!-- Shipping Method -->
+            <div class="mt-6">
+              <h3 class="text-sm font-medium text-gray-700 mb-3">Shipping Method</h3>
+              
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <input 
+                    type="radio" 
+                    id="shipping-standard" 
+                    name="shipping_method" 
+                    value="standard" 
+                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                    checked
+                  >
+                  <label for="shipping-standard" class="ml-3 flex flex-col">
+                    <span class="text-sm font-medium text-gray-900">Standard Shipping</span>
+                    <span class="text-sm text-gray-500">3-5 business days</span>
+                  </label>
+                  <span class="ml-auto text-sm font-medium text-gray-900">$5.99</span>
+                </div>
+                
+                <div class="flex items-center">
+                  <input 
+                    type="radio" 
+                    id="shipping-express" 
+                    name="shipping_method" 
+                    value="express" 
+                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  >
+                  <label for="shipping-express" class="ml-3 flex flex-col">
+                    <span class="text-sm font-medium text-gray-900">Express Shipping</span>
+                    <span class="text-sm text-gray-500">1-2 business days</span>
+                  </label>
+                  <span class="ml-auto text-sm font-medium text-gray-900">$12.99</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Billing Information -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-semibold">Billing Information</h2>
+              
+              <div class="flex items-center">
+                <input 
+                  type="checkbox" 
+                  id="same-as-shipping" 
+                  name="same_as_shipping" 
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  checked
+                >
+                <label for="same-as-shipping" class="ml-2 text-sm text-gray-700">
+                  Same as shipping address
+                </label>
+              </div>
+            </div>
+            
+            <div id="billing-form" class="hidden">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="billing-firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <input 
+                    type="text" 
+                    id="billing-firstName" 
+                    name="billing[firstName]" 
+                    value="{{ flashMessages.get('billing.firstName') || auth.user?.firstName || '' }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                </div>
+                
+                <div>
+                  <label for="billing-lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <input 
+                    type="text" 
+                    id="billing-lastName" 
+                    name="billing[lastName]" 
+                    value="{{ flashMessages.get('billing.lastName') || auth.user?.lastName || '' }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                </div>
+                
+                <div class="md:col-span-2">
+                  <label for="billing-address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                  <input 
+                    type="text" 
+                    id="billing-address" 
+                    name="billing[address]" 
+                    value="{{ flashMessages.get('billing.address') || '' }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                </div>
+                
+                <div>
+                  <label for="billing-city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <input 
+                    type="text" 
+                    id="billing-city" 
+                    name="billing[city]" 
+                    value="{{ flashMessages.get('billing.city') || '' }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                </div>
+                
+                <div>
+                  <label for="billing-state" class="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
+                  <input 
+                    type="text" 
+                    id="billing-state" 
+                    name="billing[state]" 
+                    value="{{ flashMessages.get('billing.state') || '' }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                </div>
+                
+                <div>
+                  <label for="billing-postalCode" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                  <input 
+                    type="text" 
+                    id="billing-postalCode" 
+                    name="billing[postalCode]" 
+                    value="{{ flashMessages.get('billing.postalCode') || '' }}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                </div>
+                
+                <div>
+                  <label for="billing-country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <select 
+                    id="billing-country" 
+                    name="billing[country]" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="">Select Country</option>
+                    <option value="US" {{ flashMessages.get('billing.country') === 'US' ? 'selected' : '' }}>United States</option>
+                    <option value="CA" {{ flashMessages.get('billing.country') === 'CA' ? 'selected' : '' }}>Canada</option>
+                    <option value="GB" {{ flashMessages.get('billing.country') === 'GB' ? 'selected' : '' }}>United Kingdom</option>
+                    <option value="AU" {{ flashMessages.get('billing.country') === 'AU' ? 'selected' : '' }}>Australia</option>
+                    <!-- Add more countries as needed -->
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payment Method -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+          <div class="p-6">
+            <h2 class="text-lg font-semibold mb-4">Payment Method</h2>
+            
+            <div class="space-y-4">
+              <div class="flex items-center">
+                <input 
+                  type="radio" 
+                  id="payment-card" 
+                  name="payment_method" 
+                  value="card" 
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  checked
+                >
+                <label for="payment-card" class="ml-3 flex items-center">
+                  <span class="text-sm font-medium text-gray-900 mr-2">Credit/Debit Card</span>
+                  <div class="flex space-x-2">
+                    <i class="fab fa-cc-visa text-blue-700"></i>
+                    <i class="fab fa-cc-mastercard text-red-600"></i>
+                    <i class="fab fa-cc-amex text-blue-500"></i>
+                  </div>
+                </label>
+              </div>
+              
+              <div id="card-payment-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="md:col-span-2">
+                    <label for="card-number" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                    <input 
+                      type="text" 
+                      id="card-number" 
+                      name="card[number]" 
+                      placeholder="1234 5678 9012 3456"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
+                    >
+                  </div>
+                  
+                  <div>
+                    <label for="card-name" class="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
+                    <input 
+                      type="text" 
+                      id="card-name" 
+                      name="card[name]" 
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
+                    >
+                  </div>
+                  
+                  <div class="flex space-x-4">
+                    <div class="w-1/2">
+                      <label for="card-expiry" class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                      <input 
+                        type="text" 
+                        id="card-expiry" 
+                        name="card[expiry]" 
+                        placeholder="MM/YY"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        required
+                      >
+                    </div>
+                    
+                    <div class="w-1/2">
+                      <label for="card-cvc" class="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                      <input 
+                        type="text" 
+                        id="card-cvc" 
+                        name="card[cvc]" 
+                        placeholder="123"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        required
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex items-center">
+                <input 
+                  type="radio" 
+                  id="payment-paypal" 
+                  name="payment_method" 
+                  value="paypal" 
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                >
+                <label for="payment-paypal" class="ml-3 flex items-center">
+                  <span class="text-sm font-medium text-gray-900 mr-2">PayPal</span>
+                  <i class="fab fa-paypal text-blue-600 text-lg"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Order Notes -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+          <div class="p-6">
+            <h2 class="text-lg font-semibold mb-4">Order Notes (Optional)</h2>
+            
+            <textarea 
+              name="notes" 
+              rows="3" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Special instructions for delivery or any other notes..."
+            >{{ flashMessages.get('notes') || '' }}</textarea>
+          </div>
+        </div>
+      
+        <!-- Place Order Button -->
+        <div class="mb-6">
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-lg font-semibold">
+            Place Order
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Order Summary -->
+    <div class="lg:w-1/3">
+      <div class="bg-white rounded-lg shadow-md overflow-hidden sticky top-6">
+        <div class="p-6">
+          <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
+          
+          <!-- Order Items -->
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-gray-700 mb-3">Items ({{ cart.items.length }})</h3>
+            
+            <div class="space-y-4 max-h-60 overflow-y-auto">
+              @each(item in cart.items)
+                <div class="flex items-start">
+                  <div class="flex-shrink-0 w-16 h-16 border border-gray-200 rounded-md overflow-hidden">
+                    @if(item.product.images && item.product.images.length > 0)
+                      <img src="{{ item.product.images[0].path }}" alt="{{ item.product.name }}" class="w-full h-full object-cover">
+                    @else
+                      <div class="w-full h-full flex items-center justify-center bg-gray-100">
+                        <i class="fas fa-image text-xl text-gray-400"></i>
+                      </div>
+                    @endif
+                  </div>
+                  
+                  <div class="ml-3 flex-1">
+                    <h4 class="text-sm font-medium text-gray-900">{{ item.product.name }}</h4>
+                    <p class="text-xs text-gray-500">
+                      Qty: {{ item.quantity }}
+                      @if(item.options)
+                        <span class="ml-1">
+                          @each((value, key) in item.options)
+                            <span class="mr-1">{{ key }}: {{ value }}</span>
+                          @endeach
+                        </span>
+                      @endif
+                    </p>
+                  </div>
+                  
+                  <div class="text-sm font-medium text-gray-900">
+                    ${{ (item.price * item.quantity).toFixed(2) }}
+                  </div>
+                </div>
+              @endeach
+            </div>
+          </div>
+          
+          <!-- Price Summary -->
+          <div class="space-y-3 border-t border-gray-200 pt-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Subtotal</span>
+              <span class="text-gray-900 font-medium">${{ cart.subtotal.toFixed(2) }}</span>
+            </div>
+            
+            <div class="flex justify-between">
+              <span class="text-gray-600">Shipping</span>
+              <span class="text-gray-900 font-medium">${{ cart.shipping.toFixed(2) }}</span>
+            </div>
+            
+            <div class="flex justify-between">
+              <span class="text-gray-600">Tax</span>
+              <span class="text-gray-900 font-medium">${{ cart.tax.toFixed(2) }}</span>
+            </div>
+            
+            @if(cart.discount > 0)
+              <div class="flex justify-between text-green-600">
+                <span>Discount</span>
+                <span>-${{ cart.discount.toFixed(2) }}</span>
+              </div>
+            @endif
+            
+            <div class="border-t border-gray-200 pt-3 flex justify-between font-semibold">
+              <span>Total</span>
+              <span>${{ cart.total.toFixed(2) }}</span>
+            </div>
+          </div>
+          
+          <!-- Coupon Applied -->
+          @if(cart.couponCode)
+            <div class="mt-4 bg-green-50 text-green-700 px-3 py-2 rounded-md text-sm flex items-center">
+              <i class="fas fa-check-circle mr-2"></i>
+              <span>Coupon "{{ cart.couponCode }}" applied</span>
+            </div>
+          @endif
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sameAsShippingCheckbox = document.getElementById('same-as-shipping');
+    const billingForm = document.getElementById('billing-form');
+    
+    sameAsShippingCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        billingForm.classList.add('hidden');
+      } else {
+        billingForm.classList.remove('hidden');
+      }
+    });
+    
+    const paymentCardRadio = document.getElementById('payment-card');
+    const paymentPaypalRadio = document.getElementById('payment-paypal');
+    const cardPaymentForm = document.getElementById('card-payment-form');
+    
+    paymentCardRadio.addEventListener('change', function() {
+      if (this.checked) {
+        cardPaymentForm.classList.remove('hidden');
+      }
+    });
+    
+    paymentPaypalRadio.addEventListener('change', function() {
+      if (this.checked) {
+        cardPaymentForm.classList.add('hidden');
+      }
+    });
+  });
+</script>
+@endsection
+
