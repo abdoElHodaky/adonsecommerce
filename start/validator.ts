@@ -9,7 +9,7 @@
 */
 
 import vine, {SimpleMessagesProvider} from '@vinejs/vine'
-import { string } from '@vinejs/vine/rules'
+//import { string } from '@vinejs/vine/rules'
 
 /**
  * Define custom error messages for validation rules
