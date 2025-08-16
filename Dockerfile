@@ -1,7 +1,7 @@
 FROM node:20-alpine AS base
 
 # Set working directory
-WORKDIR /app
+WORKDIR /adonsapp
 
 # Install dependencies for node-gyp and other build tools
 RUN apk add --no-cache python3 make g++ git
