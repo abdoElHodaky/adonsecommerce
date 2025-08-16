@@ -45,6 +45,7 @@ VOLUME ["/adonsapp/tmp", "/adonsapp/uploads"]
 
 # Run the app
 RUN  node ace migration:run && \
-node ace db:seed
+ node ace db:seed --files "./database/seeders/*.ts"
+
 #CMD ["node ace serve "," --no-assets"]
 
