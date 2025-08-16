@@ -7,14 +7,13 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.enum('type', ['product', 'merchant']).notNullable()
       table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE').nullable()
       table.integer('merchant_id').unsigned().references('id').inTable('merchants').onDelete('CASCADE').nullable()
-      table.enum('type', ['product', 'merchant']).notNullable()
       table.integer('rating').notNullable()
-      table.string('title').nullable()
-      table.text('comment').nullable()
-      table.boolean('is_verified').defaultTo(false)
-      table.boolean('is_approved').defaultTo(false)
+      table.string('title').notNullable()
+      table.text('comment').notNullable()
+      table.boolean('is_approved').defaultTo(true)
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').notNullable()

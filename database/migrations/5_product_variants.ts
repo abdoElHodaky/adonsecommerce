@@ -10,11 +10,8 @@ export default class extends BaseSchema {
       table.string('name').notNullable()
       table.string('sku').nullable()
       table.decimal('price', 10, 2).notNullable()
-      table.decimal('compare_at_price', 10, 2).nullable()
-      table.decimal('cost_price', 10, 2).nullable()
       table.integer('quantity').defaultTo(0)
       table.json('options').nullable()
-      table.string('image').nullable()
       table.boolean('is_active').defaultTo(true)
 
       table.timestamp('created_at').notNullable()
