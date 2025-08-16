@@ -7,7 +7,7 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++ git
 
 # Install pnpm globally
-RUN npm install -g npm
+#RUN npm install -g npm
 
 # Copy package.json and related files
 COPY package.json pnpm-lock.yaml* ./
