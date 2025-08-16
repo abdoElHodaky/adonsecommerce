@@ -15,7 +15,7 @@ export default class ProductImage extends BaseModel {
   declare path: string
 
   @column()
-  declare alt: string | null
+  declare alt: string 
 
   @column()
   declare sortOrder: number
