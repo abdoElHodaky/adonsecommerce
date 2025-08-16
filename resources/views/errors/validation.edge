@@ -1,0 +1,47 @@
+@layout('layouts/main')
+
+@set('title', 'Validation Error - MultiMarket')
+
+@section('content')
+  <div class="flex flex-col items-center justify-center py-12">
+    <div class="text-center">
+      <div class="bg-red-100 text-red-600 p-4 rounded-full inline-flex items-center justify-center mb-6">
+        <i class="fas fa-exclamation-triangle text-4xl"></i>
+      </div>
+      
+      <h2 class="text-3xl font-semibold text-gray-800">Validation Error</h2>
+      <p class="text-gray-600 mt-4 max-w-md mx-auto">
+        There were some issues with the information you provided. Please check the form and try again.
+      </p>
+      
+      @if(errors && Object.keys(errors).length > 0)
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6 max-w-md mx-auto">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Please fix the following errors:</h3>
+          
+          <ul class="text-left text-red-600 space-y-2">
+            @each((messages, field) in errors)
+              <li class="flex items-start">
+                <i class="fas fa-times-circle mt-1 mr-2"></i>
+                <div>
+                  <p class="font-medium">{{ field }}</p>
+                  <ul class="list-disc list-inside pl-4 text-sm">
+                    @each(message in messages)
+                      <li>{{ message }}</li>
+                    @endeach
+                  </ul>
+                </div>
+              </li>
+            @endeach
+          </ul>
+        </div>
+      @endif
+      
+      <div class="mt-8">
+        <button onclick="history.back()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg inline-flex items-center">
+          <i class="fas fa-arrow-left mr-2"></i> Go Back
+        </button>
+      </div>
+    </div>
+  </div>
+@endsection
+
