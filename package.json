@@ -42,7 +42,8 @@
     "luxon": "^3.4.3",
     "mysql2": "^3.6.1",
     "reflect-metadata": "^0.1.13",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "ts-node-maintained": "^10.9.5",
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.0.0",
