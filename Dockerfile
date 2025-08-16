@@ -43,5 +43,5 @@ EXPOSE 3333
 VOLUME ["/adonsapp/tmp", "/adonsapp/uploads"]
 
 # Run the app
-#CMD ["node", "server.js"]
+CMD ["node", "adonsapp/bin/server.js"]
 
