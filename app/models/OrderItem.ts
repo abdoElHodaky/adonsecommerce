@@ -17,13 +17,13 @@ export default class OrderItem extends BaseModel {
   declare productId: number
 
   @column()
-  declare productVariantId: number | null
+  declare productVariantId: number 
 
   @column()
   declare name: string
 
   @column()
-  declare sku: string | null
+  declare sku: string 
 
   @column()
   declare price: number
@@ -35,7 +35,7 @@ export default class OrderItem extends BaseModel {
   declare subtotal: number
 
   @column()
-  declare options: string | null
+  declare options: string 
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
