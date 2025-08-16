@@ -10,10 +10,10 @@ export default class Cart extends BaseModel {
   declare id: number
 
   @column()
-  declare userId: number | null
+  declare userId: number
 
   @column()
-  declare sessionId: string | null
+  declare sessionId: string 
 
   @column()
   declare subtotal: number
@@ -31,7 +31,7 @@ export default class Cart extends BaseModel {
   declare total: number
 
   @column()
-  declare couponCode: string | null
+  declare couponCode: string 
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
