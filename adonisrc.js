@@ -4,7 +4,10 @@ export default defineConfig({
         mergeMultipartFieldsAndFiles: true,
         shutdownInReverseOrder: true,
     },
-    commands: [() => import('@adonisjs/core/commands')],
+    commands: [
+        () => import('@adonisjs/core/commands'),
+        () => import('@adonisjs/lucid/commands')
+    ],
     providers: [
         () => import('@adonisjs/core/providers/app_provider'),
         () => import('@adonisjs/core/providers/hash_provider'),
@@ -18,8 +21,14 @@ export default defineConfig({
         () => import('@adonisjs/vite/vite_provider'),
         () => import('@adonisjs/shield/shield_provider'),
         () => import('@adonisjs/static/static_provider'),
+        () => import('@adonisjs/lucid/database_provider'),
+        () => import('@adonisjs/auth/auth_provider'),
     ],
-    preloads: [() => import('#start/routes'), () => import('#start/kernel')],
+    preloads: [
+        () => import('#start/routes'),
+        () => import('#start/kernel'),
+        () => import('#start/validator')
+    ],
     tests: {
         suites: [
             {
@@ -50,4 +59,4 @@ export default defineConfig({
         onBuildStarting: [() => import('@adonisjs/vite/build_hook')],
     },
 });
-//# sourceMappingURL=adonisrc.js.map
+

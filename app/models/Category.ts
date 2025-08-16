@@ -1,0 +1,51 @@
+import { DateTime } from 'luxon'
+import { BaseModel, belongsTo, column, hasMany, manyToMany, BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/orm'
+import Product from './Product.js'
+
+export default class Category extends BaseModel {
+  @column({ isPrimary: true })
+  declare id: number
+
+  @column()
+  declare name: string
+
+  @column()
+  declare slug: string
+
+  @column()
+  declare description: string | null
+
+  @column()
+  declare image: string | null
+
+  @column()
+  declare parentId: number | null
+
+  @column()
+  declare sortOrder: number
+
+  @column()
+  declare isActive: boolean
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+
+  @belongsTo(() => Category, {
+    foreignKey: 'parentId',
+  })
+  declare parent: BelongsTo<typeof Category>
+
+  @hasMany(() => Category, {
+    foreignKey: 'parentId',
+  })
+  declare children: HasMany<typeof Category>
+
+  @manyToMany(() => Product, {
+    pivotTable: 'category_product',
+  })
+  declare products: ManyToMany<typeof Product>
+}
+

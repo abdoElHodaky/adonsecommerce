@@ -1,0 +1,68 @@
+@layout('layouts/main')
+
+@section('content')
+  <div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">Welcome to Multi-Merchant Marketplace</h1>
+      <p class="text-xl text-gray-600">Find products from multiple vendors in one place</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Shop Products</h2>
+        <p class="mb-4">Browse thousands of products from our verified merchants.</p>
+        <a href="/store" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Shop Now</a>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Become a Merchant</h2>
+        <p class="mb-4">Start selling your products on our platform today.</p>
+        <a href="/auth/register" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Register</a>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Customer Support</h2>
+        <p class="mb-4">Need help? Our support team is ready to assist you.</p>
+        <a href="/contact" class="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Contact Us</a>
+      </div>
+    </div>
+
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-center">Featured Products</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Featured products will be dynamically loaded here -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="h-48 bg-gray-200"></div>
+          <div class="p-4">
+            <h3 class="font-semibold">Product Name</h3>
+            <p class="text-gray-600 text-sm">Merchant Name</p>
+            <div class="mt-2 flex justify-between items-center">
+              <span class="font-bold">$99.99</span>
+              <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        <!-- Repeat for other featured products -->
+      </div>
+    </div>
+
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-center">Featured Merchants</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Featured merchants will be dynamically loaded here -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="h-32 bg-gray-200"></div>
+          <div class="p-4">
+            <h3 class="font-semibold">Merchant Name</h3>
+            <p class="text-gray-600 text-sm">Product Category</p>
+            <div class="mt-2">
+              <a href="/store/merchant/merchant-slug" class="text-blue-600 text-sm">Visit Store</a>
+            </div>
+          </div>
+        </div>
+        <!-- Repeat for other featured merchants -->
+      </div>
+    </div>
+  </div>
+@end
+
