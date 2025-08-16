@@ -14,7 +14,7 @@ COPY package.json pnpm-lock.yaml* ./
 
 # Install dependencies
 FROM base AS dependencies
-RUN npm install --legacy-peer-deps
+RUN npm install --force
 
 # Build stage
 FROM dependencies AS build
