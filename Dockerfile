@@ -28,8 +28,8 @@ FROM node:20-alpine AS production
 WORKDIR /adonsapp
 
 # Copy built assets from the build stage
-COPY --from=build /adonsapp/* .
-COPY --from=build /adonsapp/node_modules ./node_modules
+COPY --from=build /adonsapp/* ./*
+#COPY --from=build /adonsapp/node_modules ./node_modules
 
 # Set environment variables
 ENV NODE_ENV=development
@@ -44,5 +44,5 @@ VOLUME ["/adonsapp/tmp", "/adonsapp/uploads"]
 
 # Run the app
 RUN node ace.js migration:run && node ace.js db:seed
-#CMD ["node ace serve --watch --no-assets"]
+CMD ["node ace serve "," --no-assets"]
 
