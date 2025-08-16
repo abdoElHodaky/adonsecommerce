@@ -18,7 +18,7 @@ export const UserType = {
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
-  passwordColumnName: 'pass_word',
+  passwordColumnName: 'password',
 })
 
 
@@ -39,7 +39,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare email: string
 
   @column()
-  declare pass_word: string 
+  declare password: string 
 
   @column()
   declare phone: string 
@@ -77,8 +77,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   //super.boot()
   @beforeSave()
   static async hashPassword(user: User) {
-    if (user.$dirty.pass_word) {
-      user.pass_word = await hash.make(user.pass_word)
+    if (user.$dirty.password) {
+      user.password = await hash.make(user.password)
     }
   }
  /* public static boot(){
