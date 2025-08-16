@@ -36,10 +36,10 @@ export default class User extends withAuthFinder(BaseModel, {
   declare password: string 
 
   @column()
-  declare phone: string | null
+  declare phone: string 
 
   @column()
-  declare avatar: string | null
+  declare avatar: string 
 
   @column()
   declare userType: UserTypeValues
@@ -48,7 +48,7 @@ export default class User extends withAuthFinder(BaseModel, {
   declare isActive: boolean
 
   @column()
-  declare rememberMeToken: string | null
+  declare rememberMeToken: string 
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
