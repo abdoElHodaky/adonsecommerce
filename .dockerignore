@@ -1,0 +1,53 @@
+# Git
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build files
+build
+dist
+tmp
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Tests
+tests
+coverage
+
+# Logs
+logs
+*.log
+
+# Uploads (will be mounted as volume)
+uploads
+
+# Documentation
+README.md
+LICENSE
+docs
+
