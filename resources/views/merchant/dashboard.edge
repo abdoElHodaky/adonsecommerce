@@ -1,0 +1,334 @@
+@layout('layouts/main')
+
+@set('title', 'Merchant Dashboard - MultiMarket')
+
+@section('content')
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Sidebar -->
+    <div class="md:w-1/4">
+      <div class="bg-white rounded-lg shadow-md overflow-hidden sticky top-6">
+        <div class="p-6 bg-indigo-600 text-white">
+          <h2 class="text-xl font-semibold">Merchant Dashboard</h2>
+          <p class="text-sm mt-1">{{ merchant.storeName }}</p>
+        </div>
+        
+        <nav class="p-4">
+          <ul class="space-y-2">
+            <li>
+              <a href="{{ route('merchant.dashboard') }}" class="flex items-center px-4 py-2 text-indigo-600 bg-indigo-50 rounded-lg">
+                <i class="fas fa-tachometer-alt mr-3"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('merchant.products') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-box mr-3"></i>
+                <span>Products</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('merchant.orders') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-shopping-cart mr-3"></i>
+                <span>Orders</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('merchant.reviews') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-star mr-3"></i>
+                <span>Reviews</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('merchant.settings') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-cog mr-3"></i>
+                <span>Store Settings</span>
+              </a>
+            </li>
+            <li>
+              <a href="{{ route('merchant.profile') }}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-user mr-3"></i>
+                <span>Profile</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="md:w-3/4">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+              <i class="fas fa-shopping-cart text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Total Orders</p>
+              <h3 class="text-2xl font-semibold">{{ stats.totalOrders }}</h3>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-green-600">
+            <i class="fas fa-arrow-up mr-1"></i>
+            <span>{{ stats.ordersGrowth }}% from last month</span>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-100 text-green-600">
+              <i class="fas fa-dollar-sign text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Revenue</p>
+              <h3 class="text-2xl font-semibold">${{ stats.totalRevenue.toFixed(2) }}</h3>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-green-600">
+            <i class="fas fa-arrow-up mr-1"></i>
+            <span>{{ stats.revenueGrowth }}% from last month</span>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+              <i class="fas fa-box text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Products</p>
+              <h3 class="text-2xl font-semibold">{{ stats.totalProducts }}</h3>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-green-600">
+            <i class="fas fa-arrow-up mr-1"></i>
+            <span>{{ stats.productsGrowth }}% from last month</span>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+              <i class="fas fa-star text-xl"></i>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm text-gray-500">Avg. Rating</p>
+              <h3 class="text-2xl font-semibold">{{ stats.averageRating.toFixed(1) }}</h3>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-green-600">
+            <i class="fas fa-arrow-up mr-1"></i>
+            <span>{{ stats.ratingGrowth }}% from last month</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Orders -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold">Recent Orders</h2>
+            <a href="{{ route('merchant.orders') }}" class="text-sm text-indigo-600 hover:text-indigo-800">View All</a>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Order ID
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Customer
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              @each(order in recentOrders)
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    #{{ order.orderNumber }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ order.user.firstName }} {{ order.user.lastName }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ new Date(order.createdAt).toLocaleDateString() }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    @if(order.status === 'pending')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        Pending
+                      </span>
+                    @elseif(order.status === 'processing')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        Processing
+                      </span>
+                    @elseif(order.status === 'shipped')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                        Shipped
+                      </span>
+                    @elseif(order.status === 'delivered')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        Delivered
+                      </span>
+                    @elseif(order.status === 'cancelled')
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                        Cancelled
+                      </span>
+                    @else
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                        {{ order.status }}
+                      </span>
+                    @endif
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${{ order.total.toFixed(2) }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <a href="{{ route('merchant.orderDetail', { id: order.id }) }}" class="text-indigo-600 hover:text-indigo-900">
+                      View
+                    </a>
+                  </td>
+                </tr>
+              @else
+                <tr>
+                  <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                    No orders found
+                  </td>
+                </tr>
+              @endeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Sales Chart -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-lg font-semibold">Sales Overview</h2>
+        </div>
+        
+        <div class="p-6">
+          <canvas id="salesChart" height="300"></canvas>
+        </div>
+      </div>
+      
+      <!-- Top Products -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold">Top Products</h2>
+            <a href="{{ route('merchant.products') }}" class="text-sm text-indigo-600 hover:text-indigo-800">View All</a>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @each(product in topProducts)
+              <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <div class="h-40 bg-gray-200">
+                  @if(product.images && product.images.length > 0)
+                    <img src="{{ product.images[0].path }}" alt="{{ product.name }}" class="h-full w-full object-cover">
+                  @else
+                    <div class="h-full w-full flex items-center justify-center">
+                      <i class="fas fa-image text-4xl text-gray-400"></i>
+                    </div>
+                  @endif
+                </div>
+                
+                <div class="p-4">
+                  <h3 class="font-semibold text-gray-900">{{ product.name }}</h3>
+                  
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="text-gray-900">${{ product.price.toFixed(2) }}</span>
+                    <span class="text-sm text-gray-500">{{ product.soldCount }} sold</span>
+                  </div>
+                  
+                  <div class="mt-4">
+                    <a href="{{ route('merchant.editProduct', { id: product.id }) }}" class="text-indigo-600 hover:text-indigo-800 text-sm">
+                      Edit Product
+                    </a>
+                  </div>
+                </div>
+              </div>
+            @else
+              <div class="col-span-full text-center py-8">
+                <p class="text-gray-500">No products found</p>
+              </div>
+            @endeach
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    
+    // Sample data - replace with actual data from backend
+    const salesData = {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      datasets: [
+        {
+          label: 'Sales',
+          data: {{ JSON.stringify(stats.monthlySales) }},
+          backgroundColor: 'rgba(79, 70, 229, 0.2)',
+          borderColor: 'rgba(79, 70, 229, 1)',
+          borderWidth: 2,
+          tension: 0.4
+        },
+        {
+          label: 'Orders',
+          data: {{ JSON.stringify(stats.monthlyOrders) }},
+          backgroundColor: 'rgba(16, 185, 129, 0.2)',
+          borderColor: 'rgba(16, 185, 129, 1)',
+          borderWidth: 2,
+          tension: 0.4
+        }
+      ]
+    };
+    
+    new Chart(ctx, {
+      type: 'line',
+      data: salesData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
+</script>
+@endsection
+
