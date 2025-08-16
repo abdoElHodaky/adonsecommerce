@@ -44,6 +44,7 @@ EXPOSE 3333
 VOLUME ["/adonsapp/tmp", "/adonsapp/uploads"]
 
 # Run the app
-RUN  node ace migration:run 
+RUN  node ace migration:run && \
+node ace db:seed
 #CMD ["node ace serve "," --no-assets"]
 
