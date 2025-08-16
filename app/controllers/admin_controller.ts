@@ -4,659 +4,859 @@ import Merchant, { MerchantStatus } from '#models/Merchant'
 import Product from '#models/Product'
 import Order from '#models/Order'
 import Category from '#models/Category'
-import vine from '@vinejs/vine'
-import { string } from '@vinejs/vine/rules'
+import { schema, validator } from '@adonisjs/core/validator'
+import BaseController from './base_controller.js'
 
-export default class AdminController {
+export default class AdminController extends BaseController {
   /**
    * Display admin dashboard
    */
-  async dashboard({ view }: HttpContext) {
-    // Get stats for dashboard
-    const totalUsers = await User.query().count('* as total').first()
-    const totalMerchants = await Merchant.query().count('* as total').first()
-    const totalProducts = await Product.query().count('* as total').first()
-    const totalOrders = await Order.query().count('* as total').first()
-    const totalRevenue = await Order.query().sum('total as revenue').first()
+  async dashboard({ view, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, auth }, 'Only administrators can access this page')
+        }
 
-    // Get pending merchants
-    const pendingMerchants = await Merchant.query()
-      .where('status', MerchantStatus.PENDING)
-      .preload('user')
-      .limit(5)
+        // Get stats for dashboard
+        const totalUsers = await User.query().count('* as total').first()
+        const totalMerchants = await Merchant.query().count('* as total').first()
+        const totalProducts = await Product.query().count('* as total').first()
+        const totalOrders = await Order.query().count('* as total').first()
+        const totalRevenue = await Order.query().sum('total as revenue').first()
 
-    // Get recent orders
-    const recentOrders = await Order.query()
-      .preload('user')
-      .preload('merchant')
-      .orderBy('createdAt', 'desc')
-      .limit(5)
+        // Get pending merchants
+        const pendingMerchants = await Merchant.query()
+          .where('status', MerchantStatus.PENDING)
+          .preload('user')
+          .limit(5)
 
-    return view.render('pages/admin/dashboard', {
-      stats: {
-        totalUsers: totalUsers?.$extras.total || 0,
-        totalMerchants: totalMerchants?.$extras.total || 0,
-        totalProducts: totalProducts?.$extras.total || 0,
-        totalOrders: totalOrders?.$extras.total || 0,
-        totalRevenue: totalRevenue?.$extras.revenue || 0,
+        // Get recent orders
+        const recentOrders = await Order.query()
+          .preload('user')
+          .preload('merchant')
+          .orderBy('createdAt', 'desc')
+          .limit(5)
+
+        return view.render('pages/admin/dashboard', {
+          stats: {
+            totalUsers: totalUsers?.$extras.total || 0,
+            totalMerchants: totalMerchants?.$extras.total || 0,
+            totalProducts: totalProducts?.$extras.total || 0,
+            totalOrders: totalOrders?.$extras.total || 0,
+            totalRevenue: totalRevenue?.$extras.revenue || 0,
+          },
+          pendingMerchants,
+          recentOrders,
+        })
       },
-      pendingMerchants,
-      recentOrders,
-    })
+      'Failed to load admin dashboard'
+    )
   }
 
   /**
    * Display users list
    */
-  async users({ view, request }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = 10
-    const query = request.input('query', '')
-    const userType = request.input('user_type', 'all')
+  async users({ view, request, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, request, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, request, auth }, 'Only administrators can access this page')
+        }
 
-    // Build query
-    const usersQuery = User.query()
+        const page = request.input('page', 1)
+        const limit = 10
+        const query = request.input('query', '')
+        const userType = request.input('user_type', 'all')
 
-    // Apply search filter
-    if (query) {
-      usersQuery.where((builder) => {
-        builder.where('firstName', 'LIKE', `%${query}%`)
-          .orWhere('lastName', 'LIKE', `%${query}%`)
-          .orWhere('email', 'LIKE', `%${query}%`)
-      })
-    }
+        // Build query
+        const usersQuery = User.query()
 
-    // Apply user type filter
-    if (userType !== 'all') {
-      usersQuery.where('userType', userType)
-    }
+        // Apply search filter
+        if (query) {
+          usersQuery.where((builder) => {
+            builder.where('firstName', 'LIKE', `%${query}%`)
+              .orWhere('lastName', 'LIKE', `%${query}%`)
+              .orWhere('email', 'LIKE', `%${query}%`)
+          })
+        }
 
-    // Get paginated results
-    const users = await usersQuery.orderBy('createdAt', 'desc').paginate(page, limit)
+        // Apply user type filter
+        if (userType !== 'all') {
+          usersQuery.where('userType', userType)
+        }
 
-    return view.render('pages/admin/users/index', {
-      users,
-      query,
-      userType,
-    })
+        // Get paginated results
+        const users = await usersQuery.orderBy('createdAt', 'desc').paginate(page, limit)
+
+        return view.render('pages/admin/users/index', {
+          users,
+          query,
+          userType,
+        })
+      },
+      'Failed to load users list'
+    )
   }
 
   /**
    * Show form to create a new user
    */
-  async createUser({ view }: HttpContext) {
-    return view.render('pages/admin/users/create')
+  async createUser({ view, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, auth }, 'Only administrators can access this page')
+        }
+
+        return view.render('pages/admin/users/create')
+      },
+      'Failed to load user creation form'
+    )
   }
 
   /**
    * Store a new user
    */
-  async storeUser({ request, response, session }: HttpContext) {
-    // Validate input
-    const userSchema = vine.object({
-      first_name: vine.string().trim().minLength(2).maxLength(50),
-      last_name: vine.string().trim().minLength(2).maxLength(50),
-      email: vine.string().email().unique(async (db, value) => {
-        const user = await User.findBy('email', value)
-        return !user
-      }),
-      password: vine.string().minLength(8).maxLength(32),
-      user_type: vine.string().in([UserType.ADMIN, UserType.MERCHANT, UserType.CUSTOMER]),
-      is_active: vine.boolean().optional(),
-    })
+  async storeUser({ request, response, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ request, response, session, auth }, 'Only administrators can perform this action')
+        }
 
-    try {
-      const payload = await vine.validate({
-        schema: userSchema,
-        data: request.all(),
-      })
+        // Validate input
+        const userSchema = schema.create({
+          first_name: schema.string([
+            validator.trim(),
+            validator.minLength(2),
+            validator.maxLength(50)
+          ]),
+          last_name: schema.string([
+            validator.trim(),
+            validator.minLength(2),
+            validator.maxLength(50)
+          ]),
+          email: schema.string([
+            validator.email(),
+            validator.unique({ table: 'users', column: 'email' })
+          ]),
+          password: schema.string([
+            validator.minLength(8),
+            validator.maxLength(32)
+          ]),
+          user_type: schema.enum(Object.values(UserType)),
+          is_active: schema.boolean.optional(),
+        })
 
-      // Create user
-      const user = new User()
-      user.firstName = payload.first_name
-      user.lastName = payload.last_name
-      user.email = payload.email
-      user.password = payload.password
-      user.userType = payload.user_type as UserType
-      user.isActive = payload.is_active || true
+        const payload = await validator.validate({
+          schema: userSchema,
+          data: request.all(),
+        })
 
-      await user.save()
+        // Create user
+        const user = new User()
+        user.firstName = payload.first_name
+        user.lastName = payload.last_name
+        user.email = payload.email
+        user.password = payload.password
+        user.userType = payload.user_type
+        user.isActive = payload.is_active || true
 
-      session.flash('success', 'User created successfully')
-      return response.redirect('/admin/users')
-    } catch (error) {
-      session.flash('errors', error.messages || { error: 'Failed to create user' })
-      return response.redirect().back()
-    }
+        await user.save()
+
+        session.flash('success', 'User created successfully')
+        return response.redirect('/admin/users')
+      },
+      'Failed to create user'
+    )
   }
 
   /**
    * Show form to edit a user
    */
-  async editUser({ view, params, response }: HttpContext) {
-    try {
-      const user = await User.findOrFail(params.id)
-      return view.render('pages/admin/users/edit', { user })
-    } catch (error) {
-      return response.status(404).redirect('/admin/users')
-    }
+  async editUser({ view, params, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, params, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, params, auth }, 'Only administrators can access this page')
+        }
+
+        const user = await User.findOrFail(params.id)
+        return view.render('pages/admin/users/edit', { user })
+      },
+      'Failed to load user edit form'
+    )
   }
 
   /**
    * Update a user
    */
-  async updateUser({ request, response, params, session }: HttpContext) {
-    try {
-      const user = await User.findOrFail(params.id)
+  async updateUser({ request, response, params, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, params, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ request, response, params, session, auth }, 'Only administrators can perform this action')
+        }
 
-      // Validate input
-      const userSchema = vine.object({
-        first_name: vine.string().trim().minLength(2).maxLength(50),
-        last_name: vine.string().trim().minLength(2).maxLength(50),
-        email: vine.string().email().unique(async (db, value) => {
-          const existingUser = await User.query()
-            .where('email', value)
-            .where('id', '!=', user.id)
-            .first()
-          return !existingUser
-        }),
-        password: vine.string().minLength(8).maxLength(32).optional(),
-        user_type: vine.string().in([UserType.ADMIN, UserType.MERCHANT, UserType.CUSTOMER]),
-        is_active: vine.boolean().optional(),
-      })
+        const user = await User.findOrFail(params.id)
 
-      const payload = await vine.validate({
-        schema: userSchema,
-        data: request.all(),
-      })
+        // Validate input
+        const userSchema = schema.create({
+          first_name: schema.string([
+            validator.trim(),
+            validator.minLength(2),
+            validator.maxLength(50)
+          ]),
+          last_name: schema.string([
+            validator.trim(),
+            validator.minLength(2),
+            validator.maxLength(50)
+          ]),
+          email: schema.string([
+            validator.email(),
+            validator.unique({ table: 'users', column: 'email', whereNot: { id: user.id } })
+          ]),
+          password: schema.string.optional([
+            validator.minLength(8),
+            validator.maxLength(32)
+          ]),
+          user_type: schema.enum(Object.values(UserType)),
+          is_active: schema.boolean.optional(),
+        })
 
-      // Update user
-      user.firstName = payload.first_name
-      user.lastName = payload.last_name
-      user.email = payload.email
-      user.userType = payload.user_type as UserType
-      user.isActive = payload.is_active || false
+        const payload = await validator.validate({
+          schema: userSchema,
+          data: request.all(),
+        })
 
-      if (payload.password) {
-        user.password = payload.password
-      }
+        // Update user
+        user.firstName = payload.first_name
+        user.lastName = payload.last_name
+        user.email = payload.email
+        user.userType = payload.user_type
+        user.isActive = payload.is_active || false
 
-      await user.save()
+        if (payload.password) {
+          user.password = payload.password
+        }
 
-      session.flash('success', 'User updated successfully')
-      return response.redirect('/admin/users')
-    } catch (error) {
-      session.flash('errors', error.messages || { error: 'Failed to update user' })
-      return response.redirect().back()
-    }
+        await user.save()
+
+        session.flash('success', 'User updated successfully')
+        return response.redirect('/admin/users')
+      },
+      'Failed to update user'
+    )
   }
 
   /**
    * Delete a user
    */
-  async deleteUser({ response, params, session }: HttpContext) {
-    try {
-      const user = await User.findOrFail(params.id)
-      await user.delete()
+  async deleteUser({ response, params, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { response, params, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ response, params, session, auth }, 'Only administrators can perform this action')
+        }
 
-      session.flash('success', 'User deleted successfully')
-      return response.redirect('/admin/users')
-    } catch (error) {
-      session.flash('error', 'Failed to delete user')
-      return response.redirect().back()
-    }
+        const user = await User.findOrFail(params.id)
+        
+        // Prevent deleting yourself
+        if (user.id === auth.user.id) {
+          session.flash('error', 'You cannot delete your own account')
+          return response.redirect().back()
+        }
+        
+        await user.delete()
+
+        session.flash('success', 'User deleted successfully')
+        return response.redirect('/admin/users')
+      },
+      'Failed to delete user'
+    )
   }
 
   /**
    * Display merchants list
    */
-  async merchants({ view, request }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = 10
-    const query = request.input('query', '')
-    const status = request.input('status', 'all')
+  async merchants({ view, request, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, request, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, request, auth }, 'Only administrators can access this page')
+        }
 
-    // Build query
-    const merchantsQuery = Merchant.query().preload('user')
+        const page = request.input('page', 1)
+        const limit = 10
+        const query = request.input('query', '')
+        const status = request.input('status', 'all')
 
-    // Apply search filter
-    if (query) {
-      merchantsQuery.where((builder) => {
-        builder.where('storeName', 'LIKE', `%${query}%`)
-          .orWhere('contactEmail', 'LIKE', `%${query}%`)
-      })
-    }
+        // Build query
+        const merchantsQuery = Merchant.query().preload('user')
 
-    // Apply status filter
-    if (status !== 'all') {
-      merchantsQuery.where('status', status)
-    }
+        // Apply search filter
+        if (query) {
+          merchantsQuery.where((builder) => {
+            builder.where('storeName', 'LIKE', `%${query}%`)
+              .orWhere('contactEmail', 'LIKE', `%${query}%`)
+          })
+        }
 
-    // Get paginated results
-    const merchants = await merchantsQuery.orderBy('createdAt', 'desc').paginate(page, limit)
+        // Apply status filter
+        if (status !== 'all') {
+          merchantsQuery.where('status', status)
+        }
 
-    return view.render('pages/admin/merchants/index', {
-      merchants,
-      query,
-      status,
-    })
+        // Get paginated results
+        const merchants = await merchantsQuery.orderBy('createdAt', 'desc').paginate(page, limit)
+
+        return view.render('pages/admin/merchants/index', {
+          merchants,
+          query,
+          status,
+        })
+      },
+      'Failed to load merchants list'
+    )
   }
 
   /**
    * Show merchant details
    */
-  async showMerchant({ view, params, response }: HttpContext) {
-    try {
-      const merchant = await Merchant.query()
-        .where('id', params.id)
-        .preload('user')
-        .firstOrFail()
+  async showMerchant({ view, params, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, params, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, params, auth }, 'Only administrators can access this page')
+        }
 
-      // Get merchant stats
-      const totalProducts = await Product.query()
-        .where('merchantId', merchant.id)
-        .count('* as total')
-        .first()
+        const merchant = await Merchant.query()
+          .where('id', params.id)
+          .preload('user')
+          .firstOrFail()
 
-      const totalOrders = await Order.query()
-        .where('merchantId', merchant.id)
-        .count('* as total')
-        .first()
+        // Get merchant stats
+        const totalProducts = await Product.query()
+          .where('merchantId', merchant.id)
+          .count('* as total')
+          .first()
 
-      const totalRevenue = await Order.query()
-        .where('merchantId', merchant.id)
-        .sum('total as revenue')
-        .first()
+        const totalOrders = await Order.query()
+          .where('merchantId', merchant.id)
+          .count('* as total')
+          .first()
 
-      return view.render('pages/admin/merchants/show', {
-        merchant,
-        stats: {
-          totalProducts: totalProducts?.$extras.total || 0,
-          totalOrders: totalOrders?.$extras.total || 0,
-          totalRevenue: totalRevenue?.$extras.revenue || 0,
-        },
-      })
-    } catch (error) {
-      return response.status(404).redirect('/admin/merchants')
-    }
+        const totalRevenue = await Order.query()
+          .where('merchantId', merchant.id)
+          .sum('total as revenue')
+          .first()
+
+        return view.render('pages/admin/merchants/show', {
+          merchant,
+          stats: {
+            totalProducts: totalProducts?.$extras.total || 0,
+            totalOrders: totalOrders?.$extras.total || 0,
+            totalRevenue: totalRevenue?.$extras.revenue || 0,
+          },
+        })
+      },
+      'Failed to load merchant details'
+    )
   }
 
   /**
    * Update merchant status
    */
-  async updateMerchantStatus({ request, response, params, session }: HttpContext) {
-    try {
-      const merchant = await Merchant.findOrFail(params.id)
+  async updateMerchantStatus({ request, response, params, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, params, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ request, response, params, session, auth }, 'Only administrators can perform this action')
+        }
 
-      // Validate input
-      const schema = vine.object({
-        status: vine.string().in([
-          MerchantStatus.PENDING,
-          MerchantStatus.APPROVED,
-          MerchantStatus.REJECTED,
-          MerchantStatus.SUSPENDED,
-        ]),
-      })
+        const merchant = await Merchant.findOrFail(params.id)
 
-      const payload = await vine.validate({
-        schema,
-        data: request.all(),
-      })
+        // Validate input
+        const statusSchema = schema.create({
+          status: schema.enum(Object.values(MerchantStatus)),
+          is_verified: schema.boolean.optional(),
+          is_active: schema.boolean.optional(),
+          commission_rate: schema.number.optional([
+            validator.range(0, 100)
+          ]),
+        })
 
-      // Update merchant status
-      merchant.status = payload.status
-      
-      // Update active status based on merchant status
-      if (payload.status === MerchantStatus.APPROVED) {
-        merchant.isActive = true
-      } else if (payload.status === MerchantStatus.REJECTED || payload.status === MerchantStatus.SUSPENDED) {
-        merchant.isActive = false
-      }
+        const payload = await validator.validate({
+          schema: statusSchema,
+          data: request.all(),
+        })
 
-      await merchant.save()
+        // Update merchant status
+        merchant.status = payload.status
+        
+        if (payload.is_verified !== undefined) {
+          merchant.isVerified = payload.is_verified
+        }
+        
+        if (payload.is_active !== undefined) {
+          merchant.isActive = payload.is_active
+        }
+        
+        if (payload.commission_rate !== undefined) {
+          merchant.commissionRate = payload.commission_rate
+        }
 
-      session.flash('success', 'Merchant status updated successfully')
-      return response.redirect(`/admin/merchants/${merchant.id}`)
-    } catch (error) {
-      session.flash('error', 'Failed to update merchant status')
-      return response.redirect().back()
-    }
+        await merchant.save()
+
+        session.flash('success', 'Merchant status updated successfully')
+        return response.redirect(`/admin/merchants/${merchant.id}`)
+      },
+      'Failed to update merchant status'
+    )
   }
 
   /**
    * Display categories list
    */
-  async categories({ view, request }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = 10
-    const query = request.input('query', '')
+  async categories({ view, request, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, request, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, request, auth }, 'Only administrators can access this page')
+        }
 
-    // Build query
-    const categoriesQuery = Category.query()
+        const page = request.input('page', 1)
+        const limit = 10
+        const query = request.input('query', '')
 
-    // Apply search filter
-    if (query) {
-      categoriesQuery.where((builder) => {
-        builder.where('name', 'LIKE', `%${query}%`)
-          .orWhere('description', 'LIKE', `%${query}%`)
-      })
-    }
+        // Build query
+        const categoriesQuery = Category.query()
+          .preload('parent')
+          .preload('children', (query) => query.count('* as childrenCount'))
 
-    // Get paginated results
-    const categories = await categoriesQuery.orderBy('sortOrder', 'asc').paginate(page, limit)
+        // Apply search filter
+        if (query) {
+          categoriesQuery.where('name', 'LIKE', `%${query}%`)
+        }
 
-    return view.render('pages/admin/categories/index', {
-      categories,
-      query,
-    })
+        // Get paginated results
+        const categories = await categoriesQuery.orderBy('sortOrder', 'asc').paginate(page, limit)
+
+        return view.render('pages/admin/categories/index', {
+          categories,
+          query,
+        })
+      },
+      'Failed to load categories list'
+    )
   }
 
   /**
    * Show form to create a new category
    */
-  async createCategory({ view }: HttpContext) {
-    // Get parent categories for dropdown
-    const parentCategories = await Category.query()
-      .whereNull('parentId')
-      .orderBy('name', 'asc')
+  async createCategory({ view, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, auth }, 'Only administrators can access this page')
+        }
 
-    return view.render('pages/admin/categories/create', {
-      parentCategories,
-    })
+        // Get parent categories for dropdown
+        const parentCategories = await Category.query()
+          .whereNull('parentId')
+          .orderBy('name', 'asc')
+
+        return view.render('pages/admin/categories/create', {
+          parentCategories,
+        })
+      },
+      'Failed to load category creation form'
+    )
   }
 
   /**
    * Store a new category
    */
-  async storeCategory({ request, response, session }: HttpContext) {
-    // Validate input
-    const categorySchema = vine.object({
-      name: vine.string().trim().minLength(2).maxLength(50),
-      description: vine.string().optional(),
-      parent_id: vine.number().optional(),
-      sort_order: vine.number().default(0),
-      is_active: vine.boolean().optional(),
-    })
+  async storeCategory({ request, response, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ request, response, session, auth }, 'Only administrators can perform this action')
+        }
 
-    try {
-      const payload = await vine.validate({
-        schema: categorySchema,
-        data: request.all(),
-      })
+        // Validate input
+        const categorySchema = schema.create({
+          name: schema.string([
+            validator.trim(),
+            validator.minLength(2),
+            validator.maxLength(50)
+          ]),
+          description: schema.string.optional(),
+          parent_id: schema.number.optional(),
+          sort_order: schema.number.optional(),
+          is_active: schema.boolean.optional(),
+        })
 
-      // Create category
-      const category = new Category()
-      category.name = payload.name
-      category.slug = payload.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      category.description = payload.description || null
-      category.parentId = payload.parent_id || null
-      category.sortOrder = payload.sort_order
-      category.isActive = payload.is_active || true
+        const payload = await validator.validate({
+          schema: categorySchema,
+          data: request.all(),
+        })
 
-      await category.save()
+        // Create category
+        const category = new Category()
+        category.name = payload.name
+        category.slug = payload.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+        category.description = payload.description || null
+        category.parentId = payload.parent_id || null
+        category.sortOrder = payload.sort_order || 0
+        category.isActive = payload.is_active || true
 
-      // Handle image upload (in a real app)
-      // const image = request.file('image')
-      // if (image) {
-      //   const fileName = `${Date.now()}-${image.clientName}`
-      //   await image.move(Application.publicPath('uploads/categories'), {
-      //     name: fileName,
-      //   })
-      //   category.image = `uploads/categories/${fileName}`
-      //   await category.save()
-      // }
+        await category.save()
 
-      session.flash('success', 'Category created successfully')
-      return response.redirect('/admin/categories')
-    } catch (error) {
-      session.flash('errors', error.messages || { error: 'Failed to create category' })
-      return response.redirect().back()
-    }
+        // Handle image upload (in a real app)
+        // const image = request.file('image')
+        // if (image) {
+        //   const fileName = `${Date.now()}-${image.clientName}`
+        //   await image.move(Application.publicPath('uploads/categories'), {
+        //     name: fileName,
+        //   })
+        //   category.image = `uploads/categories/${fileName}`
+        //   await category.save()
+        // }
+
+        session.flash('success', 'Category created successfully')
+        return response.redirect('/admin/categories')
+      },
+      'Failed to create category'
+    )
   }
 
   /**
    * Show form to edit a category
    */
-  async editCategory({ view, params, response }: HttpContext) {
-    try {
-      const category = await Category.findOrFail(params.id)
+  async editCategory({ view, params, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, params, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, params, auth }, 'Only administrators can access this page')
+        }
 
-      // Get parent categories for dropdown
-      const parentCategories = await Category.query()
-        .whereNull('parentId')
-        .where('id', '!=', category.id)
-        .orderBy('name', 'asc')
+        const category = await Category.findOrFail(params.id)
 
-      return view.render('pages/admin/categories/edit', {
-        category,
-        parentCategories,
-      })
-    } catch (error) {
-      return response.status(404).redirect('/admin/categories')
-    }
+        // Get parent categories for dropdown
+        const parentCategories = await Category.query()
+          .whereNull('parentId')
+          .where('id', '!=', category.id)
+          .orderBy('name', 'asc')
+
+        return view.render('pages/admin/categories/edit', {
+          category,
+          parentCategories,
+        })
+      },
+      'Failed to load category edit form'
+    )
   }
 
   /**
    * Update a category
    */
-  async updateCategory({ request, response, params, session }: HttpContext) {
-    try {
-      const category = await Category.findOrFail(params.id)
+  async updateCategory({ request, response, params, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, params, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ request, response, params, session, auth }, 'Only administrators can perform this action')
+        }
 
-      // Validate input
-      const categorySchema = vine.object({
-        name: vine.string().trim().minLength(2).maxLength(50),
-        description: vine.string().optional(),
-        parent_id: vine.number().optional(),
-        sort_order: vine.number(),
-        is_active: vine.boolean().optional(),
-      })
+        const category = await Category.findOrFail(params.id)
 
-      const payload = await vine.validate({
-        schema: categorySchema,
-        data: request.all(),
-      })
+        // Validate input
+        const categorySchema = schema.create({
+          name: schema.string([
+            validator.trim(),
+            validator.minLength(2),
+            validator.maxLength(50)
+          ]),
+          description: schema.string.optional(),
+          parent_id: schema.number.optional(),
+          sort_order: schema.number(),
+          is_active: schema.boolean.optional(),
+        })
 
-      // Update category
-      category.name = payload.name
-      category.slug = payload.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      category.description = payload.description || null
-      category.parentId = payload.parent_id || null
-      category.sortOrder = payload.sort_order
-      category.isActive = payload.is_active || false
+        const payload = await validator.validate({
+          schema: categorySchema,
+          data: request.all(),
+        })
 
-      await category.save()
+        // Update category
+        category.name = payload.name
+        category.slug = payload.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+        category.description = payload.description || null
+        category.parentId = payload.parent_id || null
+        category.sortOrder = payload.sort_order
+        category.isActive = payload.is_active || false
 
-      // Handle image upload (in a real app)
-      // const image = request.file('image')
-      // if (image) {
-      //   const fileName = `${Date.now()}-${image.clientName}`
-      //   await image.move(Application.publicPath('uploads/categories'), {
-      //     name: fileName,
-      //   })
-      //   category.image = `uploads/categories/${fileName}`
-      //   await category.save()
-      // }
+        await category.save()
 
-      session.flash('success', 'Category updated successfully')
-      return response.redirect('/admin/categories')
-    } catch (error) {
-      session.flash('errors', error.messages || { error: 'Failed to update category' })
-      return response.redirect().back()
-    }
+        // Handle image upload (in a real app)
+        // const image = request.file('image')
+        // if (image) {
+        //   const fileName = `${Date.now()}-${image.clientName}`
+        //   await image.move(Application.publicPath('uploads/categories'), {
+        //     name: fileName,
+        //   })
+        //   category.image = `uploads/categories/${fileName}`
+        //   await category.save()
+        // }
+
+        session.flash('success', 'Category updated successfully')
+        return response.redirect('/admin/categories')
+      },
+      'Failed to update category'
+    )
   }
 
   /**
    * Delete a category
    */
-  async deleteCategory({ response, params, session }: HttpContext) {
-    try {
-      const category = await Category.findOrFail(params.id)
+  async deleteCategory({ response, params, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { response, params, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ response, params, session, auth }, 'Only administrators can perform this action')
+        }
 
-      // Check if category has children
-      const hasChildren = await Category.query()
-        .where('parentId', category.id)
-        .first()
+        const category = await Category.findOrFail(params.id)
 
-      if (hasChildren) {
-        session.flash('error', 'Cannot delete category with subcategories')
-        return response.redirect().back()
-      }
+        // Check if category has children
+        const hasChildren = await Category.query()
+          .where('parentId', category.id)
+          .first()
 
-      // Check if category has products
-      const hasProducts = await category.related('products').query().first()
-      if (hasProducts) {
-        session.flash('error', 'Cannot delete category with products')
-        return response.redirect().back()
-      }
+        if (hasChildren) {
+          session.flash('error', 'Cannot delete category with subcategories')
+          return response.redirect().back()
+        }
 
-      await category.delete()
+        // Check if category has products
+        const hasProducts = await category.related('products').query().first()
+        if (hasProducts) {
+          session.flash('error', 'Cannot delete category with products')
+          return response.redirect().back()
+        }
 
-      session.flash('success', 'Category deleted successfully')
-      return response.redirect('/admin/categories')
-    } catch (error) {
-      session.flash('error', 'Failed to delete category')
-      return response.redirect().back()
-    }
+        await category.delete()
+
+        session.flash('success', 'Category deleted successfully')
+        return response.redirect('/admin/categories')
+      },
+      'Failed to delete category'
+    )
   }
 
   /**
    * Display orders list
    */
-  async orders({ view, request }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = 10
-    const query = request.input('query', '')
-    const status = request.input('status', 'all')
+  async orders({ view, request, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, request, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, request, auth }, 'Only administrators can access this page')
+        }
 
-    // Build query
-    const ordersQuery = Order.query()
-      .preload('user')
-      .preload('merchant')
+        const page = request.input('page', 1)
+        const limit = 10
+        const query = request.input('query', '')
+        const status = request.input('status', 'all')
 
-    // Apply search filter
-    if (query) {
-      ordersQuery.where((builder) => {
-        builder.where('orderNumber', 'LIKE', `%${query}%`)
-      })
-    }
+        // Build query
+        const ordersQuery = Order.query()
+          .preload('user')
+          .preload('merchant')
 
-    // Apply status filter
-    if (status !== 'all') {
-      ordersQuery.where('status', status)
-    }
+        // Apply search filter
+        if (query) {
+          ordersQuery.where((builder) => {
+            builder.where('orderNumber', 'LIKE', `%${query}%`)
+          })
+        }
 
-    // Get paginated results
-    const orders = await ordersQuery.orderBy('createdAt', 'desc').paginate(page, limit)
+        // Apply status filter
+        if (status !== 'all') {
+          ordersQuery.where('status', status)
+        }
 
-    return view.render('pages/admin/orders/index', {
-      orders,
-      query,
-      status,
-    })
+        // Get paginated results
+        const orders = await ordersQuery.orderBy('createdAt', 'desc').paginate(page, limit)
+
+        return view.render('pages/admin/orders/index', {
+          orders,
+          query,
+          status,
+        })
+      },
+      'Failed to load orders list'
+    )
   }
 
   /**
    * Show order details
    */
-  async showOrder({ view, params, response }: HttpContext) {
-    try {
-      const order = await Order.query()
-        .where('id', params.id)
-        .preload('user')
-        .preload('merchant')
-        .preload('items', (query) => query.preload('product'))
-        .firstOrFail()
+  async showOrder({ view, params, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, params, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, params, auth }, 'Only administrators can access this page')
+        }
 
-      return view.render('pages/admin/orders/show', {
-        order,
-      })
-    } catch (error) {
-      return response.status(404).redirect('/admin/orders')
-    }
+        const order = await Order.query()
+          .where('id', params.id)
+          .preload('user')
+          .preload('merchant')
+          .preload('items', (query) => query.preload('product'))
+          .firstOrFail()
+
+        return view.render('pages/admin/orders/show', {
+          order,
+        })
+      },
+      'Failed to load order details'
+    )
   }
 
   /**
    * Update order status
    */
-  async updateOrderStatus({ request, response, params, session }: HttpContext) {
-    try {
-      const order = await Order.findOrFail(params.id)
+  async updateOrderStatus({ request, response, params, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, params, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ request, response, params, session, auth }, 'Only administrators can perform this action')
+        }
 
-      // Validate input
-      const schema = vine.object({
-        status: vine.string().in([
-          'pending',
-          'processing',
-          'shipped',
-          'delivered',
-          'cancelled',
-          'refunded',
-        ]),
-      })
+        const order = await Order.findOrFail(params.id)
 
-      const payload = await vine.validate({
-        schema,
-        data: request.all(),
-      })
+        // Validate input
+        const statusSchema = schema.create({
+          status: schema.enum([
+            'pending',
+            'processing',
+            'shipped',
+            'delivered',
+            'cancelled',
+            'refunded',
+          ]),
+        })
 
-      // Update order status
-      order.status = payload.status
-      
-      // Update timestamps based on status
-      if (payload.status === 'shipped') {
-        order.shippedAt = new Date()
-      } else if (payload.status === 'delivered') {
-        order.deliveredAt = new Date()
-      }
+        const payload = await validator.validate({
+          schema: statusSchema,
+          data: request.all(),
+        })
 
-      await order.save()
+        // Update order status
+        order.status = payload.status
+        
+        // Update timestamps based on status
+        if (payload.status === 'shipped') {
+          order.shippedAt = new Date()
+        } else if (payload.status === 'delivered') {
+          order.deliveredAt = new Date()
+        }
 
-      session.flash('success', 'Order status updated successfully')
-      return response.redirect(`/admin/orders/${order.id}`)
-    } catch (error) {
-      session.flash('error', 'Failed to update order status')
-      return response.redirect().back()
-    }
+        await order.save()
+
+        session.flash('success', 'Order status updated successfully')
+        return response.redirect(`/admin/orders/${order.id}`)
+      },
+      'Failed to update order status'
+    )
   }
 
   /**
    * Display settings page
    */
-  async settings({ view }: HttpContext) {
-    return view.render('pages/admin/settings')
+  async settings({ view, auth }: HttpContext) {
+    return this.tryOrError(
+      { view, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ view, auth }, 'Only administrators can access this page')
+        }
+
+        return view.render('pages/admin/settings')
+      },
+      'Failed to load settings page'
+    )
   }
 
   /**
    * Update settings
    */
-  async updateSettings({ request, response, session }: HttpContext) {
-    // Validate input
-    const settingsSchema = vine.object({
-      site_name: vine.string().trim(),
-      site_description: vine.string().optional(),
-      contact_email: vine.string().email(),
-      contact_phone: vine.string().optional(),
-      currency: vine.string().length(3),
-      tax_rate: vine.number().min(0).max(100),
-      shipping_fee: vine.number().min(0),
-      free_shipping_threshold: vine.number().min(0),
-    })
+  async updateSettings({ request, response, session, auth }: HttpContext) {
+    return this.tryOrError(
+      { request, response, session, auth },
+      async () => {
+        if (!auth.user || auth.user.userType !== UserType.ADMIN) {
+          return this.forbidden({ request, response, session, auth }, 'Only administrators can perform this action')
+        }
 
-    try {
-      const payload = await vine.validate({
-        schema: settingsSchema,
-        data: request.all(),
-      })
+        // Validate input
+        const settingsSchema = schema.create({
+          site_name: schema.string([
+            validator.trim()
+          ]),
+          site_description: schema.string.optional(),
+          contact_email: schema.string([
+            validator.email()
+          ]),
+          contact_phone: schema.string.optional(),
+          currency: schema.string([
+            validator.minLength(3),
+            validator.maxLength(3)
+          ]),
+          tax_rate: schema.number([
+            validator.range(0, 100)
+          ]),
+          shipping_fee: schema.number([
+            validator.unsigned()
+          ]),
+          free_shipping_threshold: schema.number([
+            validator.unsigned()
+          ]),
+        })
 
-      // In a real app, you would update settings in the database
-      // For now, we'll just show a success message
-      session.flash('success', 'Settings updated successfully')
-      return response.redirect('/admin/settings')
-    } catch (error) {
-      session.flash('errors', error.messages || { error: 'Failed to update settings' })
-      return response.redirect().back()
-    }
+        await validator.validate({
+          schema: settingsSchema,
+          data: request.all(),
+        })
+
+        // In a real app, you would update settings in the database
+        // For now, we'll just show a success message
+        session.flash('success', 'Settings updated successfully')
+        return response.redirect('/admin/settings')
+      },
+      'Failed to update settings'
+    )
   }
 }
 
