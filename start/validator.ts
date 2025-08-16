@@ -24,9 +24,9 @@ vine.messagesProvider = new SimpleMessagesProvider({
 })
 
 /**
- * Define custom validation rules
+ * Define custom validation rules 
  */
-vine.defineRule('strongPassword', (value, _, field) => {
+vine.createRule('strongPassword', (value, _, field) => {
   if (typeof value !== 'string') {
     return
   }
