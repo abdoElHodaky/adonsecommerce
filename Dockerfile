@@ -25,7 +25,7 @@ RUN node ace build --ignore-ts-errors
 # Production stage
 FROM node:20-alpine AS production
 
-WORKDIR /app
+WORKDIR /adonsapp
 
 # Copy built assets from the build stage
 COPY --from=build /adonsapp/build .
