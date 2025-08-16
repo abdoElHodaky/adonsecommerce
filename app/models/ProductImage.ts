@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, BelongsTo } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import type { HasOne,HasMany,BelongsTo } from 'adonisjs/lucid/types/relations'
+
 import Product from './Product.js'
 
 export default class ProductImage extends BaseModel {
