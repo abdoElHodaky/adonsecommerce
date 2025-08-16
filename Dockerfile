@@ -19,7 +19,7 @@ RUN npm install --force
 # Build stage
 FROM dependencies AS build
 COPY . .
-RUN node ace build --production
+RUN node ace build 
 #RUN pnpm prune --prod
 
 # Production stage
