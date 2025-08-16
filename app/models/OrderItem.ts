@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { HasOne,HasMany,BelongsTo } from 'adonisjs/lucid/types/relations'
+import type { HasOne,HasMany,BelongsTo } from '@adonisjs/lucid/types/relations'
 
 import Order from './Order.js'
 import Product from './Product.js'
