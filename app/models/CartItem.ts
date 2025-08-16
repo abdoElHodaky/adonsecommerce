@@ -17,7 +17,7 @@ export default class CartItem extends BaseModel {
   declare productId: number
 
   @column()
-  declare productVariantId: number | null
+  declare productVariantId: number 
 
   @column()
   declare merchantId: number
@@ -32,7 +32,7 @@ export default class CartItem extends BaseModel {
   declare subtotal: number
 
   @column()
-  declare options: string | null
+  declare options: string 
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
