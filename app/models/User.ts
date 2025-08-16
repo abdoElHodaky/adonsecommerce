@@ -32,7 +32,7 @@ export default class User extends withAuthFinder(BaseModel, {
   @column()
   declare email: string
 
-  @column({ serializeAs: "" })
+  @column()
   declare password: string
 
   @column()
