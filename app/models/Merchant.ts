@@ -30,37 +30,37 @@ export default class Merchant extends BaseModel {
   declare slug: string
 
   @column()
-  declare description: string | null
+  declare description: string 
 
   @column()
-  declare logo: string | null
+  declare logo: string 
 
   @column()
-  declare bannerImage: string | null
+  declare bannerImage: string 
 
   @column()
-  declare address: string | null
+  declare address: string 
 
   @column()
-  declare city: string | null
+  declare city: string 
 
   @column()
-  declare state: string | null
+  declare state: string 
 
   @column()
-  declare country: string | null
+  declare country: string 
 
   @column()
-  declare postalCode: string | null
+  declare postalCode: string 
 
   @column()
   declare contactEmail: string
 
   @column()
-  declare contactPhone: string | null
+  declare contactPhone: string 
 
   @column()
-  declare website: string | null
+  declare website: string 
 
   @column()
   declare status: MerchantStatusValues
