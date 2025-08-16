@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
       table.string('store_name').notNullable()
-      table.string('slug').notNullable().unique()
+      table.string('slug').notNullable()//.unique()
       table.text('description').nullable()
       table.string('logo').nullable()
       table.string('banner_image').nullable()
