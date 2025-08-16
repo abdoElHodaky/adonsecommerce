@@ -75,9 +75,9 @@ export default class User extends withAuthFinder(BaseModel, {
       user.password = await hash.make(user.password)
     }
   }
-  public static boot(){
+ /* public static boot(){
     if(this.booted){return;}
       super.boot();
-  }
+  }*/
 }
 
