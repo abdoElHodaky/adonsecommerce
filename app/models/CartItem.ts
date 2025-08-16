@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, BelongsTo } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import Cart from './Cart.js'
 import Product from './Product.js'
 import ProductVariant from './ProductVariant.js'
