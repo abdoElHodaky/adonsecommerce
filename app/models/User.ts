@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, hasMany, HasMany, hasOne, HasOne } from '@adonisjs/lucid/orm'
-import { withAuthFinder } from '@adonisjs/auth/mixins'
+import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import hash from '@adonisjs/core/services/hash'
 import Merchant from './Merchant.js'
 import Order from './Order.js'
