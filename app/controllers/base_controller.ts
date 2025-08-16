@@ -55,11 +55,11 @@ export default class BaseController {
   /**
    * Try to execute a function and handle any errors
    */
-  protected async tryOrError<T>(
+  protected async tryOrError(
     ctx: HttpContext,
-    fn: () => Promise<T>,
+    fn: () => Promise<any>,
     errorMessage: string = 'An error occurred'
-  ): Promise<T> {
+  ): Promise<any> {
     try {
       return await fn()
     } catch (error) {
