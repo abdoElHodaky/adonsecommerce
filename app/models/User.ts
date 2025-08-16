@@ -18,7 +18,7 @@ export type UserTypeValues = typeof UserType[keyof typeof UserType]
 
 export default class User extends withAuthFinder(BaseModel, {
   uids: ['email'],
-  passwordColumnName: 'password',
+  passwordColumnName: 'pass_word',
 }) {
   @column({ isPrimary: true })
   declare id: number
@@ -33,7 +33,7 @@ export default class User extends withAuthFinder(BaseModel, {
   declare email: string
 
   @column()
-  declare password: string 
+  declare pass_word: string 
 
   @column()
   declare phone: string 
@@ -72,7 +72,7 @@ export default class User extends withAuthFinder(BaseModel, {
   @beforeSave()
   static async hashPassword(user: User) {
     if (user.$dirty.password) {
-      user.password = await hash.make(user.password)
+      user.pass_word = await hash.make(user.pass_word)
     }
   }
  /* public static boot(){
