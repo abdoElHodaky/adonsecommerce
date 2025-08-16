@@ -8,13 +8,13 @@
 |
 */
 
-import vine from '@vinejs/vine'
+import vine, {SimpleMessagesProvider} from '@vinejs/vine'
 import { string } from '@vinejs/vine/rules'
 
 /**
  * Define custom error messages for validation rules
  */
-vine.messagesProvider = vine.defaultMessagesProvider({
+vine.messagesProvider = new SimpleMessagesProvider({
   required: 'The {{ field }} field is required',
   email: 'The {{ field }} must be a valid email address',
   min: 'The {{ field }} must be at least {{ min }} characters long',
