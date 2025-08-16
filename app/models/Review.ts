@@ -20,10 +20,10 @@ export default class Review extends BaseModel {
   declare userId: number
 
   @column()
-  declare productId: number | null
+  declare productId: number 
 
   @column()
-  declare merchantId: number | null
+  declare merchantId: number 
 
   @column()
   declare type: ReviewTypeValues
@@ -32,10 +32,10 @@ export default class Review extends BaseModel {
   declare rating: number
 
   @column()
-  declare title: string | null
+  declare title: string 
 
   @column()
-  declare comment: string | null
+  declare comment: string 
 
   @column()
   declare isVerified: boolean
