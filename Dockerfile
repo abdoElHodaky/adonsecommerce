@@ -28,11 +28,11 @@ FROM node:20-alpine AS production
 WORKDIR /app
 
 # Copy built assets from the build stage
-COPY --from=build /app/build .
-COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /adonsapp/build .
+COPY --from=build /adonsapp/node_modules ./node_modules
 
 # Set environment variables
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 ENV PORT=3333
 ENV HOST=0.0.0.0
 
@@ -40,7 +40,7 @@ ENV HOST=0.0.0.0
 EXPOSE 3333
 
 # Create volume for uploads and database
-VOLUME ["/app/tmp", "/app/uploads"]
+VOLUME ["/adonsapp/tmp", "/adonsapp/uploads"]
 
 # Run the app
 #CMD ["node", "server.js"]
