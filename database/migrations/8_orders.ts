@@ -6,13 +6,13 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('SET NULL').nullable()
-      table.integer('merchant_id').unsigned().references('id').inTable('merchants').onDelete('SET NULL').nullable()
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.integer('merchant_id').unsigned().references('id').inTable('merchants').onDelete('CASCADE')
       table.string('order_number').notNullable().unique()
       table.enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']).defaultTo('pending')
       table.decimal('subtotal', 10, 2).notNullable()
-      table.decimal('tax', 10, 2).defaultTo(0)
-      table.decimal('shipping', 10, 2).defaultTo(0)
+      table.decimal('tax', 10, 2).notNullable()
+      table.decimal('shipping', 10, 2).notNullable()
       table.decimal('discount', 10, 2).defaultTo(0)
       table.decimal('total', 10, 2).notNullable()
       table.text('shipping_address').nullable()

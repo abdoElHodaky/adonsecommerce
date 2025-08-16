@@ -9,10 +9,6 @@ export default class extends BaseSchema {
       table.integer('category_id').unsigned().references('id').inTable('categories').onDelete('CASCADE')
       table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE')
 
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').notNullable()
-
-      // Add unique constraint to prevent duplicate entries
       table.unique(['category_id', 'product_id'])
     })
   }

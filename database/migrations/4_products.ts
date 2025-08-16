@@ -8,9 +8,9 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.integer('merchant_id').unsigned().references('id').inTable('merchants').onDelete('CASCADE')
       table.string('name').notNullable()
-      table.string('slug').notNullable()
+      table.string('slug').notNullable().unique()
       table.text('description').nullable()
-      table.string('short_description').nullable()
+      table.text('short_description').nullable()
       table.string('sku').nullable()
       table.decimal('price', 10, 2).notNullable()
       table.decimal('compare_at_price', 10, 2).nullable()
@@ -27,9 +27,6 @@ export default class extends BaseSchema {
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').notNullable()
-
-      // Add unique constraint for merchant_id and slug
-      table.unique(['merchant_id', 'slug'])
     })
   }
 

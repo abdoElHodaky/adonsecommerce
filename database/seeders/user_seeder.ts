@@ -1,6 +1,5 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import User from '#models/User'
-import { UserType } from '#models/User'
 
 export default class UserSeeder extends BaseSeeder {
   async run() {
@@ -10,7 +9,7 @@ export default class UserSeeder extends BaseSeeder {
       lastName: 'User',
       email: 'admin@example.com',
       password: 'admin123',
-      userType: UserType.ADMIN,
+      userType: 'admin',
       isActive: true,
     })
 
@@ -20,7 +19,7 @@ export default class UserSeeder extends BaseSeeder {
       lastName: 'User',
       email: 'merchant@example.com',
       password: 'merchant123',
-      userType: UserType.MERCHANT,
+      userType: 'merchant',
       isActive: true,
     })
 
@@ -30,7 +29,7 @@ export default class UserSeeder extends BaseSeeder {
       lastName: 'User',
       email: 'customer@example.com',
       password: 'customer123',
-      userType: UserType.CUSTOMER,
+      userType: 'customer',
       isActive: true,
     })
   }

@@ -3,8 +3,20 @@ import { defineConfig } from '@adonisjs/lucid'
 
 const dbConfig = defineConfig({
   connection: env.get('DB_CONNECTION'),
-
+  
   connections: {
+    sqlite: {
+      client: 'sqlite3',
+      connection: {
+        filename: env.get('SQLITE_FILENAME'),
+      },
+      useNullAsDefault: true,
+      migrations: {
+        naturalSort: true,
+        paths: ['database/migrations'],
+      },
+    },
+    
     mysql: {
       client: 'mysql2',
       connection: {
@@ -18,25 +30,6 @@ const dbConfig = defineConfig({
         naturalSort: true,
         paths: ['database/migrations'],
       },
-      seeders: {
-        paths: ['database/seeders'],
-      },
-    },
-
-    sqlite: {
-      client: 'sqlite',
-      connection: {
-        filename: env.get('SQLITE_FILENAME'),
-      },
-      migrations: {
-        naturalSort: true,
-        paths: ['database/migrations'],
-      },
-      seeders: {
-        paths: ['database/seeders'],
-      },
-      useNullAsDefault: true,
-      healthCheck: false,
     },
   },
 })

@@ -21,9 +21,9 @@ export default class extends BaseSchema {
       table.string('contact_phone').nullable()
       table.string('website').nullable()
       table.enum('status', ['pending', 'approved', 'rejected', 'suspended']).defaultTo('pending')
-      table.decimal('commission_rate', 5, 2).defaultTo(0)
+      table.decimal('commission_rate', 5, 2).defaultTo(10.00)
       table.boolean('is_verified').defaultTo(false)
-      table.boolean('is_active').defaultTo(true)
+      table.boolean('is_active').defaultTo(false)
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').notNullable()

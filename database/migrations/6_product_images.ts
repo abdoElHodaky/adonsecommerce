@@ -9,8 +9,8 @@ export default class extends BaseSchema {
       table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE')
       table.string('path').notNullable()
       table.string('alt').nullable()
-      table.integer('sort_order').defaultTo(0)
       table.boolean('is_default').defaultTo(false)
+      table.integer('sort_order').defaultTo(0)
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').notNullable()
