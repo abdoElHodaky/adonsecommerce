@@ -49,28 +49,28 @@ export default class Order extends BaseModel {
   declare total: number
 
   @column()
-  declare shippingAddress: string | null
+  declare shippingAddress: string 
 
   @column()
-  declare billingAddress: string | null
+  declare billingAddress: string 
 
   @column()
-  declare paymentMethod: string | null
+  declare paymentMethod: string 
 
   @column()
-  declare paymentStatus: string | null
+  declare paymentStatus: string 
 
   @column()
-  declare notes: string | null
+  declare notes: string 
 
   @column.dateTime()
-  declare paidAt: DateTime | null
+  declare paidAt: DateTime 
 
   @column.dateTime()
-  declare shippedAt: DateTime | null
+  declare shippedAt: DateTime 
 
   @column.dateTime()
-  declare deliveredAt: DateTime | null
+  declare deliveredAt: DateTime 
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
