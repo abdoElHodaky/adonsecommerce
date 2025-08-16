@@ -43,5 +43,5 @@ EXPOSE 3333
 VOLUME ["/app/tmp", "/app/uploads"]
 
 # Run the app
-CMD ["node", "server.js"]
+#CMD ["node", "server.js"]
 
