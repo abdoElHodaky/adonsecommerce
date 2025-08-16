@@ -28,7 +28,7 @@ FROM node:20-alpine AS production
 WORKDIR /adonsapp
 
 # Copy built assets from the build stage
-COPY --from=build /adonsapp/build .
+COPY --from=build /adonsapp/* .
 COPY --from=build /adonsapp/node_modules ./node_modules
 
 # Set environment variables
