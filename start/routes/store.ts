@@ -43,6 +43,6 @@ router.group(() => {
     return view.render('pages/store/checkout')
   })
   router.post('/', [OrderController, 'store'])
-    .use(middleware.auth({ guards: ['web'] }))
+    .use(middleware.auth(/*{ guards: ['web'] }*/))
 }).prefix('/checkout')
 
