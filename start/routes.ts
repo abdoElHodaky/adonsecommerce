@@ -44,5 +44,5 @@ router.get('/errors/maintenance', async ({ view }: HttpContext) => {
   return view.render('errors/maintenance')
 })
 router.get("/", async ctx =>{
-  ctx.view.render('welcomer')
+ return  ctx.view.render('welcomer')
 })
