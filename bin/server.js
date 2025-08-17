@@ -1,9 +1,29 @@
 import 'reflect-metadata';
+// Register ts-node to handle TypeScript files
+import { register } from 'ts-node';
+register({
+  transpileOnly: true,
+  compilerOptions: {
+    module: 'ESNext',
+    moduleResolution: 'NodeNext',
+  },
+});
+
 import { Ignitor, prettyPrintError } from '@adonisjs/core';
 const APP_ROOT = new URL('../', import.meta.url);
 const IMPORTER = (filePath) => {
     if (filePath.startsWith('./') || filePath.startsWith('../')) {
-        return import(new URL(filePath, APP_ROOT).href);
+        // Handle both .js and .ts extensions
+        try {
+            return import(new URL(filePath, APP_ROOT).href);
+        } catch (error) {
+            // If .js fails, try .ts
+            if (filePath.endsWith('.js')) {
+                const tsFilePath = filePath.replace(/\.js$/, '.ts');
+                return import(new URL(tsFilePath, APP_ROOT).href);
+            }
+            throw error;
+        }
     }
     return import(filePath);
 };
