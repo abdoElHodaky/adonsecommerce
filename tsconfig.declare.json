@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "declaration": true,           // Generate .d.ts files
+    "emitDeclarationOnly": true,   // Only emit declaration files, not .js files
+    "allowJs": true,               // Allow processing of JavaScript files (if applicable)
+    "outDir": "./types"         // Specify output directory for .d.ts files
+  },
+  "include": [
+    "start/routes/**",
+    "app/**/*"                     // Include files to generate declarations for
+  ]
+}
