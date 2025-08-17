@@ -1,5 +1,5 @@
 import { Ignitor, prettyPrintError } from '@adonisjs/core';
-import { register } from 'ts-node';
+/*import { register } from 'ts-node';
 register({
   transpileOnly: true,
   compilerOptions: {
@@ -7,7 +7,7 @@ register({
     moduleResolution: 'NodeNext',
   },
 });;
-
+*/
 
 const APP_ROOT = new URL('../', import.meta.url);
 const IMPORTER = (filePath) => {
