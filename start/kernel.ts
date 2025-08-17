@@ -39,5 +39,5 @@ router.named({
   admin: () => import('#middleware/auth_middleware').then((mod) => mod.AdminMiddleware),
   merchant: () => import('#middleware/auth_middleware').then((mod) => mod.MerchantMiddleware),
   customer: () => import('#middleware/auth_middleware').then((mod) => mod.CustomerMiddleware),
+  view: () => import('@adonisjs/core/http').then((mod) => mod.ViewMiddleware),
 })
-

@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+import { Ignitor } from '@adonisjs/core'
+import { defineCliConfig } from '@adonisjs/core/ace'
+
+new Ignitor(__dirname)
+  .ace()
+  .handle(defineCliConfig({
+    startServer: false,
+  }))

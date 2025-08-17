@@ -16,6 +16,14 @@ router.get('/about', 'home_controller.about').middleware(['view'])
 router.get('/contact', 'home_controller.showContact').middleware(['view'])
 router.post('/contact', 'home_controller.contact').middleware(['view'])
 
+// Debug route to verify middleware
+router.get('/debug', async ({ view }) => {
+  return {
+    message: 'Debug route is working!',
+    viewService: view ? 'View service is available' : 'View service is NOT available'
+  }
+}).middleware(['view'])
+
 // Auth routes
 router.group(() => {
   router.on('/login').render('pages/auth/login')
