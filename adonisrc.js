@@ -46,6 +46,10 @@ export default defineConfig({
     },
     metaFiles: [
         {
+            pattern: 'resources/views/*.edge',
+            reloadServer: false,
+        },
+        {
             pattern: 'resources/views/**/*.edge',
             reloadServer: false,
         },
