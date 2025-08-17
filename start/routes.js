@@ -1,5 +1,5 @@
 import router from '@adonisjs/core/services/router';
-router.get("/", ctx =>{
-  ctx.response.json(ctx)
+router.get("/", {view} =>{
+  view.render("pages/welcomer")
  //return  ctx["view"].render('welcomer')
 })
