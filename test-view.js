@@ -3,8 +3,8 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const __filename = fileURLToPath("./");
-const __dirname = dirname(__filename);
+//const __filename = fileURLToPath("./");
+//const __dirname = dirname(__filename);
 
 async function testViewRendering() {
   try {
@@ -12,7 +12,7 @@ async function testViewRendering() {
     const edge = new Edge({ cache: false });
     
     // Register the views directory as the default namespace
-    edge.mount(join(__dirname, 'resources/views'));
+    edge.mount('./resources/views'));
     
     // Add global helpers
     edge.global('currentYear', () => new Date().getFullYear());
