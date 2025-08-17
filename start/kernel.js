@@ -1,17 +1,15 @@
 import router from '@adonisjs/core/services/router';
 import server from '@adonisjs/core/services/server';
-server.errorHandler(() => import('#exceptions/handler'));
+export const middleware = router.named({
+    auth: () => import('#middleware/auth_middleware'),
+    role: () => import('#middleware/role_middleware'),
+    view: () => import('#middleware/view_middleware')
+});
 server.use([
-    () => import('#middleware/container_bindings_middleware'),
     () => import('@adonisjs/static/static_middleware'),
-    () => import('@adonisjs/vite/vite_middleware'),
-    () => import('#middleware/view_middleware')
-]);
-router.use([
-    () => import('@adonisjs/core/bodyparser_middleware'),
+    () => import('@adonisjs/core/body_parser_middleware'),
     () => import('@adonisjs/session/session_middleware'),
     () => import('@adonisjs/shield/shield_middleware'),
     () => import('#middleware/view_middleware')
 ]);
-export const middleware = router.named({});
 //# sourceMappingURL=kernel.js.map
