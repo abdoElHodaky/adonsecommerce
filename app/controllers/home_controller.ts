@@ -2,7 +2,8 @@ import { HttpContext } from '@adonisjs/core/http'
 import Product from '#models/Product'
 import Category from '#models/Category'
 import Merchant from '#models/Merchant'
-import { schema, validator } from '@adonisjs/core/validator'
+//import { schema, validator } from '@adonisjs/core/validator'
+import { schema, validator } from '@vinejs/vienjs'
 import BaseController from './base_controller.js'
 
 export default class HomeController extends BaseController {
