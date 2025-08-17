@@ -17,11 +17,11 @@ import notificationService from '#services/notification_service'
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url); // Get the resolved path to the current file
+const __filename = fileURLToPath("../"); // Get the resolved path to the current file
 const __dirname = path.dirname(__filename); // Extract the directory name from the file path
 
 // Now __dirname can be used as in CommonJS modules
-//console.log(__dirname);
+console.log(__dirname);
 
 const SERVER_URL = new URL(process.env.APP_URL || 'http://localhost:3333')
 new Ignitor(__dirname)
