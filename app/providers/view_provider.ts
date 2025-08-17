@@ -9,33 +9,30 @@ export default class ViewProvider {
    * Register the view service
    */
   register() {
-    // Register the Edge instance
-    this.app.container.singleton('view', () => {
-      const edge = new Edge({ cache: viewConfig.cache })
-      
-      // Register both view paths
-      for (const viewPath of viewConfig.viewsPath) {
-        edge.mount(viewPath)
-      }
-      
-      return edge
+    // Create a new Edge instance
+    const edge = new Edge({ cache: viewConfig.cache })
+    
+    // Register both view paths
+    for (const viewPath of viewConfig.viewsPath) {
+      edge.mount(viewPath)
+    }
+    
+    // Add global variables
+    edge.global('appUrl', (path: string) => {
+      return `${process.env.APP_URL || ''}${path}`
     })
+    
+    // Add current year helper
+    edge.global('currentYear', () => new Date().getFullYear())
+    
+    // Register the Edge instance as a singleton
+    this.app['container'].singleton('view', () => edge)
   }
 
   /**
    * The boot method is called after all providers have been registered
    */
   async boot() {
-    // Register global helpers
-    const view = this.app.container.resolve('view') as Edge
-    
-    // Add global variables
-    view.global('appUrl', (path: string) => {
-      return `${process.env.APP_URL || ''}${path}`
-    })
-    
-    // Add current year helper
-    view.global('currentYear', () => new Date().getFullYear())
+    // No need to resolve the view here since we've already configured it in register
   }
 }
-
