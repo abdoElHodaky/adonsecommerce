@@ -12,7 +12,7 @@ async function testViewRendering() {
     const edge = new Edge({ cache: false });
     
     // Register the views directory as the default namespace
-    edge.mount('./resources/views');
+    edge.mount('./');
     
     // Add global helpers
     edge.global('currentYear', () => new Date().getFullYear());
