@@ -14,7 +14,12 @@ export default class ViewMiddleware {
     /**
      * Bind the view service to the context
      */
-    ctx['view'] = this.view
+    Object.defineProperty(ctx, 'view', {
+      value: this.view,
+      writable: false,
+      enumerable: true,
+      configurable: true,
+    })
 
     /**
      * Call the next middleware
