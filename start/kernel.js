@@ -11,7 +11,8 @@ router.use([
     () => import('@adonisjs/core/bodyparser_middleware'),
     () => import('@adonisjs/session/session_middleware'),
     () => import('@adonisjs/shield/shield_middleware'),
-    () => import('#middleware/view_middleware')
+    () => import('#middleware/view_middleware'),
+    () => import('@adonisjs/session/session_middleware')
 ]);
 export const middleware = router.named({
     auth: () => import('#middleware/auth_middleware'),
