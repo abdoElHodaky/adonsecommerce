@@ -27,5 +27,6 @@ server.use([
   () => import('@adonisjs/core/body_parser_middleware'),
   () => import('@adonisjs/session/session_middleware'),
   () => import('@adonisjs/shield/shield_middleware'),
+  () => import('#middleware/view_middleware'),
 ])
 
