@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title || 'Test View' }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .success {
+      color: #27ae60;
+      font-weight: bold;
+    }
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e8f4fd;
+      border-left: 4px solid #3498db;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ title || 'Test View' }}</h1>
+    
+    <p class="success">✅ View middleware is working correctly!</p>
+    
+    <div class="info">
+      <p><strong>Current Year:</strong> {{ currentYear() }}</p>
+      <p><strong>App URL:</strong> {{ appUrl('/test-view') }}</p>
+    </div>
+    
+    <p>This view confirms that the view service is properly bound to the HttpContext.</p>
+  </div>
+</body>
+</html>

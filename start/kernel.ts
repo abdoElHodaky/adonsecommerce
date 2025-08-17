@@ -29,6 +29,7 @@ server.use([
  */
 router.use([
   () => import('@adonisjs/auth/initialize_auth_middleware'),
+  () => import('#middleware/view_middleware'), // Add view middleware to bind view service to HttpContext
 ])
 
 /**
@@ -40,4 +41,3 @@ router.named({
   merchant: () => import('#middleware/auth_middleware').then((mod) => mod.MerchantMiddleware),
   customer: () => import('#middleware/auth_middleware').then((mod) => mod.CustomerMiddleware),
 })
-

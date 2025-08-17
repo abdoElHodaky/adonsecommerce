@@ -12,6 +12,11 @@ import router from '@adonisjs/core/services/router'
 // Public routes
 router.on('/').render('pages/home')
 
+// Test route for view middleware
+router.get('/test-view', async ({ view }) => {
+  return view.render('pages/test', { title: 'View Middleware Test' })
+})
+
 // Auth routes
 router.group(() => {
   router.get('/login', 'auth_controller.showLogin')
