@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { HttpContext } from '@adonisjs/core/http'
 import { NextFn } from '@adonisjs/core/types/http'
 import { inject } from '@adonisjs/core'
