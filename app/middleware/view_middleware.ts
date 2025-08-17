@@ -13,8 +13,14 @@ export default class ViewMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
     /**
      * Bind the view service to the context
+     * We use defineProperty to ensure it's properly bound
      */
-    ctx['view'] = this.view
+    Object.defineProperty(ctx, 'view', {
+      value: this.view,
+      writable: false,
+      enumerable: true,
+      configurable: true,
+    })
 
     /**
      * Call the next middleware

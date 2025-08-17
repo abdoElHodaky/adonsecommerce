@@ -10,12 +10,22 @@
 import router from '@adonisjs/core/services/router'
 
 // Public routes
-router.on('/').render('pages/home')
+router.on('/').render('pages/home').middleware(['view'])
 
-// Test route for view middleware
+// Test routes for view middleware
 router.get('/test-view', async ({ view }) => {
   return view.render('pages/test', { title: 'View Middleware Test' })
-})
+}).middleware(['view'])
+
+// Debug route to check if view is properly bound
+router.get('/debug-view', async (ctx) => {
+  return {
+    hasView: !!ctx.view,
+    viewType: typeof ctx.view,
+    viewKeys: ctx.view ? Object.keys(ctx.view) : [],
+    contextKeys: Object.keys(ctx),
+  }
+}).middleware(['view'])
 
 // Auth routes
 router.group(() => {
@@ -26,7 +36,7 @@ router.group(() => {
   router.get('/logout', 'auth_controller.logout')
   router.on('/forgot-password').render('pages/auth/forgot-password')
   router.on('/reset-password').render('pages/auth/reset-password')
-}).prefix('/auth')
+}).prefix('/auth').middleware(['view'])
 
 // Customer routes
 router.group(() => {
@@ -34,7 +44,7 @@ router.group(() => {
   router.on('/profile').render('pages/customer/profile')
   router.on('/orders').render('pages/customer/orders')
   router.on('/wishlist').render('pages/customer/wishlist')
-}).prefix('/customer')
+}).prefix('/customer').middleware(['view'])
 
 // Merchant routes
 router.group(() => {
@@ -46,7 +56,7 @@ router.group(() => {
   router.on('/orders').render('pages/merchant/orders/index')
   router.on('/orders/:id').render('pages/merchant/orders/view')
   router.on('/settings').render('pages/merchant/settings')
-}).prefix('/merchant')
+}).prefix('/merchant').middleware(['view'])
 
 // Admin routes
 router.group(() => {
@@ -63,7 +73,7 @@ router.group(() => {
   router.on('/users').render('pages/admin/users/index')
   router.on('/users/:id').render('pages/admin/users/view')
   router.on('/settings').render('pages/admin/settings')
-}).prefix('/admin')
+}).prefix('/admin').middleware(['view'])
 
 // Store routes
 router.group(() => {
@@ -74,7 +84,7 @@ router.group(() => {
   router.on('/product/:slug').render('pages/store/product')
   router.on('/cart').render('pages/store/cart')
   router.on('/checkout').render('pages/store/checkout')
-}).prefix('/store')
+}).prefix('/store').middleware(['view'])
 
 // API routes
 router.group(() => {
