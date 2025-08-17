@@ -6,18 +6,14 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('first_name').notNullable()
-      table.string('last_name').notNullable()
-      table.string('email').notNullable().unique()
-      table.string('password').notNullable()
-      table.string('phone').nullable()
-      table.string('avatar').nullable()
-      table.enum('user_type', ['admin', 'merchant', 'customer']).defaultTo('customer')
-      table.boolean('is_active').defaultTo(true)
+      table.string('name').notNullable()
+      table.string('email', 255).notNullable().unique()
+      table.string('password', 180).notNullable()
       table.string('remember_me_token').nullable()
-
+      table.enum('role', ['admin', 'merchant', 'customer']).defaultTo('customer')
+      table.boolean('is_active').defaultTo(true)
       table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').notNullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 

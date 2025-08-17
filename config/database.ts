@@ -1,9 +1,8 @@
 import env from '#start/env'
 import { defineConfig } from '@adonisjs/lucid'
 
-const dbConfig = defineConfig({
+const databaseConfig = defineConfig({
   connection: env.get('DB_CONNECTION'),
-
   connections: {
     mysql: {
       client: 'mysql2',
@@ -22,7 +21,6 @@ const dbConfig = defineConfig({
         paths: ['database/seeders'],
       },
     },
-
     sqlite: {
       client: 'sqlite',
       connection: {
@@ -41,5 +39,5 @@ const dbConfig = defineConfig({
   },
 })
 
-export default dbConfig
+export default databaseConfig
 

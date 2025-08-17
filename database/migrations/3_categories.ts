@@ -9,13 +9,12 @@ export default class extends BaseSchema {
       table.string('name').notNullable()
       table.string('slug').notNullable().unique()
       table.text('description').nullable()
-      table.string('image').nullable()
+      table.string('image_url').nullable()
       table.integer('parent_id').unsigned().references('id').inTable('categories').nullable()
-      table.integer('sort_order').defaultTo(0)
       table.boolean('is_active').defaultTo(true)
-
+      table.integer('sort_order').defaultTo(0)
       table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').notNullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 

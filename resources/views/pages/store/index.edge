@@ -1,0 +1,123 @@
+@layout('layouts/main')
+
+@section('content')
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-4">Shop All Products</h1>
+      <p class="text-gray-600">Browse our collection of products from various merchants</p>
+    </div>
+    
+    <div class="flex flex-col md:flex-row gap-6">
+      <!-- Filters Sidebar -->
+      <div class="w-full md:w-1/4">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-semibold mb-4">Filters</h2>
+          
+          <div class="mb-6">
+            <h3 class="font-medium mb-2">Categories</h3>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>Electronics</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>Clothing</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>Home & Kitchen</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>Beauty & Personal Care</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>Books</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="font-medium mb-2">Price Range</h3>
+            <div class="flex items-center">
+              <input type="number" placeholder="Min" class="w-1/2 p-2 border rounded-l">
+              <input type="number" placeholder="Max" class="w-1/2 p-2 border rounded-r">
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="font-medium mb-2">Rating</h3>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>★★★★★</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>★★★★☆ & up</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>★★★☆☆ & up</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" class="mr-2">
+                <span>★★☆☆☆ & up</span>
+              </label>
+            </div>
+          </div>
+          
+          <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Apply Filters</button>
+        </div>
+      </div>
+      
+      <!-- Products Grid -->
+      <div class="w-full md:w-3/4">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <span class="text-gray-600">Showing 0 products</span>
+          </div>
+          <div>
+            <select class="border rounded p-2">
+              <option>Sort by: Featured</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Customer Rating</option>
+              <option>Newest Arrivals</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Product cards will be dynamically loaded here -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="h-48 bg-gray-200"></div>
+            <div class="p-4">
+              <h3 class="font-semibold">Product Name</h3>
+              <p class="text-gray-600 text-sm">Merchant Name</p>
+              <div class="mt-2 flex justify-between items-center">
+                <span class="font-bold">$99.99</span>
+                <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+          <!-- Repeat for other products -->
+        </div>
+        
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-center">
+          <nav class="inline-flex rounded-md shadow">
+            <a href="#" class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">Previous</a>
+            <a href="#" class="px-3 py-2 border-t border-b border-gray-300 bg-white text-blue-600 hover:bg-blue-50">1</a>
+            <a href="#" class="px-3 py-2 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">2</a>
+            <a href="#" class="px-3 py-2 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">3</a>
+            <a href="#" class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">Next</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+@end
+

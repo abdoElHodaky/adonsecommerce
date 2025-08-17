@@ -14,8 +14,11 @@ router.on('/').render('pages/home')
 
 // Auth routes
 router.group(() => {
-  router.on('/login').render('pages/auth/login')
-  router.on('/register').render('pages/auth/register')
+  router.get('/login', 'auth_controller.showLogin')
+  router.post('/login', 'auth_controller.login')
+  router.get('/register', 'auth_controller.showRegister')
+  router.post('/register', 'auth_controller.register')
+  router.get('/logout', 'auth_controller.logout')
   router.on('/forgot-password').render('pages/auth/forgot-password')
   router.on('/reset-password').render('pages/auth/reset-password')
 }).prefix('/auth')
@@ -121,4 +124,3 @@ router.group(() => {
     router.put('/:id', async () => {})
   }).prefix('/orders')
 }).prefix('/api')
-
