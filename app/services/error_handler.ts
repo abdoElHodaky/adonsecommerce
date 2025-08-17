@@ -1,6 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { Exception } from '@adonisjs/core/exceptions'
-import { ValidationError } from '@adonisjs/vine'
+import { errors} from "@vinejs/vine"
+//import { ValidationError } from '@adonisjs/vine'
 import logger from '@adonisjs/core/services/logger'
 
 /**
@@ -160,7 +161,7 @@ export class ErrorHandler {
       case 404:
         return this.handleNotFound(ctx, error.message)
       case 422:
-        if (error instanceof ValidationError) {
+        if (error instanceof errors.E_VALIDATION_ERROR) {
           return this.handleValidation(ctx, error)
         }
         // Fall through to default if not a ValidationError
