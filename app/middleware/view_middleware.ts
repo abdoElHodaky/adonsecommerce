@@ -40,6 +40,6 @@ export default class ViewMiddleware {
     /**
      * Call the next middleware
      */
-   // await next()
+    await next()
   }
 }
