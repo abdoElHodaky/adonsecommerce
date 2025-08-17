@@ -4,7 +4,7 @@ import router from '@adonisjs/core/services/router'
 const HomeController = () => import('#controllers/home_controller')
 
 // Home page
-router.get('/', [HomeController, 'index'])
+/*router.get('/', [HomeController, 'index'])
 
 // Static pages
 router.get('/about', [HomeController, 'about'])
@@ -16,4 +16,8 @@ router.get('/privacy', [HomeController, 'privacy'])
 
 // Error pages
 router.get('/404', [HomeController, 'notFound'])
-
+*/
+router.get("/",async ({view,response})=>{
+    console.log(view)
+})
+router.resource("/home",HomeController)
