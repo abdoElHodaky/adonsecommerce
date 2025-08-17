@@ -1,5 +1,5 @@
 import router from '@adonisjs/core/services/router';
 router.get("/", ctx =>{
-  console.log(ctx["view"])
+  console.log(ctx["response"].render)
  //return  ctx["view"].render('welcomer')
 })
