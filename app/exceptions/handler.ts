@@ -1,7 +1,8 @@
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import { errors } from '@adonisjs/core'
-import { ValidationError } from '@adonisjs/vine'
+//import { ValidationError } from '@adonisjs/vine'
+import {errors as vineErrors } from "@vinejs/vine"
 import logger from '@adonisjs/core/services/logger'
 import errorHandler from '#services/error_handler'
 
@@ -28,7 +29,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     /**
      * Handle validation errors
      */
-    if (error instanceof ValidationError) {
+    if (error instanceof vineErrors.E_VALIDATION_ERROR) {
       return errorHandler.handleValidation(ctx, error)
     }
 
