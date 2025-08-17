@@ -1,5 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { contactFormValidator } from '#validators/contact_form_validator'
+import { errors } from '@vinejs/vine'
 
 export default class HomeController {
   /**
@@ -29,7 +30,7 @@ export default class HomeController {
       // and flashed to the session if it's a ValidationError
       
       // Just in case we want to handle other types of errors
-      if (error.name !== 'ValidationError') {
+      if (!(error instanceof errors.E_VALIDATION_ERROR)) {
         session.flash('error', 'An unexpected error occurred. Please try again.')
         console.error('Contact form error:', error)
       }
