@@ -10,7 +10,10 @@
 import router from '@adonisjs/core/services/router'
 
 // Public routes
-router.on('/').render('pages/home')
+router.get('/', 'home_controller.index').middleware(['view'])
+router.get('/about', 'home_controller.about').middleware(['view'])
+router.get('/contact', 'home_controller.showContact').middleware(['view'])
+router.post('/contact', 'home_controller.contact').middleware(['view'])
 
 // Auth routes
 router.group(() => {
@@ -121,4 +124,3 @@ router.group(() => {
     router.put('/:id', async () => {})
   }).prefix('/orders')
 }).prefix('/api')
-
