@@ -6,8 +6,9 @@ import { Edge } from 'edge.js'
 /**
  * Middleware to bind the view service to the HttpContext
  */
+@inject()
 export default class ViewMiddleware {
-  @inject()
+  
   constructor(protected view: Edge) {}
 
   async handle(ctx: HttpContext, next: NextFn) {
@@ -24,6 +25,6 @@ export default class ViewMiddleware {
     /**
      * Call the next middleware
      */
-    await next()
+   // await next()
   }
 }
