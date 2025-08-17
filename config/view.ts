@@ -1,4 +1,4 @@
-import { defineConfig } from '@adonisjs/core/views'
+import { defineConfig } from '@adonisjs/core/view'
 const viewConfig = defineConfig({
   template: 'edge',
   cache: false,
