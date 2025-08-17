@@ -17,5 +17,5 @@ router.get('/privacy', [HomeController, 'privacy'])
 // Error pages
 router.get('/404', [HomeController, 'notFound'])
 */
-router.on('/').render('welcomer')
+
 //router.resource("home",HomeController)
