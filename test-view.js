@@ -22,7 +22,7 @@ async function testViewRendering() {
     });
     
     // Try to render the home page
-    const html = await edge.render('pages/home');
+    const html = await edge.render('welcomer');
     
     console.log('View rendered successfully!');
     console.log('HTML output length:', html.length);
