@@ -101,14 +101,4 @@ testViewRendering().then(success => {
     console.log('❌ View test failed!');
     process.exit(1);
   }
-});}
-
-// Run the test
-testViewRendering().then(success => {
-  if (success) {
-    console.log('✅ View test passed!');
-  } else {
-    console.log('❌ View test failed!');
-    process.exit(1);
-  }
 });
