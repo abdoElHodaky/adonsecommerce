@@ -43,4 +43,6 @@ router.get('/errors/validation', async ({ view }: HttpContext) => {
 router.get('/errors/maintenance', async ({ view }: HttpContext) => {
   return view.render('errors/maintenance')
 })
-router.on('/').render('welcomer')
+router.get("/", async ctx =>{
+  ctx.view.render('welcomer')
+})
