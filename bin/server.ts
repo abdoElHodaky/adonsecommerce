@@ -8,18 +8,15 @@
 | adding any code to this file that is not related to starting the server.
 |
 */
-
 import 'reflect-metadata';
 import { Ignitor, prettyPrintError } from '@adonisjs/core';
-const APP_ROOT = new URL('../', import.meta.url);
-const IMPORTER = (filePath) => {
-    if (filePath.startsWith('./') || filePath.startsWith('../')) {
-        return import(new URL(filePath, APP_ROOT).href);
-    }
-    return import(filePath);
-};
-new Ignitor(APP_ROOT, { importer: IMPORTER })
-    .tap((app) => {
+import notificationService from '#services/notification_service'
+/**
+ * URL to serve the application on
+ */
+const SERVER_URL = new URL(process.env.APP_URL || 'http://localhost:3333')
+new Ignitor(__dirname)
+  .tap((app) => {
     app.booting(async () => {
       await import('#start/env')
     })
