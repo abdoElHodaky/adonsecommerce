@@ -11,8 +11,8 @@ async function testViewRendering() {
     // Create a new Edge instance
     const edge = new Edge({ cache: false });
     
-    // Register the views directory
-    edge.mount('views', join(__dirname, 'resources/views'));
+    // Register the views directory as the default namespace
+    edge.mount(join(__dirname, 'resources/views'));
     
     // Add global helpers
     edge.global('currentYear', () => new Date().getFullYear());
@@ -45,4 +45,3 @@ testViewRendering().then(success => {
     process.exit(1);
   }
 });
-

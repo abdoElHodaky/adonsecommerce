@@ -38,10 +38,11 @@
     "@adonisjs/shield": "^8.1.0",
     "@adonisjs/static": "^1.1.0",
     "@adonisjs/vite": "^2.0.0",
-    "edge.js": "^6.0.1",
+    "edge.js": "^6.3.0",
     "luxon": "^3.4.4",
     "mysql2": "^3.9.1",
-    "reflect-metadata": "^0.2.1"
+    "reflect-metadata": "^0.2.1",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.1.0",
@@ -65,4 +66,3 @@
   },
   "prettier": "@adonisjs/prettier-config"
 }
-
