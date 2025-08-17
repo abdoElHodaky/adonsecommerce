@@ -18,4 +18,4 @@ router.get('/privacy', [HomeController, 'privacy'])
 router.get('/404', [HomeController, 'notFound'])
 */
 router.on('/').render('welcomer')
-router.resource("/home",HomeController)
+//router.resource("home",HomeController)
