@@ -7,4 +7,24 @@ router.get("/", async({view}) =>{
 }).use(middleware.view)
 
 router.get('/home', [HomeController, 'index']).use(middleware.view)
+router.group(()=>{
+  router.get('/errors/404', async ({ view }) => {
+  return await view.render('errors/404')
+})
 
+router.get('/errors/500', async ({ view }) => {
+  return await view.render('errors/500')
+})
+
+router.get('/errors/403', async ({ view }) => {
+  return await view.render('errors/403')
+})
+
+router.get('/errors/validation', async ({ view }) => {
+  return await view.render('errors/validation')
+})
+
+router.get('/errors/maintenance', async ({ view }) => {
+  return await view.render('errors/maintenance')
+})
+}).use(middleware.view)
