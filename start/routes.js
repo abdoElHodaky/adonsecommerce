@@ -19,7 +19,7 @@ import pagesRoutes from './routes/routes/pages.js'
 const edge=new Edge()
 edge.mount(join(process.cwd(), 'resources', 'views'))
 // Main route for the homepage
-router.get("/", async({response}) => {
+router.get("/", async({view}) => {
 /*  try {
   const html=await edge.render("pages/about/index")
    //return await response.send(e)
