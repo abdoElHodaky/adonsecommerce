@@ -172,7 +172,7 @@
                       <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                         {{ order.status }}
                       </span>
-                    @endif
+                    @end
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${{ order.total.toFixed(2) }}
@@ -185,7 +185,7 @@
                       <a href="{{ route('customer.writeReview', { orderId: order.id }) }}" class="text-indigo-600 hover:text-indigo-900">
                         Review
                       </a>
-                    @endif
+                    @end
                   </td>
                 </tr>
               @else
@@ -194,7 +194,7 @@
                     No orders found
                   </td>
                 </tr>
-              @endeach
+              @end
             </tbody>
           </table>
         </div>
@@ -219,7 +219,7 @@
                         <div class="h-full w-full flex items-center justify-center">
                           <i class="fas fa-image text-4xl text-gray-400"></i>
                         </div>
-                      @endif
+                      @end
                     </div>
                   </a>
                   
@@ -236,11 +236,11 @@
                       <span class="text-gray-900 font-bold">${{ product.price.toFixed(2) }}</span>
                       @if(product.compareAtPrice)
                         <span class="ml-2 text-gray-500 line-through text-sm">${{ product.compareAtPrice.toFixed(2) }}</span>
-                      @endif
+                      @end
                     </div>
                   </div>
                 </div>
-              @endeach
+              @end
             </div>
           @else
             <div class="text-center py-8">
@@ -249,10 +249,10 @@
                 Browse Products
               </a>
             </div>
-          @endif
+          @end
         </div>
       </div>
     </div>
   </div>
-@endsection
+@end
 

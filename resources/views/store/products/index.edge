@@ -27,7 +27,7 @@
                   {{ category.name }}
                 </label>
               </div>
-            @endeach
+            @end
           </div>
         </div>
         
@@ -80,7 +80,7 @@
                   {{ merchant.storeName }}
                 </label>
               </div>
-            @endeach
+            @end
           </div>
         </div>
         
@@ -123,7 +123,7 @@
             Products by {{ merchant.storeName }}
           @else
             All Products
-          @endif
+          @end
         </h1>
         
         <p class="text-gray-600 text-sm">
@@ -143,7 +143,7 @@
                     <div class="h-full w-full flex items-center justify-center">
                       <i class="fas fa-image text-4xl text-gray-400"></i>
                     </div>
-                  @endif
+                  @end
                 </div>
               </a>
               
@@ -163,7 +163,7 @@
                     <span class="ml-2 text-green-600 text-sm">
                       {{ Math.round((1 - product.price / product.compareAtPrice) * 100) }}% off
                     </span>
-                  @endif
+                  @end
                 </div>
                 
                 <div class="mt-4 flex justify-between items-center">
@@ -182,7 +182,7 @@
                 </div>
               </div>
             </div>
-          @endeach
+          @end
         </div>
         
         <!-- Pagination -->
@@ -193,7 +193,7 @@
                 <a href="{{ route('store.products') }}?{{ new URLSearchParams({...request.qs(), page: page - 1}).toString() }}" class="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
                   Previous
                 </a>
-              @endif
+              @end
               
               @each(pageNum in Array.from({ length: totalPages }, (_, i) => i + 1))
                 <a 
@@ -202,16 +202,16 @@
                 >
                   {{ pageNum }}
                 </a>
-              @endeach
+              @end
               
               @if(page < totalPages)
                 <a href="{{ route('store.products') }}?{{ new URLSearchParams({...request.qs(), page: page + 1}).toString() }}" class="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
                   Next
                 </a>
-              @endif
+              @end
             </div>
           </div>
-        @endif
+        @end
       @else
         <div class="bg-white rounded-lg shadow-md p-8 text-center">
           <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
@@ -223,8 +223,8 @@
             View All Products
           </a>
         </div>
-      @endif
+      @end
     </div>
   </div>
-@endsection
+@end
 

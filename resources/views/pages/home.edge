@@ -2,6 +2,9 @@
 
 @set('title', 'MultiMarket - Multi-Merchant E-commerce Platform')
 
+{{-- Import helper functions --}}
+@include('helpers/index')
+
 @section('content')
   <!-- Hero Section -->
   <section class="bg-indigo-600 text-white rounded-lg overflow-hidden mb-12">
@@ -41,7 +44,7 @@
               <img src="{{ category.image }}" alt="{{ category.name }}" class="h-full w-full object-cover">
             @else
               <i class="fas fa-folder text-4xl text-gray-400"></i>
-            @endif
+            @end
           </div>
           <div class="p-4 text-center">
             <h3 class="font-semibold">{{ category.name }}</h3>
@@ -51,7 +54,7 @@
         <div class="col-span-full text-center py-8">
           <p class="text-gray-500">No categories found</p>
         </div>
-      @endeach
+      @end
     </div>
   </section>
 
@@ -64,58 +67,12 @@
     
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       @each(product in featuredProducts)
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-          <a href="/store/product/{{ product.slug }}">
-            <div class="h-48 bg-gray-200">
-              @if(product.images && product.images.length > 0)
-                <img src="{{ product.images[0].path }}" alt="{{ product.name }}" class="h-full w-full object-cover">
-              @else
-                <div class="h-full w-full flex items-center justify-center">
-                  <i class="fas fa-image text-4xl text-gray-400"></i>
-                </div>
-              @endif
-            </div>
-          </a>
-          
-          <div class="p-4">
-            <a href="/store/merchant/{{ product.merchant.slug }}" class="text-sm text-indigo-600 hover:text-indigo-800">
-              {{ product.merchant.storeName }}
-            </a>
-            
-            <a href="/store/product/{{ product.slug }}" class="block mt-2 text-lg font-semibold hover:text-indigo-600">
-              {{ product.name }}
-            </a>
-            
-            <div class="mt-2 flex items-center">
-              <span class="text-gray-900 font-bold">${{ product.price.toFixed(2) }}</span>
-              @if(product.compareAtPrice)
-                <span class="ml-2 text-gray-500 line-through text-sm">${{ product.compareAtPrice.toFixed(2) }}</span>
-                <span class="ml-2 text-green-600 text-sm">
-                  {{ Math.round((1 - product.price / product.compareAtPrice) * 100) }}% off
-                </span>
-              @endif
-            </div>
-            
-            <div class="mt-4 flex justify-between items-center">
-              <form action="/store/cart/add" method="POST">
-                <input type="hidden" name="product_id" value="{{ product.id }}">
-                <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
-                  Add to Cart
-                </button>
-              </form>
-              
-              <button class="text-gray-500 hover:text-red-500">
-                <i class="far fa-heart"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+        @!component('components/product-card', { product })
       @else
         <div class="col-span-full text-center py-8">
           <p class="text-gray-500">No featured products found</p>
         </div>
-      @endeach
+      @end
     </div>
   </section>
 
@@ -134,7 +91,7 @@
               <img src="{{ merchant.bannerImage }}" alt="{{ merchant.storeName }}" class="h-full w-full object-cover">
             @else
               <div class="h-full w-full bg-indigo-100"></div>
-            @endif
+            @end
             
             <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent">
               <h3 class="text-white font-bold text-xl">{{ merchant.storeName }}</h3>
@@ -143,7 +100,7 @@
           
           <div class="p-4">
             <p class="text-gray-600 text-sm mb-4">
-              {{ merchant.description ? merchant.description.substring(0, 100) + '...' : 'No description available' }}
+              {{ merchant.description ? truncate(merchant.description, 100) : 'No description available' }}
             </p>
             
             <a href="/store/merchant/{{ merchant.slug }}" class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
@@ -155,7 +112,7 @@
         <div class="col-span-full text-center py-8">
           <p class="text-gray-500">No featured stores found</p>
         </div>
-      @endeach
+      @end
     </div>
   </section>
 
@@ -197,8 +154,7 @@
     <a href="/auth/register?user_type=merchant" class="bg-white text-indigo-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold inline-block">
       Become a Seller
     </a>
-   <p>Current Year: {{ currentYear() }}</p>
+   <p class="text-sm text-white/70 mt-2">© {{ currentYear() }} MultiMarket</p>
 
   </section>
-@endsection
-
+@end
