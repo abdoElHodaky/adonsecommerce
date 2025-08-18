@@ -130,7 +130,7 @@ export class ErrorHandler {
    * Handle a maintenance mode error
    */
   public handleMaintenance(ctx: HttpContext, downtime: string = '30 minutes') {
-    logger.info({ url: ctx.request.url() }, 'Maintenance Mode Access')
+    logger.info({ url: ctx.request?.url() }, 'Maintenance Mode Access')
     
     // For API requests, return a JSON response
     if (this.isApiRequest(ctx)) {
@@ -150,7 +150,7 @@ export class ErrorHandler {
    */
   public handleException(ctx: HttpContext, error: Exception) {
     // Log the error
-    logger.error({ error: error.message, stack: error.stack, url: ctx.request.url() }, 'Exception')
+    logger.error({ error: error.message, stack: error.stack, url: ctx.request?.completeUrl() }, 'Exception')
     
     // Handle based on the status code
     switch (error.status) {
@@ -175,17 +175,17 @@ export class ErrorHandler {
    */
   private isApiRequest(ctx: HttpContext): boolean {
     // Check if the request URL starts with /api
-    if (ctx.request.url().startsWith('/api')) {
+    if (ctx.request?.url().startsWith('/api')) {
       return true
     }
     
     // Check if the request accepts JSON
-    if (ctx.request.accepts(['html', 'json']) === 'json') {
+    if (ctx.request?.accepts(['html', 'json']) === 'json') {
       return true
     }
     
     // Check if it's an AJAX request
-    if (ctx.request.header('X-Requested-With') === 'XMLHttpRequest') {
+    if (ctx.request?.header('X-Requested-With') === 'XMLHttpRequest') {
       return true
     }
     
