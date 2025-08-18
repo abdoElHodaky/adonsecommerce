@@ -1,7 +1,7 @@
 import { middleware } from './kernel.js'
 import router from '@adonisjs/core/services/router'
 
-// Import route modules
+/*// Import route modules
 import homeRoutes from './routes/routes/home.js'
 import authRoutes from './routes/routes/auth.js'
 import adminRoutes from './routes/routes/admin.js'
@@ -14,14 +14,14 @@ import cartRoutes from './routes/routes/cart.js'
 import paymentRoutes from './routes/routes/payment.js'
 import notificationRoutes from './routes/routes/notification.js'
 import pagesRoutes from './routes/routes/pages.js'
-
+*/
 // Main route for the homepage
-router.get("/", async({view}) => {
-   return await view.render("pages/welcomer")
+router.get("/about", async({view}) => {
+   return await view.render("pages/about/index")
 }).use(middleware.view)
 
 // Register all route modules
-router.use(homeRoutes)
+/*router.use(homeRoutes)
 router.use(authRoutes)
 router.use(adminRoutes)
 router.use(merchantRoutes)
@@ -33,3 +33,4 @@ router.use(cartRoutes)
 router.use(paymentRoutes)
 router.use(notificationRoutes)
 router.use(pagesRoutes)
+*/
