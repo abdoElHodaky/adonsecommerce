@@ -83,6 +83,12 @@ export default class ViewMiddleware {
     // First, process any @include directives
     content = await this.processIncludes(content)
     
+    // Process control flow directives
+    content = await this.processControlFlow(content)
+    
+    // Process @let directives
+    content = await this.processLetDirectives(content)
+    
     // Extract layout information using regex
     const layoutMatch = content.match(/@layout\(['"](.+?)['"]\)/)
     if (!layoutMatch) {
@@ -199,5 +205,254 @@ export default class ViewMiddleware {
     }
     
     return processedContent
+  }
+  
+  /**
+   * Process control flow directives (@if, @else, @each)
+   */
+  private async processControlFlow(content: string): Promise<string> {
+    let processedContent = content
+    
+    // Process @if/@else directives
+    processedContent = await this.processIfDirectives(processedContent)
+    
+    // Process @each directives
+    processedContent = await this.processEachDirectives(processedContent)
+    
+    return processedContent
+  }
+  
+  /**
+   * Process @if/@else directives
+   */
+  private async processIfDirectives(content: string): Promise<string> {
+    // Match @if(condition)...@end or @if(condition)...@else...@end
+    const ifRegex = /@if\s*\((.+?)\)([\s\S]*?)(?:@else([\s\S]*?))?@end/g
+    let match
+    let processedContent = content
+    
+    while ((match = ifRegex.exec(content)) !== null) {
+      const condition = match[1].trim()
+      const ifContent = match[2]
+      const elseContent = match[3] || ''
+      
+      try {
+        // Simple evaluation of the condition
+        // This is a simplified approach - in a real implementation, you'd use a proper evaluator
+        // that can handle complex conditions and access to context variables
+        let result = false
+        
+        // Handle basic truthy/falsy values
+        if (condition === 'true') {
+          result = true
+        } else if (condition === 'false') {
+          result = false
+        } else if (condition.startsWith('!')) {
+          // Handle negation
+          result = !eval(condition.substring(1))
+        } else {
+          // For other conditions, try a simple evaluation
+          // This is unsafe in a real app, but works for basic demos
+          result = Boolean(eval(condition))
+        }
+        
+        // Replace the @if directive with the appropriate content
+        const replacement = result ? ifContent : elseContent
+        processedContent = processedContent.replace(match[0], replacement)
+      } catch (error) {
+        console.error(`Error evaluating condition "${condition}":`, error.message)
+        // Replace with error comment if evaluation fails
+        processedContent = processedContent.replace(
+          match[0],
+          `<!-- Error evaluating condition "${condition}": ${error.message} -->`
+        )
+      }
+    }
+    
+    return processedContent
+  }
+  
+  /**
+   * Process @each directives
+   */
+  private async processEachDirectives(content: string): Promise<string> {
+    // Match @each(item in items)...@end
+    const eachRegex = /@each\s*\((.+?)\s+in\s+(.+?)\)([\s\S]*?)@end/g
+    let match
+    let processedContent = content
+    
+    while ((match = eachRegex.exec(content)) !== null) {
+      const itemName = match[1].trim()
+      const itemsName = match[2].trim()
+      const eachContent = match[3]
+      
+      try {
+        // Get the items from the context
+        // In a real implementation, this would access the template context
+        // For this demo, we'll use a simple approach with mock data
+        const items = this.getMockItems(itemsName)
+        
+        if (!items || !Array.isArray(items)) {
+          throw new Error(`Items "${itemsName}" is not an array`)
+        }
+        
+        // Process each item
+        let result = ''
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i]
+          
+          // Replace item references in the content
+          let itemContent = eachContent
+            .replace(new RegExp(`{{\\s*${itemName}\\s*}}`, 'g'), String(item))
+            .replace(new RegExp(`{{\\s*${itemName}\\.([\\w\\.]+)\\s*}}`, 'g'), (_, prop) => {
+              return this.getNestedProperty(item, prop) || ''
+            })
+          
+          result += itemContent
+        }
+        
+        // Replace the @each directive with the processed content
+        processedContent = processedContent.replace(match[0], result)
+      } catch (error) {
+        console.error(`Error processing @each directive:`, error.message)
+        // Replace with error comment if processing fails
+        processedContent = processedContent.replace(
+          match[0],
+          `<!-- Error processing @each directive: ${error.message} -->`
+        )
+      }
+    }
+    
+    return processedContent
+  }
+  
+  /**
+   * Process @let directives
+   */
+  private async processLetDirectives(content: string): Promise<string> {
+    // Match @let(name = value)
+    const letRegex = /@let\s*\((.+?)\s*=\s*(.+?)\)/g
+    let match
+    let processedContent = content
+    
+    const variables: Record<string, any> = {}
+    
+    while ((match = letRegex.exec(content)) !== null) {
+      const varName = match[1].trim()
+      const varValue = match[2].trim()
+      
+      try {
+        // Store the variable
+        variables[varName] = this.evaluateExpression(varValue)
+        
+        // Remove the @let directive
+        processedContent = processedContent.replace(match[0], '')
+      } catch (error) {
+        console.error(`Error processing @let directive:`, error.message)
+        // Replace with error comment if processing fails
+        processedContent = processedContent.replace(
+          match[0],
+          `<!-- Error processing @let directive: ${error.message} -->`
+        )
+      }
+    }
+    
+    // Replace variable references in the content
+    for (const [name, value] of Object.entries(variables)) {
+      processedContent = processedContent.replace(
+        new RegExp(`{{\\s*${name}\\s*}}`, 'g'),
+        String(value)
+      )
+    }
+    
+    return processedContent
+  }
+  
+  /**
+   * Get mock items for @each directive
+   */
+  private getMockItems(itemsName: string): any[] {
+    // Mock data for testing
+    const mockData: Record<string, any[]> = {
+      'products': [
+        { id: 1, name: 'Product 1', price: 99.99 },
+        { id: 2, name: 'Product 2', price: 149.99 },
+        { id: 3, name: 'Product 3', price: 199.99 }
+      ],
+      'categories': [
+        { id: 1, name: 'Category 1', slug: 'category-1' },
+        { id: 2, name: 'Category 2', slug: 'category-2' }
+      ],
+      'users': [
+        { id: 1, name: 'User 1', email: 'user1@example.com' },
+        { id: 2, name: 'User 2', email: 'user2@example.com' }
+      ]
+    }
+    
+    return mockData[itemsName] || []
+  }
+  
+  /**
+   * Get a nested property from an object
+   */
+  private getNestedProperty(obj: any, path: string): any {
+    return path.split('.').reduce((prev, curr) => {
+      return prev && prev[curr] !== undefined ? prev[curr] : undefined
+    }, obj)
+  }
+  
+  /**
+   * Evaluate an expression
+   */
+  private evaluateExpression(expression: string): any {
+    // This is a simplified approach - in a real implementation, you'd use a proper evaluator
+    // that can handle complex expressions and access to context variables
+    
+    // Handle string literals
+    if (expression.startsWith("'") && expression.endsWith("'")) {
+      return expression.slice(1, -1)
+    }
+    
+    // Handle number literals
+    if (!isNaN(Number(expression))) {
+      return Number(expression)
+    }
+    
+    // Handle boolean literals
+    if (expression === 'true') {
+      return true
+    }
+    
+    if (expression === 'false') {
+      return false
+    }
+    
+    // Handle arrays
+    if (expression.startsWith('[') && expression.endsWith(']')) {
+      try {
+        return JSON.parse(expression)
+      } catch (error) {
+        console.error(`Error parsing array expression:`, error.message)
+        return []
+      }
+    }
+    
+    // Handle objects
+    if (expression.startsWith('{') && expression.endsWith('}')) {
+      try {
+        // Convert property names to quoted strings
+        const objectStr = expression
+          .replace(/(\w+):/g, '"$1":')  // Convert property names to quoted strings
+          .replace(/'/g, '"')           // Convert single quotes to double quotes
+        
+        return JSON.parse(objectStr)
+      } catch (error) {
+        console.error(`Error parsing object expression:`, error.message)
+        return {}
+      }
+    }
+    
+    // For other expressions, return as is
+    return expression
   }
 }

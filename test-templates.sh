@@ -55,6 +55,16 @@ else
 fi
 echo
 
+# Test 5: Control flow directives (@if, @else, @each, @let)
+echo -e "${YELLOW}Test 5: Control flow directives${NC}"
+node test-control-flow.js
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}✓ Test 5 passed: Control flow directives work${NC}"
+else
+  echo -e "${RED}✗ Test 5 failed: Control flow directives failed${NC}"
+fi
+echo
+
 # Check if all tests passed
 if [ -f test-output/about-page.html ] && [ -f test-output/full-page-pages-about-index.html ]; then
   echo -e "${GREEN}All tests completed successfully!${NC}"

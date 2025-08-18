@@ -6,11 +6,12 @@ This document explains how the Edge.js template rendering system works in our Ad
 
 Our application uses Edge.js as the template engine. Edge.js is a powerful templating engine that supports:
 
-- Layout inheritance
-- Partials
-- Components
-- Conditional rendering
-- Loops
+- Layout inheritance with `@layout`, `@section`, and `@end`
+- Partials with `@include`
+- Components with `@component`
+- Conditional rendering with `@if`, `@else`, and `@end`
+- Loops with `@each` and `@end`
+- Variable declaration with `@let`
 - Custom helpers
 
 ## Template Structure
@@ -79,6 +80,44 @@ Components are reusable template fragments with parameters. They are included us
 @end
 ```
 
+## Conditional Rendering
+
+Conditional rendering is implemented using the `@if`, `@else`, and `@end` directives:
+
+```edge
+@if(user.isAuthenticated)
+  <p>Welcome, {{ user.name }}!</p>
+@else
+  <p>Please log in to continue.</p>
+@end
+```
+
+## Loops
+
+Loops are implemented using the `@each` and `@end` directives:
+
+```edge
+<ul>
+  @each(product in products)
+    <li>{{ product.name }} - ${{ product.price }}</li>
+  @end
+</ul>
+```
+
+## Variables
+
+Variables can be declared using the `@let` directive:
+
+```edge
+@let(discountPercentage = 20)
+@let(originalPrice = 100)
+@let(salePrice = originalPrice * (1 - discountPercentage / 100))
+
+<p>Original Price: ${{ originalPrice }}</p>
+<p>Discount: {{ discountPercentage }}%</p>
+<p>Sale Price: ${{ salePrice }}</p>
+```
+
 ## Global Helpers
 
 The following global helpers are available in all templates:
@@ -100,6 +139,7 @@ We have several test scripts to verify that templates are rendering correctly:
 - `test-full-page.js`: Tests template rendering with layout inheritance
 - `test-templates-simple.js`: Tests multiple templates and partials
 - `test-includes.js`: Tests the `@include` directive
+- `test-control-flow.js`: Tests control flow directives (`@if`, `@else`, `@each`, `@let`)
 
 To run all tests, use the `test-templates.sh` script:
 
