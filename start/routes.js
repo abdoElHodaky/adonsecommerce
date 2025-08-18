@@ -23,7 +23,7 @@ router.get("/", async({response}) => {
    try {
    const html=await edge.render("pages/about/index")
    //return await response.send(e)
-     response.safeHeader("Content-Type","text/html")
+    // response.safeHeader("Content-Type","text/html")
      return response.send(html)
       
    }catch(error){
