@@ -3,7 +3,7 @@ import Product from '#models/Product'
 import Category from '#models/Category'
 import Merchant from '#models/Merchant'
 //import { schema, validator } from '@adonisjs/core/validator'
-import { schema, validator } from '@vinejs/vine'
+import vime from '@vinejs/vine'
 import BaseController from './base_controller.js'
 
 export default class HomeController extends BaseController {
@@ -79,29 +79,23 @@ export default class HomeController extends BaseController {
       { request, response, session },
       async () => {
         // Validate input
-        const contactSchema = schema.create({
-          name: schema.string([
-            validator.trim(),
-            validator.minLength(2),
-            validator.maxLength(50)
-          ]),
-          email: schema.string([
-            validator.email()
-          ]),
-          subject: schema.string([
-            validator.trim(),
-            validator.minLength(2),
-            validator.maxLength(100)
-          ]),
-          message: schema.string([
-            validator.trim(),
-            validator.minLength(10)
-          ]),
+        const contactSchema = vine.object({
+          name: vine.string().trim().
+          minLength(2).maxLength(50)
+          ,
+          email: vine.string().email()
+          ,
+          subject: vine.string().
+          trim().minLength(2).maxLength(100)
+          ,
+          message: vine.string()
+            .trim().minLength(10)
+          
         })
 
-        const payload = await validator.validate({
-          schema: contactSchema,
-          data: request.all(),
+        const payload = await vine.validate({
+           contactSchema,
+           request.all(),
         })
 
         // In a real app, you would send an email or save to database
