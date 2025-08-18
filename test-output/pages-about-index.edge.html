@@ -1,0 +1,157 @@
+@layout('layouts/main')
+
+@section('title')
+  About Us - MultiMarket
+@end
+
+@section('content')
+  <div class="bg-white py-12">
+    <div class="container mx-auto px-4">
+      <!-- Hero Section -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">About MultiMarket</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          A multi-merchant e-commerce platform connecting buyers with sellers from around the world.
+        </p>
+      </div>
+      
+      <!-- Our Story Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
+          <p class="text-gray-600 mb-4">
+            MultiMarket was founded in 2023 with a simple mission: to create a platform where merchants of all sizes could easily sell their products online, and where customers could discover unique products from multiple vendors in one place.
+          </p>
+          <p class="text-gray-600 mb-4">
+            What started as a small project has grown into a thriving marketplace with hundreds of merchants and thousands of products. We're proud to support small businesses and independent sellers, helping them reach customers they might not otherwise find.
+          </p>
+          <p class="text-gray-600">
+            Our platform is built on the principles of accessibility, fairness, and community. We believe in creating opportunities for entrepreneurs and providing customers with a diverse range of high-quality products.
+          </p>
+        </div>
+        <div class="rounded-lg overflow-hidden shadow-lg">
+          <img src="/images/about/our-story.jpg" alt="MultiMarket Team" class="w-full h-auto" onerror="this.src='https://via.placeholder.com/600x400?text=Our+Story'; this.onerror=null;">
+        </div>
+      </div>
+      
+      <!-- Our Mission Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20">
+        <div class="order-2 md:order-1 rounded-lg overflow-hidden shadow-lg">
+          <img src="/images/about/our-mission.jpg" alt="Our Mission" class="w-full h-auto" onerror="this.src='https://via.placeholder.com/600x400?text=Our+Mission'; this.onerror=null;">
+        </div>
+        <div class="order-1 md:order-2">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+          <p class="text-gray-600 mb-4">
+            At MultiMarket, our mission is to democratize e-commerce by providing a platform that empowers merchants to grow their businesses and customers to discover unique products.
+          </p>
+          <p class="text-gray-600 mb-4">
+            We strive to create a marketplace that is:
+          </p>
+          <ul class="list-disc list-inside text-gray-600 mb-4 space-y-2">
+            <li><span class="font-semibold">Inclusive</span> - Welcoming merchants of all sizes and backgrounds</li>
+            <li><span class="font-semibold">Transparent</span> - Providing clear policies and fair fees</li>
+            <li><span class="font-semibold">Innovative</span> - Continuously improving our platform with new features</li>
+            <li><span class="font-semibold">Community-focused</span> - Building relationships between buyers and sellers</li>
+          </ul>
+          <p class="text-gray-600">
+            We believe that by connecting merchants directly with customers, we can create a more diverse, sustainable, and personal shopping experience.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Our Values Section -->
+      <div class="mb-20">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Our Values</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <i class="fas fa-handshake text-indigo-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Trust & Integrity</h3>
+            <p class="text-gray-600 text-center">
+              We believe in building trust through transparent practices, honest communication, and maintaining the highest standards of integrity in all our operations.
+            </p>
+          </div>
+          
+          <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <i class="fas fa-users text-indigo-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Community</h3>
+            <p class="text-gray-600 text-center">
+              We foster a sense of community among our merchants and customers, encouraging collaboration, support, and shared success.
+            </p>
+          </div>
+          
+          <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <i class="fas fa-lightbulb text-indigo-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Innovation</h3>
+            <p class="text-gray-600 text-center">
+              We continuously seek new ways to improve our platform, embracing technology and creative solutions to enhance the experience for both merchants and customers.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Team Section -->
+      <div class="mb-20">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Our Team</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Team Member 1 -->
+          <div class="text-center">
+            <div class="w-40 h-40 rounded-full overflow-hidden mx-auto mb-4">
+              <img src="/images/team/team-1.jpg" alt="Team Member" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150?text=Team+Member'; this.onerror=null;">
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">Sarah Johnson</h3>
+            <p class="text-indigo-600">CEO & Founder</p>
+          </div>
+          
+          <!-- Team Member 2 -->
+          <div class="text-center">
+            <div class="w-40 h-40 rounded-full overflow-hidden mx-auto mb-4">
+              <img src="/images/team/team-2.jpg" alt="Team Member" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150?text=Team+Member'; this.onerror=null;">
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">Michael Chen</h3>
+            <p class="text-indigo-600">CTO</p>
+          </div>
+          
+          <!-- Team Member 3 -->
+          <div class="text-center">
+            <div class="w-40 h-40 rounded-full overflow-hidden mx-auto mb-4">
+              <img src="/images/team/team-3.jpg" alt="Team Member" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150?text=Team+Member'; this.onerror=null;">
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">Olivia Martinez</h3>
+            <p class="text-indigo-600">Head of Operations</p>
+          </div>
+          
+          <!-- Team Member 4 -->
+          <div class="text-center">
+            <div class="w-40 h-40 rounded-full overflow-hidden mx-auto mb-4">
+              <img src="/images/team/team-4.jpg" alt="Team Member" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150?text=Team+Member'; this.onerror=null;">
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900">David Kim</h3>
+            <p class="text-indigo-600">Head of Marketing</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Join Us Section -->
+      <div class="bg-indigo-50 rounded-xl p-8 text-center">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Join Our Community</h2>
+        <p class="text-xl text-gray-600 mb-6 max-w-3xl mx-auto">
+          Whether you're a merchant looking to expand your reach or a customer searching for unique products, we invite you to join our growing community.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="/merchant/register" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold">
+            Become a Merchant
+          </a>
+          <a href="/auth/register" class="bg-white hover:bg-gray-100 text-indigo-600 border border-indigo-600 px-6 py-3 rounded-lg font-semibold">
+            Create Customer Account
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+@end

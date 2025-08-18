@@ -1,0 +1,107 @@
+
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+        MultiMarket - Home
+      </title>
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+      </head>
+      <body>
+        @include('partials/header')
+        
+        <main class="site-main">
+          
+        <div class="container">
+          
+      
+      
+    
+          
+          <section class="hero">
+            <h1>Welcome to MultiMarket</h1>
+            <p>Your one-stop shop for all your needs</p>
+          </section>
+          
+          
+          
+          
+          <section class="featured-products">
+            <h2>Featured Products</h2>
+            <p>Get 15% off on all featured products!</p>
+            
+            <div class="product-grid">
+              
+                
+              
+                
+              
+                
+              
+            </div>
+          </section>
+          
+          <section class="categories">
+            <h2>Shop by Category</h2>
+            <div class="category-grid">
+              
+                <div class="category-card">
+                  <h3>Category 1</h3>
+                  <p>10 products</p>
+                  <a href="/categories/category-1" class="btn">View Category</a>
+                </div>
+              
+                <div class="category-card">
+                  <h3>Category 2</h3>
+                  <p>5 products</p>
+                  <a href="/categories/category-2" class="btn">View Category</a>
+                </div>
+              
+                <div class="category-card">
+                  <h3>Category 3</h3>
+                  <p>8 products</p>
+                  <a href="/categories/category-3" class="btn">View Category</a>
+                </div>
+              
+            </div>
+          </section>
+          
+          
+            <section class="user-dashboard">
+              <h2>Welcome back, {{ user.name }}!</h2>
+              
+              @if(cart.items.length > 0)
+                <div class="cart-summary">
+                  <h3>Your Cart</h3>
+                  <ul>
+                    
+                      <li>Product 1 (2) - {{ formatCurrency(item.price * item.quantity) }}</li>
+                    
+                  </ul>
+                  <p class="cart-total">Total: {{ formatCurrency(cart.total) }}</p>
+                  <a href="/checkout" class="btn">Checkout</a>
+                </div>
+              @else
+                <p>Your cart is empty.</p>
+              
+                      <li>Product 2 (1) - {{ formatCurrency(item.price * item.quantity) }}</li>
+                    
+                  </ul>
+                  <p class="cart-total">Total: {{ formatCurrency(cart.total) }}</p>
+                  <a href="/checkout" class="btn">Checkout</a>
+                </div>
+              @else
+                <p>Your cart is empty.</p>
+              
+            </section>
+          
+        </main>
+        
+        @include('partials/footer')
+        
+        <script src="{{ asset('js/main.js') }}"></script>
+      </body>
+      </html>
+    

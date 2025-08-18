@@ -11,17 +11,17 @@ import router from '@adonisjs/core/services/router'
 import { HttpContext } from '@adonisjs/core/http'
 
 // Import route groups
-import './routes/auth.js'
-import './routes/admin.js'
-import './routes/merchant.js'
-import './routes/customer.js'
-import './routes/store.js'
-import './routes/cart.js'
-import './routes/category.js'
-import './routes/product.js'
-import './routes/home.js'
-import './routes/payment.js'
-import './routes/notification.js'
+import './routes/auth.ts'
+import './routes/admin.ts'
+import './routes/merchant.ts'
+import './routes/customer.ts'
+import './routes/store.ts'
+import './routes/cart.ts'
+import './routes/category.ts'
+import './routes/product.ts'
+import './routes/home.ts'
+import './routes/payment.ts'
+import './routes/notification.ts'
 
 // Error pages
 router.get('/errors/404', async ({ view }: HttpContext) => {
@@ -43,6 +43,5 @@ router.get('/errors/validation', async ({ view }: HttpContext) => {
 router.get('/errors/maintenance', async ({ view }: HttpContext) => {
   return view.render('errors/maintenance')
 })
-router.get("/", async ctx =>{
- return  ctx.view.render('welcomer')
-})
+// Import routes from root routes.ts file
+import '../routes'

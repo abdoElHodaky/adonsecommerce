@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Nested Includes</title>
+</head>
+<body>
+  <!-- Include header partial -->
+  <header class="bg-white shadow-sm">
+  <div class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <a href="/" class="text-2xl font-bold text-indigo-600">
+          <span class="text-gray-800">Multi</span>Market
+        </a>
+      </div>
+      
+      <!-- Search Bar (Medium screens and up) -->
+      <div class="hidden md:flex flex-1 mx-8">
+        <form action="/store" method="GET" class="w-full max-w-xl">
+          <div class="relative">
+            <input 
+              type="text" 
+              name="query" 
+              placeholder="Search for products..." 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+            <button type="submit" class="absolute right-2 top-2 text-gray-500">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="flex items-center space-x-6">
+        <!-- Cart -->
+        <a href="/store/cart" class="text-gray-700 hover:text-indigo-600 relative">
+          <i class="fas fa-shopping-cart text-xl"></i>
+          <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            0
+          </span>
+        </a>
+        
+        <!-- Notifications -->
+<!-- Notification Component -->
+<div
+  x-data="notificationComponent()"
+  x-init="initNotifications"
+  class="relative"
+>
+  <!-- Notification Bell Icon -->
+  <button
+    @click="toggleNotifications"
+    class="relative p-1 text-gray-600 hover:text-indigo-600 focus:outline-none"
+    aria-label="Notifications"
+  >
+    <i class="fas fa-bell text-xl"></i>
+    <!-- Notification Badge -->
+    <span
+      x-show="unreadCount > 0"
+      x-text="unreadCount > 9 ? '9+' : unreadCount"
+      class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full"
+    ></span>
+  </button>
+
+  <!-- Notification Dropdown -->
+  <div
+    x-show="isOpen"
+    @click.away="isOpen = false"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-100 scale-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+    class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-50"
+    style="display: none;"
+  >
+    <!-- Notification Header -->
+    <div class="px-4 py-2 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-semibold text-gray-800">Notifications</h3>
+        <div class="flex space-x-2">
+          <button
+            @click="markAllAsRead"
+            x-show="unreadCount > 0"
+            class="text-xs text-indigo-600 hover:text-indigo-800"
+          >
+            Mark all as read
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification List -->
+    <div class="max-h-80 overflow-y-auto">
+      <template x-if="notifications.length === 0">
+        <div class="px-4 py-6 text-center text-gray-500">
+          <i class="fas fa-bell-slash text-2xl mb-2"></i>
+          <p>No notifications</p>
+        </div>
+      </template>
+
+      <template x-for="notification in notifications" :key="notification.id">
+        <div
+          @click="openNotification(notification)"
+          :class="{ 'bg-indigo-50': !notification.read }"
+          class="px-4 py-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer"
+        >
+          <!-- Notification Icon -->
+          <div class="flex items-start">
+            <div class="flex-shrink-0">
+              <template x-if="notification.type === 'order_status'">
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+              </template>
+              <template x-if="notification.type === 'payment_status'">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-500">
+                  <i class="fas fa-credit-card"></i>
+                </div>
+              </template>
+              <template x-if="notification.type === 'new_message'">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-500">
+                  <i class="fas fa-envelope"></i>
+                </div>
+              </template>
+              <template x-if="notification.type === 'system'">
+                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-500">
+                  <i class="fas fa-bell"></i>
+                </div>
+              </template>
+            </div>
+
+            <!-- Notification Content -->
+            <div class="ml-3 flex-1">
+              <div class="flex justify-between items-start">
+                <p class="text-sm font-medium text-gray-900" x-text="notification.title"></p>
+                <span class="text-xs text-gray-500" x-text="formatDate(notification.createdAt)"></span>
+              </div>
+              <p class="text-sm text-gray-600 mt-1" x-text="notification.message"></p>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Notification Footer -->
+    <div class="px-4 py-2 border-t border-gray-200">
+      <a href="/notifications" class="text-sm text-indigo-600 hover:text-indigo-800 block text-center">
+        View all notifications
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Notification Toast Container -->
+<div
+  x-data="notificationToast()"
+  class="fixed bottom-0 right-0 p-4 z-50"
+>
+  <template x-for="(toast, index) in toasts" :key="index">
+    <div
+      x-show="toast.visible"
+      @click="removeToast(index)"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0 transform translate-y-2"
+      x-transition:enter-end="opacity-100 transform translate-y-0"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100 transform translate-y-0"
+      x-transition:leave-end="opacity-0 transform translate-y-2"
+      class="bg-white rounded-lg shadow-lg overflow-hidden mb-3 max-w-md w-full cursor-pointer"
+    >
+      <div class="flex p-4">
+        <!-- Toast Icon -->
+        <template x-if="toast.type === 'order_status'">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+        </template>
+        <template x-if="toast.type === 'payment_status'">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-500">
+            <i class="fas fa-credit-card"></i>
+          </div>
+        </template>
+        <template x-if="toast.type === 'new_message'">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-500">
+            <i class="fas fa-envelope"></i>
+          </div>
+        </template>
+        <template x-if="toast.type === 'system'">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-500">
+            <i class="fas fa-bell"></i>
+          </div>
+        </template>
+
+        <!-- Toast Content -->
+        <div class="ml-3 flex-1">
+          <p class="text-sm font-medium text-gray-900" x-text="toast.title"></p>
+          <p class="text-sm text-gray-600 mt-1" x-text="toast.message"></p>
+        </div>
+
+        <!-- Close Button -->
+        <button class="ml-4 text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  </template>
+</div>
+
+<!-- Alpine.js Component Scripts -->
+<script>
+  function notificationComponent() {
+    return {
+      isOpen: false,
+      notifications: [],
+      unreadCount: 0,
+      socket: null,
+
+      toggleNotifications() {
+        this.isOpen = !this.isOpen
+        if (this.isOpen) {
+          this.fetchNotifications()
+        }
+      },
+
+      async fetchNotifications() {
+        try {
+          const response = await fetch('/api/notifications')
+          if (response.ok) {
+            const data = await response.json()
+            this.notifications = data
+            this.updateUnreadCount()
+          }
+        } catch (error) {
+          console.error('Error fetching notifications:', error)
+        }
+      },
+
+      async fetchUnreadCount() {
+        try {
+          const response = await fetch('/api/notifications/unread-count')
+          if (response.ok) {
+            const data = await response.json()
+            this.unreadCount = data.count
+          }
+        } catch (error) {
+          console.error('Error fetching unread count:', error)
+        }
+      },
+
+      async markAsRead(notificationId) {
+        try {
+          const response = await fetch(`/api/notifications/${notificationId}/mark-as-read`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          if (response.ok) {
+            // Update the notification in the list
+            const index = this.notifications.findIndex(n => n.id === notificationId)
+            if (index !== -1) {
+              this.notifications[index].read = true
+              this.updateUnreadCount()
+            }
+          }
+        } catch (error) {
+          console.error('Error marking notification as read:', error)
+        }
+      },
+
+      async markAllAsRead() {
+        try {
+          const response = await fetch('/api/notifications/mark-all-as-read', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          if (response.ok) {
+            // Update all notifications in the list
+            this.notifications.forEach(notification => {
+              notification.read = true
+            })
+            this.unreadCount = 0
+          }
+        } catch (error) {
+          console.error('Error marking all notifications as read:', error)
+        }
+      },
+
+      openNotification(notification) {
+        // Mark the notification as read
+        if (!notification.read) {
+          this.markAsRead(notification.id)
+        }
+
+        // Handle different notification types
+        if (notification.type === 'order_status' && notification.data && notification.data.orderId) {
+          window.location.href = `/customer/orders/${notification.data.orderId}`
+        } else if (notification.type === 'payment_status' && notification.data && notification.data.orderId) {
+          window.location.href = `/customer/orders/${notification.data.orderId}`
+        } else if (notification.type === 'new_message' && notification.data && notification.data.messageId) {
+          window.location.href = `/messages/${notification.data.messageId}`
+        } else {
+          // For other notification types, just close the dropdown
+          this.isOpen = false
+        }
+      },
+
+      updateUnreadCount() {
+        this.unreadCount = this.notifications.filter(n => !n.read).length
+      },
+
+      formatDate(dateString) {
+        const date = new Date(dateString)
+        const now = new Date()
+        const diffMs = now - date
+        const diffSec = Math.floor(diffMs / 1000)
+        const diffMin = Math.floor(diffSec / 60)
+        const diffHour = Math.floor(diffMin / 60)
+        const diffDay = Math.floor(diffHour / 24)
+
+        if (diffSec < 60) {
+          return 'just now'
+        } else if (diffMin < 60) {
+          return `${diffMin}m ago`
+        } else if (diffHour < 24) {
+          return `${diffHour}h ago`
+        } else if (diffDay < 7) {
+          return `${diffDay}d ago`
+        } else {
+          return date.toLocaleDateString()
+        }
+      },
+
+      initNotifications() {
+        // Fetch initial notifications
+        this.fetchNotifications()
+
+        // Connect to WebSocket for real-time notifications
+        this.connectWebSocket()
+
+        // Fetch unread count periodically
+        setInterval(() => {
+          this.fetchUnreadCount()
+        }, 60000) // Every minute
+      },
+
+      connectWebSocket() {
+        // Check if Socket.io is available
+        if (typeof io === 'undefined') {
+          console.error('Socket.io is not loaded')
+          return
+        }
+
+        // Connect to the WebSocket server
+        this.socket = io()
+
+        // Authenticate the socket connection
+        const userId = document.querySelector('meta[name="user-id"]')?.content
+        const merchantId = document.querySelector('meta[name="merchant-id"]')?.content
+        const isAdmin = document.querySelector('meta[name="is-admin"]')?.content === 'true'
+
+        if (userId) {
+          this.socket.emit('authenticate', {
+            userId,
+            merchantId,
+            isAdmin,
+          })
+        }
+
+        // Listen for new notifications
+        this.socket.on('notification', (notification) => {
+          // Add the new notification to the list
+          this.notifications.unshift(notification)
+          this.updateUnreadCount()
+
+          // Show a toast notification
+          window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: notification
+          }))
+        })
+      }
+    }
+  }
+
+  function notificationToast() {
+    return {
+      toasts: [],
+      
+      init() {
+        // Listen for new toast notifications
+        window.addEventListener('show-toast', (event) => {
+          this.addToast(event.detail)
+        })
+      },
+      
+      addToast(notification) {
+        const toast = {
+          ...notification,
+          visible: true
+        }
+        
+        this.toasts.push(toast)
+        
+        // Auto-remove the toast after 5 seconds
+        setTimeout(() => {
+          this.removeToast(this.toasts.indexOf(toast))
+        }, 5000)
+      },
+      
+      removeToast(index) {
+        if (index >= 0 && index < this.toasts.length) {
+          this.toasts[index].visible = false
+          
+          // Remove from array after animation completes
+          setTimeout(() => {
+            this.toasts.splice(index, 1)
+          }, 300)
+        }
+      }
+    }
+  }
+</script>
+
+
+        
+        <!-- User Menu -->
+        <div x-data="{ open: false }" class="relative">
+          <button @click="open = !open" class="flex items-center text-gray-700 hover:text-indigo-600">
+              <span class="mr-2">Test</span>
+              <i class="fas fa-user-circle text-xl"></i>
+          </button>
+          
+          <div x-cloak x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+
+                <a href="/customer/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white">
+                  My Account
+                </a>
+              
+              <a href="/customer/orders" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white">
+                My Orders
+              </a>
+              
+              <a href="/auth/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white">
+                Logout
+              </a>
+          </div>
+        </div>
+      </nav>
+    </div>
+    
+    <!-- Mobile Search (Small screens only) -->
+    <div class="mt-4 md:hidden">
+      <form action="/store" method="GET">
+        <div class="relative">
+          <input 
+            type="text" 
+            name="query" 
+            placeholder="Search for products..." 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+          <button type="submit" class="absolute right-2 top-2 text-gray-500">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Categories Menu -->
+  <div class="bg-gray-100 border-t border-b border-gray-200">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center space-x-8 overflow-x-auto py-3 scrollbar-hide">
+        <a href="/store" class="text-gray-600 hover:text-indigo-600 whitespace-nowrap">
+          All Products
+        </a>
+        <a href="/store/categories" class="text-gray-600 hover:text-indigo-600 whitespace-nowrap">
+          Categories
+        </a>
+        <a href="/store/merchants" class="text-gray-600 hover:text-indigo-600 whitespace-nowrap">
+          Stores
+        </a>
+        <a href="/about" class="text-gray-600 hover:text-indigo-600 whitespace-nowrap">
+          About Us
+        </a>
+        <a href="/contact" class="text-gray-600 hover:text-indigo-600 whitespace-nowrap">
+          Contact
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+  
+  <div class="content">
+    <h1>Test Nested Includes</h1>
+    <p>This is the main content.</p>
+    
+    <!-- Include a partial that includes another partial -->
+    <div class="messages">
+      
+
+    </div>
+  </div>
+  
+  <!-- Include footer partial -->
+  <footer class="bg-gray-800 text-white py-12">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <!-- About -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">About MultiMarket</h3>
+        <p class="text-gray-300 text-sm">
+          MultiMarket is a multi-merchant e-commerce platform where vendors can sell their products and customers can shop from multiple stores in one place.
+        </p>
+      </div>
+      
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/" class="text-gray-300 hover:text-white">Home</a></li>
+          <li><a href="/store" class="text-gray-300 hover:text-white">Shop</a></li>
+          <li><a href="/store/categories" class="text-gray-300 hover:text-white">Categories</a></li>
+          <li><a href="/store/merchants" class="text-gray-300 hover:text-white">Stores</a></li>
+        </ul>
+      </div>
+      
+      <!-- Customer Service -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/contact" class="text-gray-300 hover:text-white">Contact Us</a></li>
+          <li><a href="/faq" class="text-gray-300 hover:text-white">FAQ</a></li>
+          <li><a href="/terms" class="text-gray-300 hover:text-white">Terms & Conditions</a></li>
+          <li><a href="/privacy" class="text-gray-300 hover:text-white">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <!-- Newsletter -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Newsletter</h3>
+        <p class="text-gray-300 text-sm mb-4">
+          Subscribe to our newsletter for the latest updates and offers.
+        </p>
+        <form action="#" method="POST" class="flex">
+          <input 
+            type="email" 
+            placeholder="Your email" 
+            class="px-4 py-2 w-full text-gray-800 rounded-l-lg focus:outline-none"
+          >
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-r-lg">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+      <p class="text-gray-300 text-sm">
+        &copy; 2025 MultiMarket. All rights reserved.
+      </p>
+      
+      <div class="flex space-x-4 mt-4 md:mt-0">
+        <a href="#" class="text-gray-300 hover:text-white">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="text-gray-300 hover:text-white">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#" class="text-gray-300 hover:text-white">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="text-gray-300 hover:text-white">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+  

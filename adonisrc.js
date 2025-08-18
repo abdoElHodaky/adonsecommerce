@@ -16,8 +16,8 @@ export default defineConfig({
             environment: ['repl', 'test'],
         },
         () => import('@adonisjs/core/providers/vinejs_provider'),
-        () => import('#providers/view_provider'),
-       // () => import('@adonisjs/core/providers/edge_provider'),
+        // () => import('#providers/view_provider'),
+        () => import('@adonisjs/core/providers/edge_provider'),
         () => import('@adonisjs/session/session_provider'),
         () => import('@adonisjs/vite/vite_provider'),
         () => import('@adonisjs/shield/shield_provider'),
@@ -28,7 +28,8 @@ export default defineConfig({
     preloads: [
         () => import('#start/routes'),
         () => import('#start/kernel'),
-        () => import('#start/validator')
+        () => import('#start/validator'),
+        () => import('#start/view')
     ],
     tests: {
         suites: [
@@ -64,4 +65,3 @@ export default defineConfig({
         onBuildStarting: [() => import('@adonisjs/vite/build_hook')],
     },
 });
-
