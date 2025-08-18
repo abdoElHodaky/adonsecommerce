@@ -10,9 +10,8 @@ import viewConfig from '#config/view'
  */
 @inject()
 export default class ViewMiddleware {
- private let View=new Edge()
   constructor(protected view: Edge) {}
-
+  private let View=new Edge()
   async handle(ctx: HttpContext, next: NextFn) {
     /**
      * Bind the view service to the context
