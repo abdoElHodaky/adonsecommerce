@@ -23,7 +23,7 @@ export default class ViewMiddleware {
       enumerable: true,
       configurable: true,
     })
-     this.View=ctx["view]
+     this.View=ctx["view"]
     // Add request-specific globals
     this.addRequestGlobals(ctx)
     
