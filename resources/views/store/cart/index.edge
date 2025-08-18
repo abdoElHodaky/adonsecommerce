@@ -23,7 +23,7 @@
                         <div class="w-full h-full flex items-center justify-center bg-gray-100">
                           <i class="fas fa-image text-2xl text-gray-400"></i>
                         </div>
-                      @endif
+                      @end
                     </div>
                     
                     <!-- Product Details -->
@@ -45,9 +45,9 @@
                           <p class="mt-1 text-sm text-gray-500">
                             @each((value, key) in item.options)
                               <span class="mr-2">{{ key }}: {{ value }}</span>
-                            @endeach
+                            @end
                           </p>
-                        @endif
+                        @end
                       </div>
                       
                       <div class="flex-1 flex items-end justify-between text-sm">
@@ -104,7 +104,7 @@
                       </div>
                     </div>
                   </li>
-                @endeach
+                @end
               </ul>
             </div>
           </div>
@@ -151,7 +151,7 @@
                   <span>Discount</span>
                   <span>-${{ cart.discount.toFixed(2) }}</span>
                 </div>
-              @endif
+              @end
               
               <div class="border-t border-gray-200 pt-3 flex justify-between font-semibold">
                 <span>Total</span>
@@ -177,11 +177,11 @@
               
               @if(flashMessages.has('coupon_error'))
                 <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('coupon_error') }}</p>
-              @endif
+              @end
               
               @if(flashMessages.has('coupon_success'))
                 <p class="text-green-500 text-xs mt-1">{{ flashMessages.get('coupon_success') }}</p>
-              @endif
+              @end
             </div>
             
             <!-- Checkout Button -->
@@ -214,6 +214,6 @@
         Start Shopping
       </a>
     </div>
-  @endif
-@endsection
+  @end
+@end
 

@@ -29,7 +29,7 @@
                 >
                 @if(flashMessages.has('errors.shipping.firstName'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.firstName') }}</p>
-                @endif
+                @end
               </div>
               
               <div>
@@ -44,7 +44,7 @@
                 >
                 @if(flashMessages.has('errors.shipping.lastName'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.lastName') }}</p>
-                @endif
+                @end
               </div>
               
               <div class="md:col-span-2">
@@ -59,7 +59,7 @@
                 >
                 @if(flashMessages.has('errors.shipping.address'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.address') }}</p>
-                @endif
+                @end
               </div>
               
               <div>
@@ -74,7 +74,7 @@
                 >
                 @if(flashMessages.has('errors.shipping.city'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.city') }}</p>
-                @endif
+                @end
               </div>
               
               <div>
@@ -89,7 +89,7 @@
                 >
                 @if(flashMessages.has('errors.shipping.state'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.state') }}</p>
-                @endif
+                @end
               </div>
               
               <div>
@@ -104,7 +104,7 @@
                 >
                 @if(flashMessages.has('errors.shipping.postalCode'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.postalCode') }}</p>
-                @endif
+                @end
               </div>
               
               <div>
@@ -124,7 +124,7 @@
                 </select>
                 @if(flashMessages.has('errors.shipping.country'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.country') }}</p>
-                @endif
+                @end
               </div>
               
               <div>
@@ -139,7 +139,7 @@
                 >
                 @if(flashMessages.has('errors.shipping.phone'))
                   <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.shipping.phone') }}</p>
-                @endif
+                @end
               </div>
             </div>
             
@@ -429,7 +429,7 @@
                       <div class="w-full h-full flex items-center justify-center bg-gray-100">
                         <i class="fas fa-image text-xl text-gray-400"></i>
                       </div>
-                    @endif
+                    @end
                   </div>
                   
                   <div class="ml-3 flex-1">
@@ -440,9 +440,9 @@
                         <span class="ml-1">
                           @each((value, key) in item.options)
                             <span class="mr-1">{{ key }}: {{ value }}</span>
-                          @endeach
+                          @end
                         </span>
-                      @endif
+                      @end
                     </p>
                   </div>
                   
@@ -450,7 +450,7 @@
                     ${{ (item.price * item.quantity).toFixed(2) }}
                   </div>
                 </div>
-              @endeach
+              @end
             </div>
           </div>
           
@@ -476,7 +476,7 @@
                 <span>Discount</span>
                 <span>-${{ cart.discount.toFixed(2) }}</span>
               </div>
-            @endif
+            @end
             
             <div class="border-t border-gray-200 pt-3 flex justify-between font-semibold">
               <span>Total</span>
@@ -490,12 +490,12 @@
               <i class="fas fa-check-circle mr-2"></i>
               <span>Coupon "{{ cart.couponCode }}" applied</span>
             </div>
-          @endif
+          @end
         </div>
       </div>
     </div>
   </div>
-@endsection
+@end
 
 @section('scripts')
 <script>
@@ -528,5 +528,5 @@
     });
   });
 </script>
-@endsection
+@end
 

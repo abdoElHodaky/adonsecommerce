@@ -1,0 +1,63 @@
+{{-- 
+  Product Card Component
+  
+  Props:
+  - product: The product object with details
+  - showMerchant: Boolean to show/hide merchant name (default: true)
+  - showAddToCart: Boolean to show/hide add to cart button (default: true)
+--}}
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+  <a href="/store/product/{{ $props.product.slug }}">
+    <div class="h-48 bg-gray-200">
+      @if($props.product.images && $props.product.images.length > 0)
+        <img src="{{ $props.product.images[0].path }}" alt="{{ $props.product.name }}" class="h-full w-full object-cover">
+      @else
+        <div class="h-full w-full flex items-center justify-center">
+          <i class="fas fa-image text-4xl text-gray-400"></i>
+        </div>
+      @end
+    </div>
+  </a>
+  
+  <div class="p-4">
+    @if($props.showMerchant !== false && $props.product.merchant)
+      <a href="/store/merchant/{{ $props.product.merchant.slug }}" class="text-sm text-indigo-600 hover:text-indigo-800">
+        {{ $props.product.merchant.storeName }}
+      </a>
+    @end
+    
+    <a href="/store/product/{{ $props.product.slug }}" class="block mt-2 text-lg font-semibold hover:text-indigo-600">
+      {{ $props.product.name }}
+    </a>
+    
+    {{-- Import helper functions if not already imported --}}
+    @include('helpers/index')
+    
+    <div class="mt-2 flex items-center">
+      <span class="text-gray-900 font-bold">{{ formatCurrency($props.product.price) }}</span>
+      @if($props.product.compareAtPrice)
+        <span class="ml-2 text-gray-500 line-through text-sm">{{ formatCurrency($props.product.compareAtPrice) }}</span>
+        <span class="ml-2 text-green-600 text-sm">
+          {{ calculateDiscount($props.product.compareAtPrice, $props.product.price) }}% off
+        </span>
+      @end
+    </div>
+    
+    @if($props.showAddToCart !== false)
+      <div class="mt-4 flex justify-between items-center">
+        <form action="/store/cart/add" method="POST">
+          <input type="hidden" name="product_id" value="{{ $props.product.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
+            Add to Cart
+          </button>
+        </form>
+        
+        <button class="text-gray-500 hover:text-red-500">
+          <i class="far fa-heart"></i>
+        </button>
+      </div>
+    @end
+  </div>
+</div>
