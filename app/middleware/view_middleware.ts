@@ -3,7 +3,9 @@ import { HttpContext } from '@adonisjs/core/http'
 import { NextFn } from '@adonisjs/core/types/http'
 import { inject } from '@adonisjs/core'
 import { Edge } from 'edge.js'
-import { join } from 'path';
+import { join } from 'node:path'
+import { existsSync, writeFileSync, mkdirSync } from 'node:fs'
+
 //import { fileURLToPath } from 'url';
 //import { dirname } from 'path';
 //import fs from 'fs';
@@ -32,7 +34,7 @@ export default class ViewMiddleware {
     })
     const viewsPath = join(process.cwd(), 'resources', 'views')
     console.log('Views path:', viewsPath)
-    //console.log('Views path exists:', existsSync(viewsPath))
+    console.log('Views path exists:', existsSync(viewsPath))
     //const edge=ctx["view"]
     ctx["view"].mount(viewsPath);
    // const viewsPath = join(__dirname, '../../resources/views/');
