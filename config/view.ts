@@ -5,7 +5,7 @@ const viewConfig = {
   cache: false,
   viewsPath: [
     app.makePath('resources/views'),
-    app.makePath('views')
+   // app.makePath('views')
   ]
 }
 
