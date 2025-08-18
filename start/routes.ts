@@ -45,3 +45,7 @@ router.get('/errors/maintenance', async ({ view }: HttpContext) => {
 })
 // Import routes from root routes.ts file
 import '../routes'
+
+// Test route for view context
+const TestsController = () => import('#controllers/tests_controller')
+router.get('/test-view', [TestsController, 'testView'])
