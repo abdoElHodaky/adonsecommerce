@@ -41,9 +41,9 @@ export default class ViewProvider {
     // Add CSRF helpers
     edge.global('csrfField', () => '<input type="hidden" name="_csrf" value="test-csrf-token">')
     edge.global('csrfMeta', () => '<meta name="csrf-token" content="test-csrf-token">')
-    
+    this.app['container'].singleton('view', () => edge)
     // Register the Edge instance as a singleton
-    this.app.container.singleton('view', () => edge)
+   // this.app.container.singleton('view', () => edge)
   }
 
   /**
