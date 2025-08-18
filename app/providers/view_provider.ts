@@ -15,7 +15,7 @@ export default class ViewProvider {
     // Register both view paths
     for (const viewPath of viewConfig.viewsPath) {
       edge.mount(viewPath)
-      console.log('Views path:', viewsPath)
+      console.log('Views path:', viewPath)
      //  console.log('Views path exists:', existsSync(viewsPath))
    
     }
