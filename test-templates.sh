@@ -61,12 +61,13 @@ case "$1" in
         
         # Define critical templates to test
         critical_templates=(
-            "layouts/main"
-            "pages/home"
-            "partials/header"
-            "partials/footer"
-            "partials/flash-messages"
-            "components/product-card"
+            "layouts/main.edge"
+            "pages/home.edge"
+            "partials/header.edge"
+            "partials/footer.edge"
+            "partials/flash-messages.edge"
+            "components/product-card.edge"
+            "helpers/index.edge"
         )
         
         failures=0
@@ -91,4 +92,3 @@ case "$1" in
         exit $?
         ;;
 esac
-

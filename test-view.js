@@ -23,6 +23,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const viewsPath = join(__dirname, 'resources', 'views')
 const edge = new Edge()
 
+// Debug paths
+console.log('Current directory:', __dirname)
+console.log('Views path:', viewsPath)
+console.log('Views path exists:', existsSync(viewsPath))
+
 // Mount the views directory
 edge.mount(viewsPath)
 
@@ -46,6 +51,16 @@ edge.global('flashMessages', {
 edge.global('cart', {
   items: []
 })
+
+// Add missing AdonisJS globals
+edge.global('route', (name, params) => `/${name.replace('.', '/')}`)
+edge.global('asset', (path) => `/assets/${path}`)
+edge.global('csrfField', () => '<input type="hidden" name="_csrf" value="test-csrf-token">')
+edge.global('csrfMeta', () => '<meta name="csrf-token" content="test-csrf-token">')
+edge.global('inspect', (value) => JSON.stringify(value, null, 2))
+edge.global('component', (name, props) => `Component: ${name}`)
+edge.global('include', (name, data) => `Include: ${name}`)
+edge.global('safe', (html) => html)
 
 // Mock data for testing
 const mockData = {
@@ -82,7 +97,20 @@ const mockData = {
 async function testTemplate(templatePath) {
   try {
     console.log(`Testing template: ${templatePath}`)
-    const html = await edge.render(templatePath, mockData)
+    
+    // Add template-specific mock data
+    let templateData = { ...mockData }
+    
+    // Add specific data for certain templates
+    if (templatePath.includes('product-card')) {
+      templateData.$props = {
+        product: mockData.featuredProducts[0],
+        showMerchant: true,
+        showAddToCart: true
+      }
+    }
+    
+    const html = await edge.render(templatePath, templateData)
     console.log('✅ Template rendered successfully')
     
     // Optional: Write the output to a file for inspection
@@ -90,7 +118,7 @@ async function testTemplate(templatePath) {
     
     return true
   } catch (error) {
-    console.error(`❌ Error rendering template ${templatePath}:`, error)
+    console.error(`❌ Error rendering template ${templatePath}:`, error.message || error)
     return false
   }
 }
@@ -158,4 +186,3 @@ main().catch(error => {
   console.error('Unhandled error:', error)
   process.exit(1)
 })
-
