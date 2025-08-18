@@ -10,7 +10,7 @@ import viewConfig from '#config/view'
  */
 @inject()
 export default class ViewMiddleware {
-  
+ private let View=new Edge()
   constructor(protected view: Edge) {}
 
   async handle(ctx: HttpContext, next: NextFn) {
@@ -23,7 +23,7 @@ export default class ViewMiddleware {
       enumerable: true,
       configurable: true,
     })
-    
+     this.View=ctx["view]
     // Add request-specific globals
     this.addRequestGlobals(ctx)
     
@@ -45,32 +45,32 @@ export default class ViewMiddleware {
    */
   private addRequestGlobals(ctx: HttpContext) {
     // Add auth information
-    this.ctx.view.global('auth', {
+    this.View.global('auth', {
       isAuthenticated: ctx.auth?.isAuthenticated || false,
       user: ctx.auth?.user || null
     })
     
     // Add flash messages
-    this.ctx.view.global('flashMessages', {
+    this.View.global('flashMessages', {
       has: (key: string) => ctx.session?.flashMessages?.has(key) || false,
       get: (key: string) => ctx.session?.flashMessages?.get(key) || ''
     })
     
     // Add cart information
-    this.ctx.view.global('cart', {
+    this.View.global('cart', {
       items: ctx.session?.get('cart', []) || []
     })
     
     // Add CSRF token
-    this.ctx.view.global('csrfToken', ctx.request.csrfToken || 'test-csrf-token')
-    this.ctx.view.global('csrfField', () => {
+    this.View.global('csrfToken', ctx.request.csrfToken || 'test-csrf-token')
+    this.View.global('csrfField', () => {
       const token = ctx.request.csrfToken || 'test-csrf-token'
       return `<input type="hidden" name="_csrf" value="${token}">`
     })
     
     // Add request and route information
-    this.ctx.view.global('request', ctx.request)
-    this.ctx.view.global('route', (name: string, params = {}) => {
+    this.View.global('request', ctx.request)
+    this.View.global('route', (name: string, params = {}) => {
       // In a real app, this would use the router to generate URLs
       return `/${name.replace('.', '/')}`
     })
@@ -118,8 +118,8 @@ export default class ViewMiddleware {
     }
     
     // Copy globals from the main Edge instance
-    Object.keys(this.view.globals).forEach(key => {
-      layoutEdge.global(key, this.view.globals[key])
+    Object.keys(this.View.globals).forEach(key => {
+      layoutEdge.global(key, this.View.globals[key])
     })
     
     // Add section helper
