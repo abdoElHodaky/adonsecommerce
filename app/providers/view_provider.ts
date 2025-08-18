@@ -10,7 +10,7 @@ export default class ViewProvider {
    */
   register() {
     // Create a new Edge instance
-    const edge = new Edge({ cache: viewConfig.cache })
+    const edge = new Edge({ cache: false })
     
     // Register both view paths
     for (const viewPath of viewConfig.viewsPath) {
