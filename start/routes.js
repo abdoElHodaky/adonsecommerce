@@ -20,9 +20,6 @@ import  "./routes/home.js";
 const edge=new Edge()
 edge.mount(join(process.cwd(), 'resources', 'views'))
 // Main route for the homepage
-router.get("/", async ({response})=>{
-   await response.redirect("home")
-})
 //router.get("/", async({view}) => {
 /*  try {
   const html=await edge.render("pages/about/index")
