@@ -17,7 +17,7 @@ import pagesRoutes from './routes/routes/pages.js'
 */
 // Main route for the homepage
 router.get("/about", async({view}) => {
-   return await view.render("pages/about/index")
+   return await view.renderSync("pages/about/index")
 }).use(middleware.view)
 
 // Register all route modules
