@@ -45,6 +45,16 @@ else
 fi
 echo
 
+# Test 4: @include directive
+echo -e "${YELLOW}Test 4: @include directive${NC}"
+node test-includes.js
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}✓ Test 4 passed: @include directive works${NC}"
+else
+  echo -e "${RED}✗ Test 4 failed: @include directive failed${NC}"
+fi
+echo
+
 # Check if all tests passed
 if [ -f test-output/about-page.html ] && [ -f test-output/full-page-pages-about-index.html ]; then
   echo -e "${GREEN}All tests completed successfully!${NC}"
@@ -53,4 +63,3 @@ if [ -f test-output/about-page.html ] && [ -f test-output/full-page-pages-about-
 else
   echo -e "${RED}Some tests failed. Check the output above for details.${NC}"
 fi
-

@@ -55,6 +55,14 @@ edge.global('asset', (path) => `/assets/${path}`)
 edge.global('csrfField', () => '<input type="hidden" name="_csrf" value="test-csrf-token">')
 edge.global('csrfMeta', () => '<meta name="csrf-token" content="test-csrf-token">')
 edge.global('inspect', (value) => JSON.stringify(value, null, 2))
+edge.global('include', async (name, data = {}) => {
+  try {
+    return await edge.render(name, { ...testData, ...data })
+  } catch (error) {
+    console.error(`Error including ${name}:`, error.message)
+    return `<!-- Error including ${name}: ${error.message} -->`
+  }
+})
 
 // Test data
 const testData = {
@@ -192,4 +200,3 @@ main().catch(error => {
   console.error('Unhandled error:', error)
   process.exit(1)
 })
-

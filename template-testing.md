@@ -62,6 +62,14 @@ Partials are reusable template fragments that can be included in other templates
 @include('partials/header')
 ```
 
+You can also pass data to partials:
+
+```edge
+@include('partials/product-card', { product: product })
+```
+
+The `@include` directive is processed at render time, and the included template is rendered with the current context plus any additional data passed to it.
+
 ## Components
 
 Components are reusable template fragments with parameters. They are included using the `@component` directive:
@@ -91,6 +99,7 @@ We have several test scripts to verify that templates are rendering correctly:
 - `test-view.js`: Tests simple template rendering
 - `test-full-page.js`: Tests template rendering with layout inheritance
 - `test-templates-simple.js`: Tests multiple templates and partials
+- `test-includes.js`: Tests the `@include` directive
 
 To run all tests, use the `test-templates.sh` script:
 
@@ -182,4 +191,3 @@ If templates are not rendering correctly, check the following:
 2. Make sure the templates are in the correct directories
 3. Check for syntax errors in the templates
 4. Run the test scripts to verify that templates are rendering correctly
-

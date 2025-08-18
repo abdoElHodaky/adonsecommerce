@@ -80,10 +80,14 @@ export default class ViewMiddleware {
    * Process layout inheritance in the rendered view
    */
   private async processLayoutInheritance(content: string): Promise<string> {
+    // First, process any @include directives
+    content = await this.processIncludes(content)
+    
     // Extract layout information using regex
     const layoutMatch = content.match(/@layout\(['"](.+?)['"]\)/)
     if (!layoutMatch) {
-      return content
+      // If no layout is specified, just process any remaining @!section directives
+      return await this.processSectionPlaceholders(content)
     }
     
     const layoutPath = layoutMatch[1]
@@ -112,6 +116,11 @@ export default class ViewMiddleware {
       layoutEdge.global(key, this.view.globals[key])
     })
     
+    // Add section helper
+    layoutEdge.global('section', (name: string) => {
+      return sections[name] || ''
+    })
+    
     // Render the layout
     let layoutContent = await layoutEdge.render(layoutPath, {})
     
@@ -121,6 +130,74 @@ export default class ViewMiddleware {
       layoutContent = layoutContent.replace(sectionPlaceholder, content)
     }
     
+    // Process any remaining @!section directives
+    layoutContent = await this.processSectionPlaceholders(layoutContent)
+    
     return layoutContent
+  }
+  
+  /**
+   * Process @include directives in the template
+   */
+  private async processIncludes(content: string): Promise<string> {
+    const includeRegex = /@include\(['"](.+?)['"](,\s*({.*?}))?\)/g
+    let match
+    let processedContent = content
+    
+    while ((match = includeRegex.exec(content)) !== null) {
+      const includePath = match[1]
+      let includeData = {}
+      
+      if (match[3]) {
+        try {
+          // Simple evaluation of the data object
+          // This is a simplified approach - in a real implementation, you'd use a proper parser
+          const dataStr = match[3]
+            .replace(/'/g, '"')
+            .replace(/(\w+):/g, '"$1":')  // Convert property names to quoted strings
+            .replace(/,\s*}/g, '}')       // Remove trailing commas
+          
+          includeData = JSON.parse(dataStr)
+        } catch (error) {
+          console.error(`Error parsing include data for ${includePath}:`, error.message)
+          // Continue with empty data
+        }
+      }
+      
+      try {
+        // Render the included template
+        const includedContent = await this.view.render(includePath, includeData)
+        
+        // Replace the @include directive with the rendered content
+        processedContent = processedContent.replace(match[0], includedContent)
+      } catch (error) {
+        console.error(`Error including ${includePath}:`, error.message)
+        // Replace with error comment if rendering fails
+        processedContent = processedContent.replace(
+          match[0], 
+          `<!-- Error including ${includePath}: ${error.message} -->`
+        )
+      }
+    }
+    
+    return processedContent
+  }
+  
+  /**
+   * Process @!section directives in the template
+   */
+  private async processSectionPlaceholders(content: string): Promise<string> {
+    const sectionRegex = /@!section\(['"](.+?)['"]\)/g
+    let match
+    let processedContent = content
+    
+    while ((match = sectionRegex.exec(content)) !== null) {
+      const sectionName = match[1]
+      
+      // If no content is provided for this section, replace with empty string
+      processedContent = processedContent.replace(match[0], '')
+    }
+    
+    return processedContent
   }
 }
