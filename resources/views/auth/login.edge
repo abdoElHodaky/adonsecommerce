@@ -23,7 +23,7 @@
         >
         @if(flashMessages.has('errors.email'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.email') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-6">
@@ -37,7 +37,7 @@
         >
         @if(flashMessages.has('errors.password'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.password') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="flex items-center justify-between mb-6">
@@ -74,5 +74,5 @@
       </div>
     </form>
   </div>
-@endsection
+@end
 

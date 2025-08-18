@@ -30,11 +30,11 @@
               @each(field in Object.keys(errors))
                 @each(error in errors[field])
                   <li class="text-sm text-red-700">{{ error }}</li>
-                @endeach
-              @endeach
+                @end
+              @end
             </ul>
           </div>
-        @endif
+        @end
         
         <p class="text-gray-700">
           Please review your information and try again.
@@ -59,5 +59,5 @@
     </div>
   </div>
 </div>
-@endsection
+@end
 

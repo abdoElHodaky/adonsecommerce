@@ -211,7 +211,7 @@
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                           {{ order.status }}
                         </span>
-                      @endif
+                      @end
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       ${{ order.total.toFixed(2) }}
@@ -223,7 +223,7 @@
                       No orders found
                     </td>
                   </tr>
-                @endeach
+                @end
               </tbody>
             </table>
           </div>
@@ -284,7 +284,7 @@
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                           {{ merchant.status }}
                         </span>
-                      @endif
+                      @end
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {{ new Date(merchant.createdAt).toLocaleDateString() }}
@@ -296,7 +296,7 @@
                       No new merchants found
                     </td>
                   </tr>
-                @endeach
+                @end
               </tbody>
             </table>
           </div>
@@ -345,7 +345,7 @@
                           <div class="h-full w-full flex items-center justify-center">
                             <i class="fas fa-image text-gray-400"></i>
                           </div>
-                        @endif
+                        @end
                       </div>
                       <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900">
@@ -376,8 +376,8 @@
                             <i class="fas fa-star text-xs"></i>
                           @else
                             <i class="far fa-star text-xs"></i>
-                          @endif
-                        @endfor
+                          @end
+                        @end
                       </div>
                     </div>
                   </td>
@@ -388,14 +388,14 @@
                     No products found
                   </td>
                 </tr>
-              @endeach
+              @end
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
-@endsection
+@end
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -449,5 +449,5 @@
     });
   });
 </script>
-@endsection
+@end
 

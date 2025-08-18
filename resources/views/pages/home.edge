@@ -41,7 +41,7 @@
               <img src="{{ category.image }}" alt="{{ category.name }}" class="h-full w-full object-cover">
             @else
               <i class="fas fa-folder text-4xl text-gray-400"></i>
-            @endif
+            @end
           </div>
           <div class="p-4 text-center">
             <h3 class="font-semibold">{{ category.name }}</h3>
@@ -51,7 +51,7 @@
         <div class="col-span-full text-center py-8">
           <p class="text-gray-500">No categories found</p>
         </div>
-      @endeach
+      @end
     </div>
   </section>
 
@@ -73,7 +73,7 @@
                 <div class="h-full w-full flex items-center justify-center">
                   <i class="fas fa-image text-4xl text-gray-400"></i>
                 </div>
-              @endif
+              @end
             </div>
           </a>
           
@@ -93,7 +93,7 @@
                 <span class="ml-2 text-green-600 text-sm">
                   {{ Math.round((1 - product.price / product.compareAtPrice) * 100) }}% off
                 </span>
-              @endif
+              @end
             </div>
             
             <div class="mt-4 flex justify-between items-center">
@@ -115,7 +115,7 @@
         <div class="col-span-full text-center py-8">
           <p class="text-gray-500">No featured products found</p>
         </div>
-      @endeach
+      @end
     </div>
   </section>
 
@@ -134,7 +134,7 @@
               <img src="{{ merchant.bannerImage }}" alt="{{ merchant.storeName }}" class="h-full w-full object-cover">
             @else
               <div class="h-full w-full bg-indigo-100"></div>
-            @endif
+            @end
             
             <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent">
               <h3 class="text-white font-bold text-xl">{{ merchant.storeName }}</h3>
@@ -155,7 +155,7 @@
         <div class="col-span-full text-center py-8">
           <p class="text-gray-500">No featured stores found</p>
         </div>
-      @endeach
+      @end
     </div>
   </section>
 
@@ -200,5 +200,5 @@
    <p>Current Year: {{ currentYear() }}</p>
 
   </section>
-@endsection
+@end
 

@@ -23,7 +23,7 @@
         >
         @if(flashMessages.has('errors.firstName'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.firstName') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-4">
@@ -38,7 +38,7 @@
         >
         @if(flashMessages.has('errors.lastName'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.lastName') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-4">
@@ -53,7 +53,7 @@
         >
         @if(flashMessages.has('errors.email'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.email') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-4">
@@ -67,7 +67,7 @@
         >
         @if(flashMessages.has('errors.password'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.password') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-4">
@@ -81,7 +81,7 @@
         >
         @if(flashMessages.has('errors.passwordConfirmation'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.passwordConfirmation') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-6">
@@ -97,7 +97,7 @@
         </select>
         @if(flashMessages.has('errors.userType'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.userType') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-6">
@@ -118,7 +118,7 @@
         </div>
         @if(flashMessages.has('errors.terms'))
           <p class="text-red-500 text-xs mt-1">{{ flashMessages.get('errors.terms') }}</p>
-        @endif
+        @end
       </div>
       
       <div class="mb-6">
@@ -137,5 +137,5 @@
       </div>
     </form>
   </div>
-@endsection
+@end
 
