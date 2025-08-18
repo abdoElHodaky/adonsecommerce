@@ -1,6 +1,6 @@
 import { middleware } from './kernel.js'
 import router from '@adonisjs/core/services/router'
-
+import { Edge } from "edge.js"
 /*// Import route modules
 import homeRoutes from './routes/routes/home.js'
 import authRoutes from './routes/routes/auth.js'
@@ -15,9 +15,11 @@ import paymentRoutes from './routes/routes/payment.js'
 import notificationRoutes from './routes/routes/notification.js'
 import pagesRoutes from './routes/routes/pages.js'
 */
+const edge=new Edge()
+edge.mount(process.cwd()+"/resources/views/")
 // Main route for the homepage
-router.get("/", async({view}) => {
-   return  view.render("pages/about/index")
+router.get("/", async({response}) => {
+   return await response.send(edge.render("pages/about/index"))
 })//.use(middleware.view)
 
 // Register all route modules
