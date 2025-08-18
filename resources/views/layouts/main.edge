@@ -36,10 +36,10 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
   {{-- Include Header Partial --}}
-  @include('../partials/header')
+  @include('partials/header')
   
   {{-- Include Flash Messages Partial --}}
-  @include('../partials/flash-messages')
+  @include('partials/flash-messages')
   
   <!-- Main Content -->
   <main class="flex-grow container mx-auto px-4 py-8">
@@ -47,7 +47,7 @@
   </main>
   
   {{-- Include Footer Partial --}}
-  @include('../partials/footer')
+  @include('partials/footer')
   
   @!section('scripts')
 </body>
