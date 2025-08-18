@@ -11,7 +11,7 @@ import viewConfig from '#config/view'
 @inject()
 export default class ViewMiddleware {
   constructor(protected view: Edge) {}
-  private let View:Edge=new Edge()
+  //private let View:Edge=new Edge()
   async handle(ctx: HttpContext, next: NextFn) {
     /**
      * Bind the view service to the context
@@ -22,7 +22,9 @@ export default class ViewMiddleware {
       enumerable: true,
       configurable: true,
     })
-     this.View=ctx["view"]
+    this.ctx=ctx
+    
+     //this.View=ctx["view"]
     // Add request-specific globals
     this.addRequestGlobals(ctx)
     
@@ -44,32 +46,32 @@ export default class ViewMiddleware {
    */
   private addRequestGlobals(ctx: HttpContext) {
     // Add auth information
-    this.View.global('auth', {
+    ctx["view"].global('auth', {
       isAuthenticated: ctx.auth?.isAuthenticated || false,
       user: ctx.auth?.user || null
     })
     
     // Add flash messages
-    this.View.global('flashMessages', {
+    ctx["view"].global('flashMessages', {
       has: (key: string) => ctx.session?.flashMessages?.has(key) || false,
       get: (key: string) => ctx.session?.flashMessages?.get(key) || ''
     })
     
     // Add cart information
-    this.View.global('cart', {
+    ctx["view"].global('cart', {
       items: ctx.session?.get('cart', []) || []
     })
     
     // Add CSRF token
-    this.View.global('csrfToken', ctx.request.csrfToken || 'test-csrf-token')
-    this.View.global('csrfField', () => {
+    ctx["view"].global('csrfToken', ctx.request.csrfToken || 'test-csrf-token')
+    ctx["view"].global('csrfField', () => {
       const token = ctx.request.csrfToken || 'test-csrf-token'
       return `<input type="hidden" name="_csrf" value="${token}">`
     })
     
     // Add request and route information
-    this.View.global('request', ctx.request)
-    this.View.global('route', (name: string, params = {}) => {
+    ctx["view"].global('request', ctx.request)
+    ctx["view"].global('route', (name: string, params = {}) => {
       // In a real app, this would use the router to generate URLs
       return `/${name.replace('.', '/')}`
     })
@@ -117,8 +119,8 @@ export default class ViewMiddleware {
     }
     
     // Copy globals from the main Edge instance
-    Object.keys(this.View.globals).forEach(key => {
-      layoutEdge.global(key, this.View.globals[key])
+    Object.keys(this.ctx["view"].globals).forEach(key => {
+      layoutEdge.global(key, this.ctx["view"].globals[key])
     })
     
     // Add section helper
@@ -171,7 +173,7 @@ export default class ViewMiddleware {
       
       try {
         // Render the included template
-        const includedContent = await this.View.render(includePath, includeData)
+        const includedContent = await this.ctx["view"].render(includePath, includeData)
         
         // Replace the @include directive with the rendered content
         processedContent = processedContent.replace(match[0], includedContent)
