@@ -88,7 +88,7 @@ const templates = [
   },
   {
     name:"About",
-    path:"about/index",
+    path:"pages/about/index",
     data:{}
   }
 ]
