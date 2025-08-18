@@ -29,7 +29,7 @@ export default class ViewMiddleware {
       enumerable: true,
       configurable: true,
     })
-    const viewsPath = join(__dirname, '../../resources/views/**');
+    const viewsPath = join(__dirname, '../../resources/views/');
     console.log('Mounting views path:', viewsPath);
     ctx["view"].mount(viewsPath);
     
