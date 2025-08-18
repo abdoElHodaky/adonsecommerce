@@ -16,7 +16,7 @@ export default class ViewProvider {
     // Register both view paths
    // for (const viewPath of viewConfig.viewsPath) {
       const viewPath=join(process.cwd(),"resources","views")
-      edge.mount(viewPath)
+      //edge.mount(viewPath)
       console.log('Views path:', viewPath)
      //  console.log('Views path exists:', existsSync(viewsPath))
    
