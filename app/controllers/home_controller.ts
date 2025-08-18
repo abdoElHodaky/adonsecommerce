@@ -95,7 +95,7 @@ export default class HomeController extends BaseController {
 
         const payload = await vine.validate({
            contactSchema,
-           request.all(),
+           request.all()
         })
 
         // In a real app, you would send an email or save to database
