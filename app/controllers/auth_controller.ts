@@ -1,7 +1,8 @@
 import { HttpContext } from '@adonisjs/core/http'
 import User, { UserType } from '#models/User'
 import Merchant, { MerchantStatus } from '#models/Merchant'
-import vine from '@vinejs/vine"
+import vine from "@vinejs/vine"
+import {schema,validator} from "#start/validator"
 import hash from '@adonisjs/core/services/hash'
 import BaseController from './base_controller.js'
 
