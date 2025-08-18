@@ -85,6 +85,11 @@ const templates = [
     name: 'Helpers',
     path: 'helpers/index',
     data: {}
+  },
+  {
+    name:"About",
+    path:"about/index",
+    data:{}
   }
 ]
 
