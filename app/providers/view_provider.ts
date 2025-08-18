@@ -1,6 +1,7 @@
 import { ApplicationService } from '@adonisjs/core/types'
 import { Edge } from 'edge.js'
-import viewConfig from '#config/view'
+//import viewConfig from '#config/view'
+import { join } from 'node:path'
 
 export default class ViewProvider {
   constructor(protected app: ApplicationService) {}
@@ -13,12 +14,13 @@ export default class ViewProvider {
     const edge = new Edge({ cache: false })
     
     // Register both view paths
-    for (const viewPath of viewConfig.viewsPath) {
+   // for (const viewPath of viewConfig.viewsPath) {
+      const viewPath=join(process.cwd(),"resources","views")
       edge.mount(viewPath)
       console.log('Views path:', viewPath)
      //  console.log('Views path exists:', existsSync(viewsPath))
    
-    }
+  //  }
     
     // Add global variables
    /* edge.global('appUrl', (path: string) => {
