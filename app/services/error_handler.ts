@@ -23,7 +23,7 @@ export class ErrorHandler {
    * Handle a not found error
    */
   public handleNotFound(ctx: HttpContext, message: string = 'Resource not found') {
-    logger.error({ message, url: ctx.request.url() }, 'Not Found Error')
+    logger.error({ message, url: ctx.request?.url() | ctx.request?.completeUrl() }, 'Not Found Error')
     
     // For API requests, return a JSON response
     if (this.isApiRequest(ctx)) {
@@ -41,7 +41,7 @@ export class ErrorHandler {
    * Handle an unauthorized error
    */
   public handleUnauthorized(ctx: HttpContext, message: string = 'Unauthorized access') {
-    logger.error({ message, url: ctx.request.url() }, 'Unauthorized Error')
+    logger.error({ message, url: ctx.request?.url() | ctx.request?.completeUrl() }, 'Unauthorized Error')
     
     // For API requests, return a JSON response
     if (this.isApiRequest(ctx)) {
@@ -60,7 +60,7 @@ export class ErrorHandler {
    * Handle a forbidden error
    */
   public handleForbidden(ctx: HttpContext, message: string = 'Access denied') {
-    logger.error({ message, url: ctx.request.url() }, 'Forbidden Error')
+    logger.error({ message, url: ctx.request?.url() | ctx.request?.completeUrl() }, 'Forbidden Error')
     
     // For API requests, return a JSON response
     if (this.isApiRequest(ctx)) {
@@ -80,7 +80,7 @@ export class ErrorHandler {
   public handleValidation(ctx: HttpContext, error: ValidationError) {
     const errors = error.messages
     
-    logger.error({ errors, url: ctx.request.url() }, 'Validation Error')
+    logger.error({ errors, url: ctx.request?.url() | ctx.request?.completeUrl() }, 'Validation Error')
     
     // For API requests, return a JSON response
     if (this.isApiRequest(ctx)) {
@@ -112,7 +112,7 @@ export class ErrorHandler {
    * Handle a server error
    */
   public handleServerError(ctx: HttpContext, error: Error) {
-    logger.error({ error: error.message, stack: error.stack, url: ctx.request.url() }, 'Server Error')
+    logger.error({ error: error.message, stack: error.stack, url: ctx.request?.url() | ctx.request?.completeUrl()}, 'Server Error')
     
     // For API requests, return a JSON response
     if (this.isApiRequest(ctx)) {
