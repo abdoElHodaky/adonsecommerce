@@ -19,8 +19,8 @@ import pagesRoutes from './routes/routes/pages.js'
 const edge=new Edge()
 edge.mount(join(process.cwd(), 'resources', 'views'))
 // Main route for the homepage
-router.get("/", async({view}) => {
- /*  try {
+router.get("/", async({response}) => {
+  try {
    const html=await edge.render("pages/about/index")
    //return await response.send(e)
     // response.safeHeader("Content-Type","text/html")
@@ -28,8 +28,8 @@ router.get("/", async({view}) => {
       
    }catch(error){
       console.log(error)
-   }*/
-   return view.render("pages/about/index")
+   }
+  // return view.render("pages/about/index")
 })//.use(middleware.view)
 
 // Register all route modules
