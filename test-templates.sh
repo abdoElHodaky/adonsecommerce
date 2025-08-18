@@ -65,6 +65,16 @@ else
 fi
 echo
 
+# Test 6: Comprehensive template test (all features)
+echo -e "${YELLOW}Test 6: Comprehensive template test${NC}"
+node test-comprehensive.js
+if [ $? -eq 0 ]; then
+  echo -e "${GREEN}✓ Test 6 passed: Comprehensive template test works${NC}"
+else
+  echo -e "${RED}✗ Test 6 failed: Comprehensive template test failed${NC}"
+fi
+echo
+
 # Check if all tests passed
 if [ -f test-output/about-page.html ] && [ -f test-output/full-page-pages-about-index.html ]; then
   echo -e "${GREEN}All tests completed successfully!${NC}"
