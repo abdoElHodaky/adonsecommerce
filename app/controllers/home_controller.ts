@@ -140,7 +140,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return await view.render('pages/privacy/index')
+        return await view.render('pages/about/index')
       },
       'Failed to load privacy policy page'
     )
