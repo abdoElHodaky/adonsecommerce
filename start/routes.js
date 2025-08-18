@@ -16,10 +16,11 @@ import paymentRoutes from './routes/routes/payment.js'
 import notificationRoutes from './routes/routes/notification.js'
 import pagesRoutes from './routes/routes/pages.js'
 */
+import  "./routes/home.ts";
 const edge=new Edge()
 edge.mount(join(process.cwd(), 'resources', 'views'))
 // Main route for the homepage
-router.get("/", async({view}) => {
+//router.get("/", async({view}) => {
 /*  try {
   const html=await edge.render("pages/about/index")
 router.get("/", async({response}) => {
@@ -32,8 +33,8 @@ router.get("/", async({response}) => {
    }catch(error){
       console.log(error)
    }*/
-   return await view.render("pages/about/index")
-})//.use(middleware.view)
+ //  return await view.render("pages/about/index")
+//})//.use(middleware.view)
 
 // Register all route modules
 /*router.use(homeRoutes)
