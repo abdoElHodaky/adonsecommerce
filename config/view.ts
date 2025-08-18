@@ -4,7 +4,7 @@ const viewConfig = {
   template: 'edge',
   cache: false,
   viewsPath: [
-    app.makePath('resources/views'),
+    app.makePath('resources/views')
    // app.makePath('views')
   ]
 }
