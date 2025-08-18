@@ -36,7 +36,7 @@ export default class ViewMiddleware {
     console.log('Views path:', viewsPath)
     console.log('Views path exists:', existsSync(viewsPath))
     //const edge=ctx["view"]
-   // ctx["view"].mount(viewsPath);
+    ctx["view"].mount(viewsPath);
    // const viewsPath = join(__dirname, '../../resources/views/');
     //console.log('Mounting views path:', viewsPath);
     
