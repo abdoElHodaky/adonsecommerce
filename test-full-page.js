@@ -3,22 +3,28 @@ import { join } from 'node:path'
 import { existsSync, writeFileSync, mkdirSync } from 'node:fs'
 
 /**
- * Simple test script for Edge.js templates
+ * Test script for rendering full Edge.js pages with layout inheritance
  * 
  * This script tests the rendering of Edge.js templates with layout inheritance.
  * 
  * Usage:
- *   node test-templates-simple.js
+ *   node test-full-page.js [template-path]
+ * 
+ * Examples:
+ *   node test-full-page.js pages/about/index
  */
 
 // Setup Edge.js
 const edge = new Edge()
-const viewsPath = join(process.cwd(), 'resources', 'views')
 
+// Debug current directory
+console.log('Current directory:', process.cwd())
+
+// Mount the views directory
+const viewsPath = join(process.cwd(), 'resources', 'views')
 console.log('Views path:', viewsPath)
 console.log('Views path exists:', existsSync(viewsPath))
 
-// Mount the views directory
 edge.mount(viewsPath)
 
 // Register globals for testing
@@ -55,50 +61,58 @@ edge.global('asset', (path) => `/assets/${path}`)
 edge.global('csrfField', () => '<input type="hidden" name="_csrf" value="test-csrf-token">')
 edge.global('csrfMeta', () => '<meta name="csrf-token" content="test-csrf-token">')
 edge.global('inspect', (value) => JSON.stringify(value, null, 2))
-
-// Test data
-const testData = {
-  title: 'Test Page',
-  content: 'This is test content'
-}
-
-// Create output directory
-const outputDir = join(process.cwd(), 'test-output')
-if (!existsSync(outputDir)) {
-  mkdirSync(outputDir, { recursive: true })
-}
-
-// Test partials
-async function testPartials() {
-  console.log('\nTesting partials...')
-  
+edge.global('component', (name, props) => `Component: ${name}`)
+edge.global('include', (name, data) => {
   try {
-    // Test header partial
-    const header = await edge.render('partials/header', testData)
-    writeFileSync(join(outputDir, 'partials-header.html'), header)
-    console.log('✅ Header partial rendered successfully')
-    
-    // Test footer partial
-    const footer = await edge.render('partials/footer', testData)
-    writeFileSync(join(outputDir, 'partials-footer.html'), footer)
-    console.log('✅ Footer partial rendered successfully')
-    
-    // Test flash messages partial
-    const flashMessages = await edge.render('partials/flash-messages', testData)
-    writeFileSync(join(outputDir, 'partials-flash-messages.html'), flashMessages)
-    console.log('✅ Flash messages partial rendered successfully')
+    return edge.render(name, data)
   } catch (error) {
-    console.error('❌ Error rendering partials:', error.message)
+    console.error(`Error including ${name}:`, error.message)
+    return `<!-- Error including ${name}: ${error.message} -->`
   }
+})
+edge.global('safe', (html) => html)
+
+// Mock data for testing
+const mockData = {
+  title: 'Test Page',
+  popularCategories: [
+    { name: 'Electronics', slug: 'electronics', image: null },
+    { name: 'Clothing', slug: 'clothing', image: null }
+  ],
+  featuredProducts: [
+    {
+      id: 1,
+      name: 'Test Product',
+      slug: 'test-product',
+      price: 99.99,
+      compareAtPrice: 129.99,
+      images: [],
+      merchant: { storeName: 'Test Store', slug: 'test-store' }
+    }
+  ],
+  featuredMerchants: [
+    {
+      storeName: 'Test Store',
+      slug: 'test-store',
+      bannerImage: null,
+      description: 'This is a test store description that should be long enough to test truncation.'
+    }
+  ]
 }
 
-// Process a template with layout inheritance
-async function processTemplate(templatePath, data = {}) {
+/**
+ * Process a template with layout inheritance
+ * @param {string} templatePath - Path to the template to process
+ */
+async function processTemplate(templatePath) {
   try {
-    console.log(`\nProcessing template: ${templatePath}`)
+    console.log(`Processing template: ${templatePath}`)
+    
+    // Add template-specific mock data
+    let templateData = { ...mockData }
     
     // Render the template
-    const content = await edge.render(templatePath, { ...testData, ...data })
+    const content = await edge.render(templatePath, templateData)
     
     // Extract layout information using regex
     const layoutMatch = content.match(/@layout\(['"](.+?)['"]\)/)
@@ -131,10 +145,14 @@ async function processTemplate(templatePath, data = {}) {
       layoutEdge.global(key, edge.globals[key])
     })
     
+    // Register section helpers
+    layoutEdge.global('section', (name) => {
+      return sections[name] || ''
+    })
+    
     // Create layout data
     const layoutData = {
-      ...testData,
-      ...data
+      ...templateData
     }
     
     // Render the layout with the sections
@@ -153,43 +171,41 @@ async function processTemplate(templatePath, data = {}) {
   }
 }
 
-// Test a page with layout
-async function testPageWithLayout(pagePath, outputFilename, data = {}) {
-  try {
-    const html = await processTemplate(pagePath, data)
-    writeFileSync(join(outputDir, outputFilename), html)
-    console.log(`✅ ${pagePath} rendered successfully`)
-    return true
-  } catch (error) {
-    console.error(`❌ Error rendering ${pagePath}:`, error.message)
-    return false
-  }
-}
-
-// Main function
+/**
+ * Main function
+ */
 async function main() {
-  // Test partials
-  await testPartials()
+  if (process.argv.length < 3) {
+    console.error('Please provide a template path')
+    process.exit(1)
+  }
   
-  // Test pages with layout
-  let success = true
+  const templatePath = process.argv[2]
+  const normalizedPath = templatePath.replace(/^resources\/views\//, '').replace(/\.edge$/, '')
   
-  // Test about page
-  success = await testPageWithLayout('pages/about/index', 'about-page.html') && success
-  
-  // Test home page
-  success = await testPageWithLayout('pages/home', 'home-page.html') && success
-  
-  if (success) {
-    console.log('\n✅ All templates rendered successfully')
-  } else {
-    console.error('\n❌ Some templates failed to render')
+  try {
+    console.log(`Testing full page rendering for: ${normalizedPath}`)
+    const html = await processTemplate(normalizedPath)
+    
+    // Write the output to a file for inspection
+    const outputDir = join(process.cwd(), 'test-output')
+    if (!existsSync(outputDir)) {
+      mkdirSync(outputDir, { recursive: true })
+    }
+    
+    const outputPath = join(outputDir, `full-page-${normalizedPath.replace(/\//g, '-')}.html`)
+    writeFileSync(outputPath, html)
+    console.log(`Output saved to ${outputPath}`)
+    
+    console.log('✅ Page rendered successfully')
+    process.exit(0)
+  } catch (error) {
+    console.error('❌ Error rendering page:', error.message || error)
+    process.exit(1)
   }
 }
 
-// Run the tests
 main().catch(error => {
   console.error('Unhandled error:', error)
   process.exit(1)
 })
-

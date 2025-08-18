@@ -19,7 +19,7 @@ import { readdirSync, existsSync } from 'node:fs'
  */
 
 // Setup Edge.js
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname = process.cwd()
 const viewsPath = join(__dirname, 'resources', 'views')
 const edge = new Edge()
 
@@ -113,8 +113,15 @@ async function testTemplate(templatePath) {
     const html = await edge.render(templatePath, templateData)
     console.log('✅ Template rendered successfully')
     
-    // Optional: Write the output to a file for inspection
-    // writeFileSync(join(__dirname, 'test-output', `${templatePath.replace(/\//g, '-')}.html`), html)
+    // Write the output to a file for inspection
+    const outputDir = join(__dirname, 'test-output')
+    if (!existsSync(outputDir)) {
+      mkdirSync(outputDir, { recursive: true })
+    }
+    const outputPath = join(outputDir, `${templatePath.replace(/\//g, '-')}.html`)
+    const { writeFileSync } = await import('node:fs')
+    writeFileSync(outputPath, html)
+    console.log(`   Output saved to ${outputPath}`)
     
     return true
   } catch (error) {
@@ -164,9 +171,12 @@ async function main() {
   if (templatePath) {
     // Test a specific template or directory
     if (templatePath.endsWith('.edge')) {
-      success = await testTemplate(templatePath)
+      // Remove the resources/views/ prefix if it exists
+      const normalizedPath = templatePath.replace(/^resources\/views\//, '')
+      success = await testTemplate(normalizedPath)
     } else {
-      success = await testDirectory(templatePath)
+      const normalizedPath = templatePath.replace(/^resources\/views\//, '')
+      success = await testDirectory(normalizedPath)
     }
   } else {
     // Test all templates
