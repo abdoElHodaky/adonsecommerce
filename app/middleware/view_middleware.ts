@@ -78,6 +78,13 @@ export default class ViewMiddleware {
       // In a real app, this would use the router to generate URLs
       return `/${name.replace('.', '/')}`
     })
+    ctx["view"].global('formatCurrency', (amount: number) => `$${amount.toFixed(2)}`)
+    ctx["view"].global('formatDate', (date: string | Date) => new Date(date).toLocaleDateString())
+    ctx["view"].global('calculateDiscount', (original: number, sale: number) => Math.round((1 - sale / original) * 100))
+    ctx["view"].global('truncate', (text: string, length = 100) => text.length > length ? text.substring(0, length) + '...' : text)
+    ctx["view"].global('currentYear', () => new Date().getFullYear())
+    
+    
   }
   
   /**
