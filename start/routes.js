@@ -16,7 +16,7 @@ import paymentRoutes from './routes/routes/payment.js'
 import notificationRoutes from './routes/routes/notification.js'
 import pagesRoutes from './routes/routes/pages.js'
 */
-import  "./routes/home.ts";
+import  "./routes/home.js";
 const edge=new Edge()
 edge.mount(join(process.cwd(), 'resources', 'views'))
 // Main route for the homepage
