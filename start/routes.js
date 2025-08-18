@@ -24,7 +24,7 @@ router.get("/", async({response}) => {
    const html=await edge.render("pages/about/index")
    //return await response.send(e)
       console.log(html)
-   }catch(error:any){
+   }catch(error){
       console.log(error)
    }
 })//.use(middleware.view)
