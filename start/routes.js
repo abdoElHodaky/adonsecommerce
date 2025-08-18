@@ -1,7 +1,7 @@
 import { middleware } from './kernel.js'
 import router from '@adonisjs/core/services/router'
 import { Edge } from "edge.js"
-import  join from "path"
+import { join } from 'node:path'
 /*// Import route modules
 import homeRoutes from './routes/routes/home.js'
 import authRoutes from './routes/routes/auth.js'
