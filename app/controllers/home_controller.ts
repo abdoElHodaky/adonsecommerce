@@ -75,28 +75,26 @@ export default class HomeController extends BaseController {
    * Handle contact form submission
    */
   async submitContact({ request, response, session }: HttpContext) {
+    const requestbody=request.all();
     return this.tryOrError(
       { request, response, session },
       async () => {
         // Validate input
         const contactSchema = vine.object({
-          name: vine.string().trim().
-          minLength(2).maxLength(50)
+          name: vine.string().trim().minLength(2).maxLength(50)
           ,
           email: vine.string().email()
           ,
-          subject: vine.string().
-          trim().minLength(2).maxLength(100)
+          subject: vine.string().trim().minLength(2).maxLength(100)
           ,
-          message: vine.string()
-            .trim().minLength(10)
+          message: vine.string().trim().minLength(10)
           
-        })
+        });
 
         const payload = await vine.validate({
            contactSchema,
-           request.all()
-        })
+           requestbody
+        });
 
         // In a real app, you would send an email or save to database
         // For now, we'll just show a success message
