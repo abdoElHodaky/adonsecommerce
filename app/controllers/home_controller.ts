@@ -54,7 +54,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return await View.render('pages/about')
+        return await View.render('pages/about/index')
       },
       'Failed to load about page'
     )
@@ -67,7 +67,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return await view.render('pages/contact')
+        return await view.render('pages/contact/index')
       },
       'Failed to load contact page'
     )
@@ -114,7 +114,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return await view.render('pages/faq')
+        return await view.render('pages/faq/index')
       },
       'Failed to load FAQ page'
     )
@@ -140,7 +140,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return await view.render('pages/privacy')
+        return await view.render('pages/privacy/index')
       },
       'Failed to load privacy policy page'
     )
