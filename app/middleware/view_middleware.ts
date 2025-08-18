@@ -45,32 +45,32 @@ export default class ViewMiddleware {
    */
   private addRequestGlobals(ctx: HttpContext) {
     // Add auth information
-    this.view.global('auth', {
+    this.ctx.view.global('auth', {
       isAuthenticated: ctx.auth?.isAuthenticated || false,
       user: ctx.auth?.user || null
     })
     
     // Add flash messages
-    this.view.global('flashMessages', {
+    this.ctx.view.global('flashMessages', {
       has: (key: string) => ctx.session?.flashMessages?.has(key) || false,
       get: (key: string) => ctx.session?.flashMessages?.get(key) || ''
     })
     
     // Add cart information
-    this.view.global('cart', {
+    this.ctx.view.global('cart', {
       items: ctx.session?.get('cart', []) || []
     })
     
     // Add CSRF token
-    this.view.global('csrfToken', ctx.request.csrfToken || 'test-csrf-token')
-    this.view.global('csrfField', () => {
+    this.ctx.view.global('csrfToken', ctx.request.csrfToken || 'test-csrf-token')
+    this.ctx.view.global('csrfField', () => {
       const token = ctx.request.csrfToken || 'test-csrf-token'
       return `<input type="hidden" name="_csrf" value="${token}">`
     })
     
     // Add request and route information
-    this.view.global('request', ctx.request)
-    this.view.global('route', (name: string, params = {}) => {
+    this.ctx.view.global('request', ctx.request)
+    this.ctx.view.global('route', (name: string, params = {}) => {
       // In a real app, this would use the router to generate URLs
       return `/${name.replace('.', '/')}`
     })
