@@ -1,7 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 import User, { UserType } from '#models/User'
 import Merchant, { MerchantStatus } from '#models/Merchant'
-import { schema, validator } from '@adonisjs/core/validator'
+import vine from '@vinejs/vine"
 import hash from '@adonisjs/core/services/hash'
 import BaseController from './base_controller.js'
 
@@ -27,15 +27,13 @@ export default class AuthController extends BaseController {
       { request, response, auth, session },
       async () => {
         // Validate input
-        const loginSchema = schema.create({
-          email: schema.string([
-            validator.email()
-          ]),
-          password: schema.string(),
-          remember: schema.boolean.optional(),
+        const loginSchema = vine.object({
+          email: vine.string().email(),
+          password: vine.string(),
+          remember: vine.boolean().optional(),
         })
 
-        const payload = await validator.validate({
+        const payload = await vine.validate({
           schema: loginSchema,
           data: request.all(),
         })
@@ -86,17 +84,15 @@ export default class AuthController extends BaseController {
       { request, response, auth, session },
       async () => {
         // Validate input
-        const registerSchema = schema.create({
-          first_name: schema.string([
-            validator.trim(),
-            validator.minLength(2),
-            validator.maxLength(50)
-          ]),
-          last_name: schema.string([
-            validator.trim(),
-            validator.minLength(2),
-            validator.maxLength(50)
-          ]),
+        const registerSchema = vine.object({
+          first_name: vine.string().trim()
+            .minLength(6)
+            .maxLength(32)
+          ,
+          last_name: vine.string().trim()
+            .minLength(6)
+            .maxLength(32)
+          ,
           email: schema.string([
             validator.email(),
             validator.unique({ table: 'users', column: 'email' })
