@@ -32,7 +32,7 @@ export default class ViewMiddleware {
     })
     const viewsPath = join(process.cwd(), 'resources', 'views')
     console.log('Views path:', viewsPath)
-    console.log('Views path exists:', existsSync(viewsPath))
+    //console.log('Views path exists:', existsSync(viewsPath))
     const edge=ctx["view"]
     edge.mount(viewsPath);
    // const viewsPath = join(__dirname, '../../resources/views/');
