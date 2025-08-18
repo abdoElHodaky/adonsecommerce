@@ -36,13 +36,13 @@ export default class ViewMiddleware {
     console.log('Views path:', viewsPath)
     console.log('Views path exists:', existsSync(viewsPath))
     //const edge=ctx["view"]
-    ctx["view"].mount(viewsPath);
+   // ctx["view"].mount(viewsPath);
    // const viewsPath = join(__dirname, '../../resources/views/');
     //console.log('Mounting views path:', viewsPath);
     
     
   console.log('Adding global helpers...');
-  ctx["view"].global('auth', {
+ /* ctx["view"].global('auth', {
   isAuthenticated: true,
   user: {
     id: 1,
@@ -70,7 +70,8 @@ ctx["view"].global('truncate', (text, length = 100) => text.length > length ? te
 ctx["view"].global('currentYear', () => new Date().getFullYear())
     
     //ctx["view"].global('appUrl', (path) => `http://localhost:3333${path}`);
-   
+   */
+    
     /**
      * Call the next middleware
      */
