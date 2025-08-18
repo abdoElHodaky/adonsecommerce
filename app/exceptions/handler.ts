@@ -69,7 +69,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       logger.error(
         { 
           err: error, 
-          url: ctx.request.url(), 
+          url: ctx.request?.url() | ctx.request?.completeUrl(), 
           method: ctx.request.method(),
           userId: ctx.auth.user?.id
         }, 
