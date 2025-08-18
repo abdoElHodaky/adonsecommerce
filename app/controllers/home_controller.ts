@@ -11,6 +11,7 @@ export default class HomeController extends BaseController {
    * Display the home page
    */
   async index({ view }: HttpContext) {
+    const View=view
     return this.tryOrError(
       { view },
       async () => {
@@ -35,7 +36,7 @@ export default class HomeController extends BaseController {
           .whereNull('parentId')
           .limit(6)
 
-        return view.render('pages/home', {
+        return View.render('pages/home', {
           featuredProducts,
           featuredMerchants,
           popularCategories,
@@ -52,7 +53,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return view.render('pages/about')
+        return await view.render('pages/about')
       },
       'Failed to load about page'
     )
@@ -65,7 +66,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return view.render('pages/contact')
+        return await view.render('pages/contact')
       },
       'Failed to load contact page'
     )
@@ -112,7 +113,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return view.render('pages/faq')
+        return await view.render('pages/faq')
       },
       'Failed to load FAQ page'
     )
@@ -125,7 +126,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return view.render('pages/terms')
+        return await view.render('pages/terms')
       },
       'Failed to load terms and conditions page'
     )
@@ -138,7 +139,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return view.render('pages/privacy')
+        return await view.render('pages/privacy')
       },
       'Failed to load privacy policy page'
     )
@@ -151,7 +152,7 @@ export default class HomeController extends BaseController {
     return this.tryOrError(
       { view },
       async () => {
-        return view.render('pages/errors/404')
+        return await view.render('pages/errors/404')
       },
       'Failed to load 404 page'
     )
