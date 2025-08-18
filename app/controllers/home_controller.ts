@@ -50,10 +50,11 @@ export default class HomeController extends BaseController {
    * Display the about page
    */
   async about({ view }: HttpContext) {
+   const View=view
     return this.tryOrError(
       { view },
       async () => {
-        return await view.render('pages/about')
+        return await View.render('pages/about')
       },
       'Failed to load about page'
     )
