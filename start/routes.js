@@ -20,16 +20,16 @@ const edge=new Edge()
 edge.mount(join(process.cwd(), 'resources', 'views'))
 // Main route for the homepage
 router.get("/", async({response}) => {
-  try {
-   const html=await edge.render("pages/about/index")
+/*  try {
+  const html=await edge.render("pages/about/index")
    //return await response.send(e)
     // response.safeHeader("Content-Type","text/html")
      return response.send(html)
       
    }catch(error){
       console.log(error)
-   }
-  // return view.render("pages/about/index")
+   }*/
+   return await view.render("pages/about/index")
 })//.use(middleware.view)
 
 // Register all route modules
