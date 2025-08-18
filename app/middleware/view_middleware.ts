@@ -172,7 +172,7 @@ export default class ViewMiddleware {
       
       try {
         // Render the included template
-        const includedContent = await this.view.render(includePath, includeData)
+        const includedContent = await this.View.render(includePath, includeData)
         
         // Replace the @include directive with the rendered content
         processedContent = processedContent.replace(match[0], includedContent)
