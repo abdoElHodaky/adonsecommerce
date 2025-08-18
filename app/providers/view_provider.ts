@@ -21,9 +21,9 @@ export default class ViewProvider {
     }
     
     // Add global variables
-    edge.global('appUrl', (path: string) => {
+   /* edge.global('appUrl', (path: string) => {
       return `${process.env.APP_URL || ''}${path}`
-    })
+    })*/
     
     // Add current year helper
     edge.global('currentYear', () => new Date().getFullYear())
