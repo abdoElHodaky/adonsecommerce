@@ -16,8 +16,8 @@ import notificationRoutes from './routes/routes/notification.js'
 import pagesRoutes from './routes/routes/pages.js'
 */
 // Main route for the homepage
-router.get("/about", async({view}) => {
-   return await view.renderSync("pages/about/index")
+router.get("/", async({view}) => {
+   return await view.render("pages/about/index")
 }).use(middleware.view)
 
 // Register all route modules
