@@ -22,6 +22,9 @@ edge.mount(join(process.cwd(), 'resources', 'views'))
 router.get("/", async({view}) => {
 /*  try {
   const html=await edge.render("pages/about/index")
+router.get("/", async({response}) => {
+  try {
+   const html=await edge.renderSync("pages/about/index")
    //return await response.send(e)
     // response.safeHeader("Content-Type","text/html")
      return response.send(html)
