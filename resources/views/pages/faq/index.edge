@@ -1,0 +1,405 @@
+@layout('layouts/main')
+
+@section('title')
+  Frequently Asked Questions - MultiMarket
+@end
+
+@section('content')
+  <div class="bg-white py-12">
+    <div class="container mx-auto px-4">
+      <!-- Hero Section -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Find answers to common questions about MultiMarket, our platform, and how it works.
+        </p>
+      </div>
+      
+      <!-- FAQ Categories -->
+      <div class="mb-12">
+        <div class="flex flex-wrap justify-center gap-4">
+          <button class="px-6 py-2 bg-indigo-600 text-white rounded-full" id="btn-all">All</button>
+          <button class="px-6 py-2 bg-gray-200 hover:bg-indigo-100 text-gray-800 rounded-full" id="btn-general">General</button>
+          <button class="px-6 py-2 bg-gray-200 hover:bg-indigo-100 text-gray-800 rounded-full" id="btn-customers">For Customers</button>
+          <button class="px-6 py-2 bg-gray-200 hover:bg-indigo-100 text-gray-800 rounded-full" id="btn-merchants">For Merchants</button>
+          <button class="px-6 py-2 bg-gray-200 hover:bg-indigo-100 text-gray-800 rounded-full" id="btn-payments">Payments & Shipping</button>
+        </div>
+      </div>
+      
+      <!-- FAQ Accordion -->
+      <div class="max-w-4xl mx-auto">
+        <!-- General FAQs -->
+        <div class="mb-8" id="general-faqs">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">General Questions</h2>
+          
+          <div class="space-y-4">
+            <!-- FAQ Item 1 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">What is MultiMarket?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  MultiMarket is a multi-merchant e-commerce platform that connects buyers with sellers from around the world. Our platform allows merchants to set up their online stores and sell products, while customers can browse and purchase items from multiple merchants in a single checkout process.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">How does MultiMarket work?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  MultiMarket works by providing a platform where merchants can list their products and customers can browse and purchase from multiple merchants in a single transaction. We handle the payment processing, order management, and provide tools for merchants to manage their stores. Customers benefit from a wide selection of products and a streamlined shopping experience.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">Is MultiMarket available internationally?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  Yes, MultiMarket is available internationally. Merchants can sell globally, and customers can shop from anywhere in the world. However, shipping availability and costs may vary depending on the merchant and the destination country. Each merchant sets their own shipping policies and rates.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Customer FAQs -->
+        <div class="mb-8" id="customer-faqs">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">For Customers</h2>
+          
+          <div class="space-y-4">
+            <!-- FAQ Item 1 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">How do I create an account?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  To create a customer account, click on the "Sign Up" button in the top right corner of the website. Fill in your details, including your name, email address, and password. Once you've completed the registration form, you'll receive a confirmation email. Click the link in the email to verify your account, and you're ready to start shopping!
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">How do I track my order?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  You can track your order by logging into your account and navigating to the "My Orders" section. Here, you'll find a list of all your orders and their current status. Click on a specific order to view more details, including tracking information if available. You'll also receive email updates about your order status, including shipping confirmation and tracking details.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">What is your return policy?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  Return policies vary by merchant. Each merchant sets their own return policy, which you can find on their store page or product listings. Generally, most merchants offer returns within 14-30 days of purchase for items in their original condition. To initiate a return, go to your order details page and select the "Return Item" option. Follow the instructions provided to complete the return process.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 4 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">Can I purchase from multiple merchants in a single order?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  Yes, one of the key benefits of MultiMarket is the ability to purchase products from multiple merchants in a single checkout process. You can add items from different merchants to your cart and complete the purchase in one transaction. However, each merchant will ship their items separately, so you may receive multiple packages for a single order.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Merchant FAQs -->
+        <div class="mb-8" id="merchant-faqs">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">For Merchants</h2>
+          
+          <div class="space-y-4">
+            <!-- FAQ Item 1 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">How do I become a merchant on MultiMarket?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  To become a merchant, click on the "Become a Merchant" button on our homepage or in the footer. Fill out the application form with your business details, including your store name, business information, and product categories. Our team will review your application, and if approved, you'll receive instructions on how to set up your store and start listing products.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">What are the fees for selling on MultiMarket?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  MultiMarket charges a commission fee on each sale, which varies depending on the product category. The standard commission rate is 10%, but it may range from 5% to 15% depending on the category. There are no monthly subscription fees or listing fees. Payment processing fees (typically 2.9% + $0.30 per transaction) are also deducted from each sale. You can find detailed fee information in our Merchant Terms of Service.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">How and when do I get paid?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  Payments are processed on a bi-weekly basis. Funds from your sales (minus our commission and payment processing fees) are transferred directly to your designated bank account. There is a 3-day holding period after an order is delivered before the funds are released to your available balance. This holding period helps ensure customer satisfaction and allows time for any potential issues to be resolved.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 4 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">How do I manage my inventory and orders?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  MultiMarket provides a comprehensive merchant dashboard where you can manage your inventory, process orders, and track sales. You can add new products, update existing listings, manage stock levels, and set shipping options. When you receive an order, you'll get a notification, and the order will appear in your dashboard. From there, you can process the order, print shipping labels, and mark it as shipped.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payments & Shipping FAQs -->
+        <div class="mb-8" id="payment-faqs">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Payments & Shipping</h2>
+          
+          <div class="space-y-4">
+            <!-- FAQ Item 1 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">What payment methods do you accept?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  MultiMarket accepts a variety of payment methods, including:
+                </p>
+                <ul class="list-disc list-inside mt-2 text-gray-600">
+                  <li>Credit and debit cards (Visa, Mastercard, American Express, Discover)</li>
+                  <li>PayPal</li>
+                  <li>Apple Pay</li>
+                  <li>Google Pay</li>
+                  <li>Bank transfers (in select countries)</li>
+                </ul>
+                <p class="text-gray-600 mt-2">
+                  The available payment methods may vary depending on your location.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">Is my payment information secure?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  Yes, your payment information is secure. MultiMarket uses industry-standard encryption and security protocols to protect your data. We are PCI DSS compliant, which means we follow strict security standards for handling credit card information. We never store your full credit card details on our servers. Instead, we use tokenization through our secure payment processors to handle transactions.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">How is shipping handled?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  Shipping is handled by individual merchants. Each merchant sets their own shipping rates, methods, and policies. When you purchase from multiple merchants in a single order, each merchant will ship their items separately. Shipping costs and delivery times are displayed during checkout, and you can track each shipment separately through your order history.
+                </p>
+              </div>
+            </div>
+            
+            <!-- FAQ Item 4 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden" x-data="{ open: false }">
+              <button 
+                @click="open = !open" 
+                class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50"
+              >
+                <span class="text-lg font-medium text-gray-900">Do you offer international shipping?</span>
+                <i class="fas" :class="open ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+              <div x-show="open" class="px-6 py-4 bg-gray-50">
+                <p class="text-gray-600">
+                  International shipping availability depends on the individual merchants. Many merchants on MultiMarket offer international shipping, but not all do. You can filter your search results to show only merchants who ship to your country. International orders may be subject to customs duties, taxes, and import fees, which are the responsibility of the customer and are not included in the purchase price.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contact Section -->
+        <div class="bg-indigo-50 rounded-xl p-8 text-center">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Still Have Questions?</h2>
+          <p class="text-lg text-gray-600 mb-6">
+            If you couldn't find the answer to your question, please contact our support team.
+          </p>
+          <a href="/contact" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold inline-block">
+            Contact Support
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+@end
+
+@section('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get all FAQ category buttons
+    const btnAll = document.getElementById('btn-all');
+    const btnGeneral = document.getElementById('btn-general');
+    const btnCustomers = document.getElementById('btn-customers');
+    const btnMerchants = document.getElementById('btn-merchants');
+    const btnPayments = document.getElementById('btn-payments');
+    
+    // Get all FAQ sections
+    const generalFaqs = document.getElementById('general-faqs');
+    const customerFaqs = document.getElementById('customer-faqs');
+    const merchantFaqs = document.getElementById('merchant-faqs');
+    const paymentFaqs = document.getElementById('payment-faqs');
+    
+    // Function to reset all buttons
+    function resetButtons() {
+      [btnAll, btnGeneral, btnCustomers, btnMerchants, btnPayments].forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        btn.classList.add('bg-gray-200', 'text-gray-800');
+      });
+    }
+    
+    // Function to show all sections
+    function showAllSections() {
+      [generalFaqs, customerFaqs, merchantFaqs, paymentFaqs].forEach(section => {
+        section.style.display = 'block';
+      });
+    }
+    
+    // Event listeners for buttons
+    btnAll.addEventListener('click', function() {
+      resetButtons();
+      this.classList.remove('bg-gray-200', 'text-gray-800');
+      this.classList.add('bg-indigo-600', 'text-white');
+      showAllSections();
+    });
+    
+    btnGeneral.addEventListener('click', function() {
+      resetButtons();
+      this.classList.remove('bg-gray-200', 'text-gray-800');
+      this.classList.add('bg-indigo-600', 'text-white');
+      [generalFaqs, customerFaqs, merchantFaqs, paymentFaqs].forEach(section => {
+        section.style.display = 'none';
+      });
+      generalFaqs.style.display = 'block';
+    });
+    
+    btnCustomers.addEventListener('click', function() {
+      resetButtons();
+      this.classList.remove('bg-gray-200', 'text-gray-800');
+      this.classList.add('bg-indigo-600', 'text-white');
+      [generalFaqs, customerFaqs, merchantFaqs, paymentFaqs].forEach(section => {
+        section.style.display = 'none';
+      });
+      customerFaqs.style.display = 'block';
+    });
+    
+    btnMerchants.addEventListener('click', function() {
+      resetButtons();
+      this.classList.remove('bg-gray-200', 'text-gray-800');
+      this.classList.add('bg-indigo-600', 'text-white');
+      [generalFaqs, customerFaqs, merchantFaqs, paymentFaqs].forEach(section => {
+        section.style.display = 'none';
+      });
+      merchantFaqs.style.display = 'block';
+    });
+    
+    btnPayments.addEventListener('click', function() {
+      resetButtons();
+      this.classList.remove('bg-gray-200', 'text-gray-800');
+      this.classList.add('bg-indigo-600', 'text-white');
+      [generalFaqs, customerFaqs, merchantFaqs, paymentFaqs].forEach(section => {
+        section.style.display = 'none';
+      });
+      paymentFaqs.style.display = 'block';
+    });
+  });
+</script>
+@end
+
