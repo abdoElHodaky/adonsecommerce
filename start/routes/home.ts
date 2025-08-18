@@ -19,4 +19,4 @@ router.get('/404', [HomeController, 'notFound'])
 */
 
 router.resource("/",HomeController)
-export router
+//export router
