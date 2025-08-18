@@ -4,12 +4,12 @@ import { NextFn } from '@adonisjs/core/types/http'
 import { inject } from '@adonisjs/core'
 import { Edge } from 'edge.js'
 import { join } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import fs from 'fs';
+//import { fileURLToPath } from 'url';
+//import { dirname } from 'path';
+//import fs from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = dirname(__filename);
 
 /**
  * Middleware to bind the view service to the HttpContext
@@ -23,18 +23,23 @@ export default class ViewMiddleware {
     /**
      * Bind the view service to the context
      */
+    
     Object.defineProperty(ctx, 'view', {
       value: this.view,
       writable: false,
       enumerable: true,
       configurable: true,
     })
-    const viewsPath = join(__dirname, '../../resources/views/');
-    console.log('Mounting views path:', viewsPath);
+    const viewsPath = join(process.cwd(), 'resources', 'views')
+    console.log('Views path:', viewsPath)
+    console.log('Views path exists:', existsSync(viewsPath))
     const edge=ctx["view"]
     edge.mount(viewsPath);
+   // const viewsPath = join(__dirname, '../../resources/views/');
+    //console.log('Mounting views path:', viewsPath);
     
-    console.log('Adding global helpers...');
+    
+  console.log('Adding global helpers...');
   edge.global('auth', {
   isAuthenticated: true,
   user: {
