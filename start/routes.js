@@ -30,7 +30,7 @@ router.get("/", async({view}) => {
       console.log(error)
    }*/
    return await view.render("pages/about/index")
-}).use(middleware.view)
+})//.use(middleware.view)
 
 // Register all route modules
 /*router.use(homeRoutes)
