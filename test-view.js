@@ -78,7 +78,7 @@ async function testViewRendering() {
     
     // Try to render the test page
     console.log('Rendering test view...');
-    const html = await edge.render('layouts/main',{auth:{}});
+    const html = await edge.render('layouts/main');
     
     console.log('View rendered successfully!');
     console.log('HTML output length:', html.length);
