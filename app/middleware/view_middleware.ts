@@ -23,7 +23,10 @@ export default class ViewMiddleware {
       configurable: true,
     })
     this.ctx=ctx
-    
+    for (const viewPath of viewConfig.viewsPath) {
+      console.log('Mounting views path:', viewPath)
+      this.ctx["view"].mount(viewPath)
+    }
      //this.View=ctx["view"]
     // Add request-specific globals
     this.addRequestGlobals(ctx)
