@@ -18,5 +18,5 @@ router.get('/privacy', [HomeController, 'privacy'])
 router.get('/404', [HomeController, 'notFound'])
 */
 
-router.resource("",HomeController)
+router.resource("home",HomeController)
 //export router
