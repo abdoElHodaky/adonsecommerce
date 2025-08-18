@@ -34,7 +34,7 @@ export default class ViewMiddleware {
     ctx["view"].mount(viewsPath);
     
     console.log('Adding global helpers...');
-    ctx["view"].global('currentYear', () => new Date().getFullYear());
+  //  ctx["view"].global('currentYear', () => new Date().getFullYear());
     //ctx["view"].global('appUrl', (path) => `http://localhost:3333${path}`);
    
     /**
