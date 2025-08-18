@@ -35,7 +35,7 @@ export default class ViewMiddleware {
       const body = ctx.response.getBody()
       if (typeof body === 'string' && body.includes('@layout')) {
         const processedBody = await this.processLayoutInheritance(body)
-        ctx.response.setBody(processedBody)
+        ctx.response.send(processedBody)
       }
     }
   }
