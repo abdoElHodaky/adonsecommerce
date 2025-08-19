@@ -2,7 +2,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import User, { UserType } from '#models/User'
 import Merchant, { MerchantStatus } from '#models/Merchant'
 import vine from "@vinejs/vine"
-import {schema,validator} from "#start/validator"
+import {vine as validator} from "#start/validator"
 import hash from '@adonisjs/core/services/hash'
 import BaseController from './base_controller.js'
 
@@ -94,18 +94,18 @@ export default class AuthController extends BaseController {
             .minLength(6)
             .maxLength(32)
           ,
-          email: schema.string([
+          email: validator.string([
             validator.email(),
             validator.unique({ table: 'users', column: 'email' })
           ]),
-          password: schema.string([
+          password: validator.string([
             validator.minLength(8),
             validator.maxLength(32),
             validator.confirmed('password_confirmation')
           ]),
-          password_confirmation: schema.string(),
-          user_type: schema.enum(Object.values(UserType)),
-          terms: schema.boolean([
+          password_confirmation: validator.string(),
+          user_type: validator.enum(Object.values(UserType)),
+          terms: validator.boolean([
             validator.required()
           ]),
         })
@@ -188,8 +188,8 @@ export default class AuthController extends BaseController {
       { request, response, session },
       async () => {
         // Validate input
-        const forgotPasswordSchema = schema.create({
-          email: schema.string([
+        const forgotPasswordSchema = validator.create({
+          email: validator.string([
             validator.email()
           ]),
         })
@@ -237,17 +237,17 @@ export default class AuthController extends BaseController {
       { request, response, session },
       async () => {
         // Validate input
-        const resetPasswordSchema = schema.create({
-          token: schema.string(),
-          email: schema.string([
+        const resetPasswordSchema = validator.create({
+          token: validator.string(),
+          email: validator.string([
             validator.email()
           ]),
-          password: schema.string([
+          password: validator.string([
             validator.minLength(8),
             validator.maxLength(32),
             validator.confirmed('password_confirmation')
           ]),
-          password_confirmation: schema.string(),
+          password_confirmation: validator.string(),
         })
 
         const payload = await validator.validate({
