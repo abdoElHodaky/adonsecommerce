@@ -41,7 +41,7 @@ router
   })
   .prefix('/merchant')
   .use(middleware.auth)//{ guards: ['web'] }))
-  .use(middleware.role(['merchant']))
+  .use(middleware.role)//(['merchant']))
 
 // Public merchant store routes
 router.get('/store/merchants', [MerchantController, 'index'])
