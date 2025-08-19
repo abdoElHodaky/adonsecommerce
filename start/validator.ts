@@ -45,4 +45,4 @@ vine.createRule('strongPassword', (value, _, field) => {
   }
 })
 
-export vine
+export default const validator=vine
