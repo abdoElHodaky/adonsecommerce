@@ -14,7 +14,7 @@ router
     
     // Add product review (requires authentication)
     router.post('/:id/reviews', [ProductController, 'storeReview'])
-      .use(middleware.auth({ guards: ['web'] }))
+      .use(middleware.auth)//({ guards: ['web'] }))
   })
   .prefix('/store/products')
 
