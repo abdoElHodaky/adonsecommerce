@@ -14,7 +14,7 @@ import vine, {SimpleMessagesProvider} from '@vinejs/vine'
 /**
  * Define custom error messages for validation rules
  */
-const messageprovider= new SimpleMessagesProvider({
+vine.messagesProvider=new SimpleMessagesProvider({
   required: 'The {{ field }} field is required',
   email: 'The {{ field }} must be a valid email address',
   min: 'The {{ field }} must be at least {{ min }} characters long',
@@ -45,9 +45,4 @@ vine.createRule('strongPassword', (value, _, field) => {
   }
 })
 
-export default function attach(schema){
-   const validator=vine.compile(schema)
-   validator.messagesProvider=messageprovider
-   return validator
-}
-
+export default vine
