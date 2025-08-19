@@ -3,7 +3,7 @@ import Cart from '#models/Cart'
 import CartItem from '#models/CartItem'
 import Product from '#models/Product'
 import ProductVariant from '#models/ProductVariant'
-import { schema, validator } from '@adonisjs/core/validator'
+import  validator from '#start/validator'
 import BaseController from './base_controller.js'
 
 export default class CartController extends BaseController {
