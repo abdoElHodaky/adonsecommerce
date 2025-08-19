@@ -4,7 +4,7 @@ import Merchant, { MerchantStatus } from '#models/Merchant'
 import Product from '#models/Product'
 import Order from '#models/Order'
 import Category from '#models/Category'
-import { schema, validator } from '@adonisjs/core/validator'
+import  validator  from '#start/validator'
 import BaseController from './base_controller.js'
 
 export default class AdminController extends BaseController {
