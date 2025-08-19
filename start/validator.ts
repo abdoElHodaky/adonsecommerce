@@ -45,4 +45,4 @@ vine.createRule('strongPassword', (value, _, field) => {
   }
 })
 
-export default vine
+export vine
