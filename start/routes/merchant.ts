@@ -40,7 +40,7 @@ router
     router.post('/settings', [MerchantController, 'updateSettings'])
   })
   .prefix('/merchant')
-  .use(middleware.auth({ guards: ['web'] }))
+  .use(middleware.auth)//{ guards: ['web'] }))
   .use(middleware.role(['merchant']))
 
 // Public merchant store routes
