@@ -4,7 +4,8 @@ import Order from '#models/order'
 import OrderItem from '#models/order_item'
 import Product from '#models/product'
 import Cart from '#models/cart'
-import { schema, validator } from '@adonisjs/core/validator'
+import  validator from '#start/validator'
+//import { schema, validator } from '@adonisjs/core/validator'
 import notificationService from '#services/notification_service'
 
 export default class OrderController extends BaseController {
