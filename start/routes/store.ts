@@ -25,7 +25,7 @@ router.get('/categories/:slug', [CategoryController, 'show'])
 router.get('/products', [ProductController, 'index'])
 router.get('/products/:slug', [ProductController, 'show'])
 router.post('/products/:id/reviews', [ProductController, 'storeReview'])
-  .use(middleware.auth({ guards: ['web'] }))
+  .use(middleware.auth)//(/*{ guards: ['web'] })*/)
 
 // Cart routes
 router.group(() => {
