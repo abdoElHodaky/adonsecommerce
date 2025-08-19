@@ -3,7 +3,8 @@ import Merchant from '#models/Merchant'
 import Product from '#models/Product'
 import Order from '#models/Order'
 import Review from '#models/Review'
-import { schema, validator } from '@adonisjs/core/validator'
+import  validator from '#start/validator'
+//import { schema, validator } from '@adonisjs/core/validator'
 import BaseController from './base_controller.js'
 
 export default class MerchantController extends BaseController {
